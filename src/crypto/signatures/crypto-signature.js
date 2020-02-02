@@ -110,4 +110,31 @@ export default class CryptoSignature {
         return false;
     }
 
+    encrypt(message, publicKey){
+
+        if (Buffer.isBuffer(publicKey)) publicKey = publicKey.toString("hex");
+        if (Buffer.isBuffer(message)) message = message.toString("hex");
+
+        const encrypted = EthCrypto.encryptWithPublicKey(publicKey, message);
+
+        return encrypted;
+
+    }
+
+    decrypt(encrypted, privateKey){
+
+        if (Buffer.isBuffer(encrypted)) encrypted = encrypted.toString("hex");
+        if (Buffer.isBuffer(privateKey)) privateKey = privateKey.toString("hex");
+
+        try{
+
+            const decrypted = EthCrypto.decryptWithPrivateKey(privateKey, encrypted);
+            return decrypted;
+
+        }catch(err){
+
+        }
+
+    }
+
 }
