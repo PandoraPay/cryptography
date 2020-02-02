@@ -50,7 +50,7 @@ export default async function run () {
             this.expect( typeof out === "object", true);
             this.expect( out[0].length, 65 );
 
-            const verification = await tx.verifyTransactionSignatures( );
+            const verification = tx.verifyTransactionSignatures( );
 
             this.expect( verification, true );
 
@@ -86,7 +86,7 @@ export default async function run () {
             this.expect( typeof out === "object", true);
             this.expect( out[ vin.vout.length-1 ].length, 65 );
 
-            const verification = await tx.verifyTransactionSignatures( );
+            const verification = tx.verifyTransactionSignatures( );
 
             this.expect( verification, true );
 

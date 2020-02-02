@@ -93,14 +93,14 @@ export default class BaseTransaction extends DBSchema {
             if (this.unlockTime < chain.height)
                 throw new Exception (this, "Unlock time is invalid");
 
-        const signature = await this.verifyTransactionSignatures();
+        const signature = this.verifyTransactionSignatures();
         if (!signature) throw new Exception(this, "Signature verification failed");
 
         return true;
 
     }
 
-    async verifyTransactionSignatures(){
+    verifyTransactionSignatures(){
         throw new Exception(this, "verifyTransaction is not defined");
     }
 

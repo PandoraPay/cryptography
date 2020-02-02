@@ -134,7 +134,7 @@ export default class SimpleTransaction extends BaseTransaction {
 
     }
 
-    async verifyTransactionSignatures(){
+    verifyTransactionSignatures(){
 
         const buffer = this.prefixBufferForSignature();
 
