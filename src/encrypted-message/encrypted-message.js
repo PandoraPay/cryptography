@@ -58,7 +58,7 @@ export default class EncryptedMessage extends DBSchema {
                     encryptedData:{
                         type: "buffer",
                         minSize: 1,
-                        maxSize: 4*1024 //4kb
+                        maxSize: 4*1024, //4kb
 
                         position: 104,
                     },
@@ -75,20 +75,6 @@ export default class EncryptedMessage extends DBSchema {
 
             },
             schema, false), data, type, creationOptions);
-
-    }
-
-    prefixBufferForEncryption(){
-
-        const buffer = this.toBuffer( undefined, {
-
-            onlyFields:{
-                encryptedData: true,
-            }
-
-        } );
-
-        return buffer;
 
     }
 
@@ -112,15 +98,21 @@ export default class EncryptedMessage extends DBSchema {
 
     }
 
-    encryptData(publicKey){
+    async encryptData(data, publicKey){
 
-        const buffer = this.prefixBufferForEncryption();
+        const encrypted = await this._scope.cryptography.cryptoSignature.encrypt( data, publicKey );
+        if (!encrypted) throw new Exception(this, "Encrypted could be done", this.toJSON() );
 
+        this.encryptedData = encrypted;
+        return encrypted;
     }
 
-    decryptData(privateKey){
+    async decryptData(privateKey){
 
-        const buffer = this.prefixBufferForEncryption();
+        const data = await this._scope.cryptography.cryptoSignature.decrypt( this.encryptedData, privateKey );
+        if (!data) throw new Exception(this, "PrivateKey is invalid", this.toJSON() );
+
+        return data;
 
     }
 
