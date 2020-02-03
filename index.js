@@ -27,6 +27,9 @@ const DBSchemaEncryptionTypeEnum = require("src/crypto/encryption/db-encrypted-s
 const CreateIdenticon = require("src/utils/identicons/create-identicon").default;
 const Identicon = require("src/utils/identicons/identicon").default;
 
+const ChatMessage = require("src/crypto/encryption/encrypted-message/chat-message").default;
+const EncryptedMessage = require("src/crypto/encryption/encrypted-message/encrypted-message").default;
+
 const library = {
 
     ...kernel,
@@ -65,6 +68,8 @@ const library = {
 
     encryption:{
         AES,
+        ChatMessage,
+        EncryptedMessage,
     },
 
     signatures: {
