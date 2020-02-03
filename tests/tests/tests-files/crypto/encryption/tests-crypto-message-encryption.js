@@ -5,57 +5,58 @@ const {describe} = global.kernel.tests;
 export default async function run () {
 
 
-    describe("Crypto signatures", {
+    describe("Crypto encryption", {
 
-        "encrypt": function () {
+        "encrypt": async function () {
 
             const secret = BufferHelper.generateRandomBuffer(32);
 
             const key1 = this._scope.cryptography.cryptoSignature.createKeyPairs(secret);
 
-            const message = BufferHelper.generateRandomBuffer(32);
+            const message = BufferHelper.generateRandomBuffer(1024);
 
-            const signature = this._scope.cryptography.cryptoSignature.sign(message, key1.privateKey);
+            const encryption = await this._scope.cryptography.cryptoSignature.encrypt(message, key1.publicKey);
 
-            this.expect(Buffer.isBuffer(signature), true);
-            this.expect(signature.length, 65);
+            this.expect(Buffer.isBuffer(encryption), true);
+            this.expect(encryption.length > 2000, true);
 
             const key2 = this._scope.cryptography.cryptoSignature.createKeyPairs(secret);
 
-            const signature2 = this._scope.cryptography.cryptoSignature.sign(message, key2.privateKey);
+            const encryption2 = await this._scope.cryptography.cryptoSignature.encrypt(message, key2.publicKey);
 
-            this.expect( signature, signature2);
+            this.expect( key1.publicKey, key2.publicKey);
+            this.expect( encryption.length, encryption2.length); //messages could be different
 
         },
 
-        "decrypt": function (){
+        "decrypt": async function (){
 
             const secret = BufferHelper.generateRandomBuffer(32);
 
             const key1 = this._scope.cryptography.cryptoSignature.createKeyPairs(secret);
 
-            const message = BufferHelper.generateRandomBuffer(32);
+            const message = BufferHelper.generateRandomBuffer(1024);
 
-            const signature = this._scope.cryptography.cryptoSignature.sign(message, key1.privateKey);
+            const encryption = await this._scope.cryptography.cryptoSignature.encrypt(message, key1.publicKey);
 
             const key2 = this._scope.cryptography.cryptoSignature.createKeyPairs(secret);
 
-            const signature2 = this._scope.cryptography.cryptoSignature.sign(message, key2.privateKey);
+            const encryption2 = await this._scope.cryptography.cryptoSignature.encrypt(message, key2.publicKey);
 
-            this.expect( signature, signature2);
-            this.expect( this._scope.cryptography.cryptoSignature.verify( message, signature , key2.publicKey), true);
-            this.expect( this._scope.cryptography.cryptoSignature.verify( message, signature2 , key1.publicKey), true);
+            this.expect( encryption.length, encryption2.length); //messages could be different
+            this.expect( await this._scope.cryptography.cryptoSignature.decrypt( encryption, key1.privateKey), message);
+            this.expect( await this._scope.cryptography.cryptoSignature.decrypt( encryption2, key2.privateKey), message);
 
-            const message2 = Buffer.from(message);
-            message2[10] = message2[10] === 0x02 ? 0x01 : 0x02;
+            const encryptionError = Buffer.from(message);
+            encryptionError[10] = encryptionError[10] === 0x02 ? 0x01 : 0x02;
 
-            this.expect( this._scope.cryptography.cryptoSignature.verify( message2, signature , key1.publicKey), false);
+            this.expect( await this._scope.cryptography.cryptoSignature.decrypt( encryptionError, key1.privateKey), undefined );
 
-            const publicKey2 = Buffer.from(key1.publicKey);
-            publicKey2[10] = publicKey2[10] === 0x02 ? 0x01 : 0x02;
+            const privateKey2 = Buffer.from(key1.privateKey);
+            privateKey2[10] = privateKey2[10] === 0x02 ? 0x01 : 0x02;
 
-            this.expect( this._scope.cryptography.cryptoSignature.verify( message, signature , publicKey2), false);
-            this.expect( this._scope.cryptography.cryptoSignature.verify( message2, signature , publicKey2), false);
+            this.expect( await this._scope.cryptography.cryptoSignature.decrypt( encryption, privateKey2 ), undefined);
+            this.expect( await this._scope.cryptography.cryptoSignature.decrypt( encryption2, privateKey2), undefined );
 
 
         }

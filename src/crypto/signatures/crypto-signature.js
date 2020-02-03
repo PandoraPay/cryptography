@@ -104,35 +104,42 @@ export default class CryptoSignature {
             if (publicKey === signerCompressed) return true;
 
         }catch(err){
-
+            //console.error(err);
         }
 
         return false;
     }
 
-    encrypt(message, publicKey){
+    async encrypt(message, publicKey){
 
         if (Buffer.isBuffer(publicKey)) publicKey = publicKey.toString("hex");
         if (Buffer.isBuffer(message)) message = message.toString("hex");
 
-        const encrypted = EthCrypto.encryptWithPublicKey(publicKey, message);
+        const encrypted = await EthCrypto.encryptWithPublicKey(publicKey, message);
 
-        return encrypted;
+        const data = EthCrypto.cipher.stringify(encrypted);
+
+        return Buffer.from(data, "hex");
 
     }
 
-    decrypt(encrypted, privateKey){
+    async decrypt(encrypted, privateKey){
 
         if (Buffer.isBuffer(encrypted)) encrypted = encrypted.toString("hex");
         if (Buffer.isBuffer(privateKey)) privateKey = privateKey.toString("hex");
 
         try{
 
-            const decrypted = EthCrypto.decryptWithPrivateKey(privateKey, encrypted);
-            return decrypted;
+            const data = EthCrypto.cipher.parse(encrypted);
+
+            const decrypted = await EthCrypto.decryptWithPrivateKey(privateKey, data);
+
+            const out = Buffer.from(decrypted, "hex");
+
+            return out;
 
         }catch(err){
-
+            //console.error(err);
         }
 
     }
