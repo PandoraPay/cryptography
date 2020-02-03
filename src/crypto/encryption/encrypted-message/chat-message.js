@@ -47,8 +47,8 @@ export default class ChatMessage extends DBSchema {
                         position: 102,
                     },
 
-                    text: {
-                        type: "string",
+                    data: {
+                        type: "buffer",
                         minSize: 1,
                         maxSize: 4000,
 

@@ -6,6 +6,10 @@ import Tests from "tests/tests/tests-index"
 import CryptoSignature from "src/crypto/signatures/crypto-signature"
 import AddressValidator from "src/addresses/address-generator/address-validator";
 import AddressGenerator from "src/addresses/address-generator/address-generator"
+import EncryptedMessage from "src/crypto/encryption/encrypted-message/encrypted-message"
+import ChatMessage from "src/crypto/encryption/encrypted-message/chat-message"
+import EncryptedMessageCreator from "src/crypto/encryption/encrypted-message/creator/encrypted-message-creator"
+import EncryptedMessageValidator from "src/crypto/encryption/encrypted-message/validator/encrypted-message-validator"
 
 import AES from "src/crypto/encryption/aes"
 
@@ -22,6 +26,10 @@ export default class App extends Protocol.utils.App {
                 AddressValidator,
                 AddressGenerator,
                 AES,
+                EncryptedMessage,
+                ChatMessage,
+                EncryptedMessageCreator,
+                EncryptedMessageValidator,
                 ...this._scope.cryptography||{},
             };
 
@@ -36,18 +44,25 @@ export default class App extends Protocol.utils.App {
 
         this.events.on("start/init-processed", async () => {
 
-            if (!this._scope.cryptography.aes) this._scope.cryptography.aes = new this._scope.cryptography.AES(this._scope);
+            if (!this.cryptography.aes) this.cryptography.aes = new this.cryptography.AES(this._scope);
 
-            if (!this._scope.cryptography.cryptoSignature) this._scope.cryptography.cryptoSignature = new this._scope.cryptography.CryptoSignature(this._scope);
+            if (!this.cryptography.cryptoSignature) this.cryptography.cryptoSignature = new this.cryptography.CryptoSignature(this._scope);
 
-            if (!this._scope.cryptography.addressValidator) this._scope.cryptography.addressValidator = new this._scope.cryptography.AddressValidator(this._scope);
-            if (!this._scope.cryptography.addressGenerator) this._scope.cryptography.addressGenerator = new this._scope.cryptography.AddressGenerator(this._scope);
+            if (!this.cryptography.addressValidator) this.cryptography.addressValidator = new this.cryptography.AddressValidator(this._scope);
+            if (!this.cryptography.addressGenerator) this.cryptography.addressGenerator = new this.cryptography.AddressGenerator(this._scope);
+
+            if (!this.cryptography.encryptedMessageCreator) this.cryptography.encryptedMessageCreator = new this.cryptography.EncryptedMessageCreator(this._scope);
+            if (!this.cryptography.encryptedMessageValidator) this.cryptography.encryptedMessageValidator = new this.cryptography.EncryptedMessageValidator(this._scope);
 
 
             this._scope.logger.info(`Status`, `Crypto has been started`);
         });
 
 
+    }
+
+    get cryptography(){
+        return this._scope.cryptography;
     }
 
 }
