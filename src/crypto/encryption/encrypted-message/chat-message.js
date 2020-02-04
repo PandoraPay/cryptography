@@ -1,3 +1,4 @@
+const {CryptoHelper} = global.kernel.helpers.crypto;
 const {Helper, Exception} = global.kernel.helpers;
 const {MarshalData} = global.kernel.marshal;
 const {DBSchema} = global.kernel.marshal.db;
@@ -30,13 +31,6 @@ export default class ChatMessage extends DBSchema {
                         position: 100,
                     },
 
-                    senderPublicKey: {
-                        type: "buffer",
-                        fixedBytes: 33,
-
-                        position: 101,
-                    },
-
                     script:{
                         type: "number",
 
@@ -44,7 +38,7 @@ export default class ChatMessage extends DBSchema {
                             return script === 0;
                         },
 
-                        position: 102,
+                        position: 101,
                     },
 
                     data: {
@@ -52,10 +46,22 @@ export default class ChatMessage extends DBSchema {
                         minSize: 1,
                         maxSize: 4000,
 
-                        position: 103,
+                        position: 102,
                     },
 
-                }
+                },
+
+                options: {
+                    hashing: {
+                        enabled: true,
+                        parentHashingPropagation: true,
+                        fct: CryptoHelper.dkeccak256,
+                    },
+                },
+
+                saving:{
+                    storeDataNotId: true,
+                },
 
             },
             schema, false), data, type, creationOptions);

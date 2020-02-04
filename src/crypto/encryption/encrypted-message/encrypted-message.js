@@ -1,6 +1,7 @@
 const {Helper, Exception} = global.kernel.helpers;
 const {MarshalData} = global.kernel.marshal;
 const {DBSchema} = global.kernel.marshal.db;
+const {CryptoHelper} = global.kernel.helpers.crypto;
 
 /**
  * It is used in Encrypted Chat Server and Wallet
@@ -17,6 +18,10 @@ export default class EncryptedMessage extends DBSchema {
                     table: {
                         default: "encryptMsg",
                         fixedBytes: 10,
+                    },
+
+                    id:{
+                        fixedBytes: 64,
                     },
 
                     version: {
@@ -47,94 +52,98 @@ export default class EncryptedMessage extends DBSchema {
                         position: 102,
                     },
 
-                    destinationPublicKey: {
-
+                    senderPublicKey: {
                         type: "buffer",
                         fixedBytes: 33,
+
+                        preprocessor(publicKey){
+                            this._senderAddress = undefined;
+                            return publicKey;
+                        },
 
                         position: 103,
                     },
 
-                    encryptedData:{
+                    receiverPublicKey: {
+
                         type: "buffer",
-                        minSize: 1,
-                        maxSize: 10*1024, //4kb
+                        fixedBytes: 33,
+
+                        preprocessor(publicKey){
+                            this._receiverAddress = undefined;
+                            return publicKey;
+                        },
 
                         position: 104,
                     },
 
-                    verifiedSignature:{
+                    senderEncryptedData:{
                         type: "buffer",
-                        fixedBytes: 65,
+                        minSize: 1,
+                        maxSize: 10*1024, //4kb
 
                         position: 105,
-                    }
+                    },
 
+                    receiverEncryptedData:{
+                        type: "buffer",
+                        minSize: 1,
+                        maxSize: 10*1024, //4kb
 
-                }
+                        position: 106,
+                    },
+
+                },
+
+                options: {
+                    hashing: {
+                        enabled: true,
+                        parentHashingPropagation: true,
+                        fct: CryptoHelper.dkeccak256,
+                    },
+                },
+
+                saving:{
+                    indexableById: true,
+                },
 
             },
             schema, false), data, type, creationOptions);
 
     }
 
-    prefixBufferForSignature(){
-
-        //const hash
-        const buffer = this.toBuffer( undefined, {
-
-            onlyFields:{
-                version: true,
-                timestamp: true,
-                nonce: true,
-                publicKey: true,
-                encryptedData: true,
-
-            }
-
-        } );
-
-        return buffer;
-
-    }
-
-    async encryptData(data, publicKey = this.destinationPublicKey){
+    async encryptData(data, publicKey ){
 
         const encrypted = await this._scope.cryptography.cryptoSignature.encrypt( data, publicKey );
         if (!encrypted) throw new Exception(this, "Encrypted could be done", this.toJSON() );
 
-        this.encryptedData = encrypted;
         return encrypted;
     }
 
-    async decryptData(privateKey){
+    async decryptData(data, privateKey){
 
-        const data = await this._scope.cryptography.cryptoSignature.decrypt( this.encryptedData, privateKey );
-        if (!data) throw new Exception(this, "PrivateKey is invalid", this.toJSON() );
+        const out = await this._scope.cryptography.cryptoSignature.decrypt( data, privateKey );
+        if (!out) throw new Exception(this, "PrivateKey is invalid", this.toJSON() );
 
-        return data;
-
-    }
-
-    signVerifer(privateKey){
-
-        const buffer = this.prefixBufferForSignature();
-
-        const out = this._scope.cryptography.cryptoSignature.sign( buffer, privateKey );
-        if (!out) throw new Exception(this, "Signature invalid", this.toJSON() );
-
-        this.signature = out;
         return out;
+
     }
 
-    verifyVerifer(){
+    get senderAddress(){
 
-        const buffer = this.prefixBufferForSignature();
+        if (!this._senderAddress)
+            this._senderAddress = PandoraPay.cryptography.addressGenerator.generateAddressFromPublicKey( this.senderPublicKey );
 
-        if (this._scope.cryptography.cryptoSignature.verify( buffer, this.verifiedSignature, this.destinationPublicKey ) !== true) throw new Exception(this, "Signature invalid", this.toJSON() );
-
-        return true;
+        return this._senderAddress;
     }
+
+    get receiverAddress(){
+        if (!this._receiverAddress)
+            this._receiverAddress = PandoraPay.cryptography.addressGenerator.generateAddressFromPublicKey( this.receiverPublicKey );
+
+        return this._receiverAddress;
+    }
+
 
 
 }
