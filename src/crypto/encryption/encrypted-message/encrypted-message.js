@@ -114,8 +114,6 @@ export default class EncryptedMessage extends DBSchema {
 
     async encryptData(data, publicKey ){
 
-        if ( Buffer.isBuffer(data)) data = data.toString("hex");
-
         const encrypted = await this._scope.cryptography.cryptoSignature.encrypt( data, publicKey );
         if (!encrypted) throw new Exception(this, "Encrypted couldn't be done", this.toJSON() );
 

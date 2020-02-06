@@ -4,6 +4,7 @@ const {CryptoHelper} = global.kernel.helpers.crypto;
 import EthCrypto from 'eth-crypto';
 import bn128 from "src/utils/crypto-utils/bn128";
 const {BN} = global.kernel.utils;
+const ecies = require("eth-ecies");
 
 export default class CryptoSignature {
 
@@ -45,6 +46,7 @@ export default class CryptoSignature {
         const publicKey = EthCrypto.publicKeyByPrivateKey( privateKey );
 
         const compressed = EthCrypto.publicKey.compress(publicKey);
+
         return Buffer.from( compressed, "hex");
     }
 
@@ -112,65 +114,53 @@ export default class CryptoSignature {
 
     async encrypt(message, publicKey){
 
-        if (Buffer.isBuffer(publicKey)) publicKey = publicKey.toString("hex");
-        if (Buffer.isBuffer(message)) message = message.toString("hex");
+        if ( Buffer.isBuffer(publicKey) ) publicKey = publicKey.toString("hex");
+        publicKey = EthCrypto.publicKey.decompress( publicKey);
 
-        const encrypted = await EthCrypto.encryptWithPublicKey(publicKey, message);
+        if ( typeof publicKey === "string" && StringHelper.isHex( publicKey )) publicKey = Buffer.from(publicKey, "hex");
+        if ( typeof message === "string" ) message = message.from(message, "ascii");
 
-        const encryptedData = EthCrypto.cipher.stringify(encrypted);
-
-        console.log("encryptedData", encryptedData)
-
-        return Buffer.from(encryptedData, "hex");
+        try{
+            const encryptedMsg = ecies.encrypt( publicKey, message );
+            return encryptedMsg;
+        }catch(err){
+            //console.error(err);
+        }
 
     }
 
     async decrypt(encrypted, privateKey){
 
-        if (Buffer.isBuffer(encrypted)) encrypted = encrypted.toString("hex");
-        if (Buffer.isBuffer(privateKey)) privateKey = privateKey.toString("hex");
+        if ( typeof encrypted === "string" && StringHelper.isHex( encrypted )) encrypted = Buffer.from(encrypted, "hex");
+        if ( typeof privateKey === "string" && StringHelper.isHex( privateKey )) privateKey = Buffer.from(privateKey, "hex");
 
         try{
 
-            const data = EthCrypto.cipher.parse(encrypted);
-
-            const decrypted = await EthCrypto.decryptWithPrivateKey(privateKey, data);
-
-            console.log("decrypted", decrypted);
-
-            const out = Buffer.from(decrypted, "hex");
-
-            return out;
+            const plaintext = ecies.decrypt( privateKey, encrypted );
+            return plaintext;
 
         }catch(err){
-            console.error(err);
+            //console.error(err);
         }
+
 
     }
 
 
 
-    async testEncryptDecrypt( text = "38123789127398127983712983712983721987321897ABCD871893721389217" ){
+    async testEncryptDecrypt( ){
 
-        const encrypted = await EthCrypto.encryptWithPublicKey(
-            "030dddc2e1cb1f9c5c3463399f0b539e2f2a9d42678f596cef95ce301087c05836", // by encryping with bobs publicKey, only bob can decrypt the payload with his privateKey
-            text // we have to stringify the payload before we can encrypt it
-        );
-        const encryptedString = EthCrypto.cipher.stringify(encrypted);
+        const secret = BufferHelper.generateRandomBuffer(32);
 
-        console.log("encryptedString", encrypted, encryptedString);
+        const key1 = this._scope.cryptography.cryptoSignature.createKeyPairs(secret);
 
-        const encryptedObject = EthCrypto.cipher.parse(encryptedString);
+        const message = BufferHelper.generateRandomBuffer(1024);
 
-        const decrypted = await EthCrypto.decryptWithPrivateKey(
-            "6b463fdd6b15df6da6753fe8d1a5973b133c7a4aed77b38b145b11987cf27876",
-            encryptedObject
-        );
+        const encryption = await this.encrypt(message, key1.publicKey);
 
-        console.log("testEncryptDecrypt", decrypted, text );
+        const message2 = await this.decrypt( encryption, key1.privateKey);
 
-        return decrypted === text;
-
+        return message.equals(message2);
     }
 
 

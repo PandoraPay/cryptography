@@ -18,7 +18,7 @@ export default async function run () {
             const encryption = await this._scope.cryptography.cryptoSignature.encrypt(message, key1.publicKey);
 
             this.expect(Buffer.isBuffer(encryption), true);
-            this.expect(encryption.length > 2000, true);
+            this.expect(encryption.length > 1000, true);
 
             const key2 = this._scope.cryptography.cryptoSignature.createKeyPairs(secret);
 
