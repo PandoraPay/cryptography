@@ -7,11 +7,12 @@ export default class EncryptedMessageValidator {
         this._scope = scope;
     }
 
-    validateEncryptedMessageVersion(version){
+    _validateEncryptedMessageVersion(version){
         if (version === 0) return true;
     }
 
     getEncryptedMessageClass(input){
+
 
         if (typeof input === "string") {
 
@@ -28,16 +29,16 @@ export default class EncryptedMessageValidator {
         else if ( input instanceof EncryptedMessage) version = input.version;
         else if ( typeof input === "object" ) version = input.version;
 
-        if (this.validateEncryptedMessageVersion(version) ) return EncryptedMessage;
+        if (this._validateEncryptedMessageVersion(version) ) return EncryptedMessage;
 
-        throw new Exception(this, "EncryptedMessage couldn't be identified by version", version);
+        throw new Exception(this, "EncryptedMessage couldn't be identified by version", {version, input});
 
     }
 
     validateEncryptedMessage(input){
 
-        const exchangeOfferClass = this.getEncryptedMessageClass( input );
-        return new exchangeOfferClass( this._scope, undefined, input )
+        const encryptedChatClass = this.getEncryptedMessageClass( input );
+        return new encryptedChatClass( this._scope, undefined, input )
 
     }
 

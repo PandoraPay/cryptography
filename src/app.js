@@ -10,6 +10,7 @@ import EncryptedMessage from "src/crypto/encryption/encrypted-message/encrypted-
 import ChatMessage from "src/crypto/encryption/encrypted-message/chat-message"
 import EncryptedMessageCreator from "src/crypto/encryption/encrypted-message/creator/encrypted-message-creator"
 import EncryptedMessageValidator from "src/crypto/encryption/encrypted-message/validator/encrypted-message-validator"
+import ChatMessageValidator from "src/crypto/encryption/encrypted-message/validator/chat-message-validator"
 
 import AES from "src/crypto/encryption/aes"
 
@@ -30,6 +31,7 @@ export default class App extends Protocol.utils.App {
                 ChatMessage,
                 EncryptedMessageCreator,
                 EncryptedMessageValidator,
+                ChatMessageValidator,
                 ...this._scope.cryptography||{},
             };
 
@@ -53,6 +55,7 @@ export default class App extends Protocol.utils.App {
 
             if (!this.cryptography.encryptedMessageCreator) this.cryptography.encryptedMessageCreator = new this.cryptography.EncryptedMessageCreator(this._scope);
             if (!this.cryptography.encryptedMessageValidator) this.cryptography.encryptedMessageValidator = new this.cryptography.EncryptedMessageValidator(this._scope);
+            if (!this.cryptography.chatMessageValidator) this.cryptography.chatMessageValidator = new this.cryptography.ChatMessageValidator(this._scope);
 
 
             this._scope.logger.info(`Status`, `Crypto has been started`);

@@ -117,9 +117,11 @@ export default class CryptoSignature {
 
         const encrypted = await EthCrypto.encryptWithPublicKey(publicKey, message);
 
-        const data = EthCrypto.cipher.stringify(encrypted);
+        const encryptedData = EthCrypto.cipher.stringify(encrypted);
 
-        return Buffer.from(data, "hex");
+        console.log("encryptedData", encryptedData)
+
+        return Buffer.from(encryptedData, "hex");
 
     }
 
@@ -134,14 +136,42 @@ export default class CryptoSignature {
 
             const decrypted = await EthCrypto.decryptWithPrivateKey(privateKey, data);
 
+            console.log("decrypted", decrypted);
+
             const out = Buffer.from(decrypted, "hex");
 
             return out;
 
         }catch(err){
-            //console.error(err);
+            console.error(err);
         }
 
     }
+
+
+
+    async testEncryptDecrypt( text = "38123789127398127983712983712983721987321897ABCD871893721389217" ){
+
+        const encrypted = await EthCrypto.encryptWithPublicKey(
+            "030dddc2e1cb1f9c5c3463399f0b539e2f2a9d42678f596cef95ce301087c05836", // by encryping with bobs publicKey, only bob can decrypt the payload with his privateKey
+            text // we have to stringify the payload before we can encrypt it
+        );
+        const encryptedString = EthCrypto.cipher.stringify(encrypted);
+
+        console.log("encryptedString", encrypted, encryptedString);
+
+        const encryptedObject = EthCrypto.cipher.parse(encryptedString);
+
+        const decrypted = await EthCrypto.decryptWithPrivateKey(
+            "6b463fdd6b15df6da6753fe8d1a5973b133c7a4aed77b38b145b11987cf27876",
+            encryptedObject
+        );
+
+        console.log("testEncryptDecrypt", decrypted, text );
+
+        return decrypted === text;
+
+    }
+
 
 }

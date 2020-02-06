@@ -19,8 +19,6 @@ export default class EncryptedMessageCreator {
 
         const chatMessage = new ChatMessage( this._scope, undefined, data );
 
-        //console.log("chatMessage", chatMessage);
-
         const roundTime = 5*60; //5 minutes
 
         const data2 = {

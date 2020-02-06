@@ -114,15 +114,17 @@ export default class EncryptedMessage extends DBSchema {
 
     async encryptData(data, publicKey ){
 
+        if ( Buffer.isBuffer(data)) data = data.toString("hex");
+
         const encrypted = await this._scope.cryptography.cryptoSignature.encrypt( data, publicKey );
-        if (!encrypted) throw new Exception(this, "Encrypted could be done", this.toJSON() );
+        if (!encrypted) throw new Exception(this, "Encrypted couldn't be done", this.toJSON() );
 
         return encrypted;
     }
 
-    async decryptData(data, privateKey){
+    async decryptData( encryptedData, privateKey){
 
-        const out = await this._scope.cryptography.cryptoSignature.decrypt( data, privateKey );
+        const out = await this._scope.cryptography.cryptoSignature.decrypt( encryptedData, privateKey );
         if (!out) throw new Exception(this, "PrivateKey is invalid", this.toJSON() );
 
         return out;
