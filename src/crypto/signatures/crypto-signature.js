@@ -118,7 +118,7 @@ export default class CryptoSignature {
         publicKey = EthCrypto.publicKey.decompress( publicKey);
 
         if ( typeof publicKey === "string" && StringHelper.isHex( publicKey )) publicKey = Buffer.from(publicKey, "hex");
-        if ( typeof message === "string" ) message = message.from(message, "ascii");
+        if ( typeof message === "string" ) message = Buffer.from(message, "ascii");
 
         try{
             const encryptedMsg = ecies.encrypt( publicKey, message );
