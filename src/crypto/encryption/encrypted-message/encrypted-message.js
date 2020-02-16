@@ -80,7 +80,7 @@ export default class EncryptedMessage extends DBSchema {
                     senderEncryptedData:{
                         type: "buffer",
                         minSize: 1,
-                        maxSize: 10*1024, //4kb
+                        maxSize: scope.encryptedMessage.maxSize, //2 MB
 
                         position: 105,
                     },
@@ -88,7 +88,7 @@ export default class EncryptedMessage extends DBSchema {
                     receiverEncryptedData:{
                         type: "buffer",
                         minSize: 1,
-                        maxSize: 10*1024, //4kb
+                        maxSize: scope.encryptedMessage.maxSize, //2 MB
 
                         position: 106,
                     },

@@ -13,8 +13,6 @@ export default class ChatMessageValidator {
 
     getChatMessageClass(input){
 
-        console.log("getChatMessageClass", input);
-
         if (typeof input === "string") {
 
             if (StringHelper.isHex(input))

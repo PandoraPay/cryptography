@@ -1,5 +1,3 @@
-if (!global.kernel) require('kernel');
-
 const kernel = global.kernel;
 
 const CryptoSignature = require("src/crypto/signatures/crypto-signature").default;

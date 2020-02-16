@@ -3,9 +3,6 @@ const {Helper, Exception} = global.kernel.helpers;
 const {MarshalData} = global.kernel.marshal;
 const {DBSchema} = global.kernel.marshal.db;
 
-import ChatMessageAttachment from "./data/chat-message-attachment"
-import ChatMessageString from "./data/chat-message-string"
-
 /**
  * It is used in Encrypted Chat Server and Wallet
  */
@@ -19,7 +16,7 @@ export default class ChatMessage extends DBSchema {
                 fields: {
 
                     table: {
-                        default: "chatMsg",
+                        default: "chatAtt",
                         fixedBytes: 7,
                     },
 
@@ -34,25 +31,34 @@ export default class ChatMessage extends DBSchema {
                         position: 100,
                     },
 
-                    script:{
-                        type: "number",
+                    text:{
+                        type: "string",
+                        minSize: 0,
+                        maxSize: 4*1024, //4kb
+                    },
 
-                        validation(script){
-                            return script === 0;
-                        },
+                    name: {
+                        type: "string",
+                        minSize: 0,
+                        maxSize: 1024, //1kb
 
                         position: 101,
                     },
 
+                    type: {
+                        type: "string",
+                        minSize: 0,
+                        maxSize: 10,
+
+                        position: 102
+                    },
+
                     data: {
+                        type: "buffer",
+                        minSize: 0,
+                        maxSize: scope.encryptedMessage.maxSize,
 
-                        type: "object",
-                        classObject: function () {
-                            if (this.script === 0) return ChatMessageString;
-                            if (this.script === 1) return ChatMessageAttachment;
-                        },
-
-                        position: 102,
+                        position: 103,
                     },
 
                 },
@@ -61,7 +67,7 @@ export default class ChatMessage extends DBSchema {
                     hashing: {
                         enabled: true,
                         parentHashingPropagation: true,
-                        fct: CryptoHelper.dkeccak256,
+                        fct: a => a,
                     },
                 },
 
