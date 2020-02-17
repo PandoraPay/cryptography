@@ -93,6 +93,13 @@ export default class EncryptedMessage extends DBSchema {
                         position: 106,
                     },
 
+                    senderSignature:{
+                        type: "buffer",
+                        fixedBytes: 65,
+
+                        position: 107,
+                    },
+
                 },
 
                 options: {
@@ -145,5 +152,46 @@ export default class EncryptedMessage extends DBSchema {
     }
 
 
+    _prefixBufferForSignature(){
+
+        //const hash
+        const buffer = this.toBuffer( undefined, {
+
+            onlyFields:{
+                version: true,
+                timestamp: true,
+                nonce: true,
+                senderPublicKey: true,
+                receiverPublicKey: true,
+                senderEncryptedData: true,
+                receiverEncryptedData: true,
+
+            }
+
+        } );
+
+        return buffer;
+
+    }
+
+    signEncryptedMessage(privateKey){
+
+        const buffer = this._prefixBufferForSignature();
+
+        const out = this._scope.cryptography.cryptoSignature.sign( buffer, privateKey );
+        if (!out) throw new Exception(this, "Signature invalid", this.toJSON() );
+
+        this.senderSignature = out;
+        return out;
+    }
+
+    verifyEncryptedMessage(){
+
+        const buffer = this._prefixBufferForSignature();
+
+        if (this._scope.cryptography.cryptoSignature.verify( buffer, this.senderSignature, this.senderPublicKey ) !== true) throw new Exception(this, "Signature invalid", this.toJSON() );
+
+        return true;
+    }
 
 }
