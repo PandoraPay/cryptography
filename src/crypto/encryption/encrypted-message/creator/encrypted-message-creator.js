@@ -33,7 +33,10 @@ export default class EncryptedMessageCreator {
         const receiverEncryptedData = await encryptedMessage.encryptData( chatMessage.toBuffer(), encryptedMessage.receiverPublicKey );
         encryptedMessage.receiverEncryptedData = receiverEncryptedData;
 
-        return encryptedMessage;
+        return {
+            chatMessage,
+            encryptedMessage,
+        };
 
     }
 
