@@ -17,7 +17,7 @@ export default class EncryptedMessageCreator {
 
         const data2 = {
             version: 0,
-            timestamp: Math.round ( new Date().getTime()/1000 / roundTime ) * roundTime,
+            timestamp: Math.floor ( new Date().getTime()/1000 ),
             nonce: 0,
             senderPublicKey: senderPublicKey,
             receiverPublicKey: receiverPublicKey,

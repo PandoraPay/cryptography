@@ -97,7 +97,7 @@ export default class EncryptedMessage extends DBSchema {
                         type: "buffer",
                         fixedBytes: 65,
 
-                        position: 107,
+                        position: 108,
                     },
 
                 },
@@ -165,7 +165,6 @@ export default class EncryptedMessage extends DBSchema {
                 receiverPublicKey: true,
                 senderEncryptedData: true,
                 receiverEncryptedData: true,
-
             }
 
         } );
@@ -191,7 +190,18 @@ export default class EncryptedMessage extends DBSchema {
 
         if (this._scope.cryptography.cryptoSignature.verify( buffer, this.senderSignature, this.senderPublicKey ) !== true) throw new Exception(this, "Signature invalid", this.toJSON() );
 
+        if ( this.isExpired() )
+            throw new Exception(this, "Timestamp is invalid");
+
         return true;
+    }
+
+    isExpired(){
+
+        if (this.timestamp > new Date().getTime()/1000 + 60 )
+            return true;
+
+        return false;
     }
 
 }
