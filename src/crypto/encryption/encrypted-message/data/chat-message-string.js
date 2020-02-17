@@ -1,4 +1,5 @@
 const {DBSchemaString} = global.kernel.marshal.db.samples;
+const {Helper, EnumHelper, Exception} = global.kernel.helpers;
 
 export default class ChatMessageString extends DBSchemaString{
 
@@ -8,11 +9,11 @@ export default class ChatMessageString extends DBSchemaString{
 
             fields: {
                 string: {
-                    maxSize: scope.encryptedMessage.maxSize
+                    maxSize: scope.argv.encryptedMessage.maxSize
                 }
             },
 
-        }));
+        }, schema, false ), data, type, creationOptions);
     }
 
 }

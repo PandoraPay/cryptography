@@ -38,7 +38,7 @@ export default class ChatMessage extends DBSchema {
                         type: "number",
 
                         validation(script){
-                            return script === 0;
+                            return script === 0 || script === 1;
                         },
 
                         position: 101,
@@ -47,7 +47,7 @@ export default class ChatMessage extends DBSchema {
                     data: {
 
                         type: "object",
-                        classObject: function () {
+                        classObject() {
                             if (this.script === 0) return ChatMessageString;
                             if (this.script === 1) return ChatMessageAttachment;
                         },

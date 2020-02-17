@@ -9,13 +9,7 @@ export default class EncryptedMessageCreator {
         this._scope = scope;
     }
 
-    async createEncryptedMessage( { senderPublicKey, text, receiverPublicKey  } ){
-
-        const data = {
-            version: 0,
-            script: 0,
-            data: Buffer.from( text, "ascii"),
-        };
+    async createEncryptedMessage( { senderPublicKey, receiverPublicKey, data  } ){
 
         const chatMessage = new ChatMessage( this._scope, undefined, data );
 

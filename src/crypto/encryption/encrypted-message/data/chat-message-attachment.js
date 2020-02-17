@@ -35,6 +35,8 @@ export default class ChatMessage extends DBSchema {
                         type: "string",
                         minSize: 0,
                         maxSize: 4*1024, //4kb
+
+                        position: 101,
                     },
 
                     name: {
@@ -42,7 +44,7 @@ export default class ChatMessage extends DBSchema {
                         minSize: 0,
                         maxSize: 1024, //1kb
 
-                        position: 101,
+                        position: 102,
                     },
 
                     type: {
@@ -50,15 +52,15 @@ export default class ChatMessage extends DBSchema {
                         minSize: 0,
                         maxSize: 10,
 
-                        position: 102
+                        position: 103
                     },
 
                     data: {
                         type: "buffer",
                         minSize: 0,
-                        maxSize: scope.encryptedMessage.maxSize,
+                        maxSize: scope.argv.encryptedMessage.maxSize,
 
-                        position: 103,
+                        position: 104,
                     },
 
                 },
