@@ -72,7 +72,9 @@ export default class AddressGenerator{
     generatePublicKeyHash(publicKey){
 
         if (typeof publicKey === "string" && StringHelper.isHex(publicKey)) publicKey = Buffer.from(publicKey, "hex");
-        const publicKeyHash = CryptoHelper.dkeccak256Buffer ( publicKey );
+        if (!Buffer.isBuffer(publicKey)) throw new Exception(this, "PublicKey is not a buffer");
+
+        const publicKeyHash = CryptoHelper.dkeccak256( publicKey );
 
         //copy the last 20 bytes
         const last20Bytes = Buffer.alloc( 20 );

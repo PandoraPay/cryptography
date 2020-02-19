@@ -2,8 +2,8 @@ const {Helper} = global.kernel.helpers;
 const {Exception, StringHelper, BufferHelper} = global.kernel.helpers;
 const {CryptoHelper} = global.kernel.helpers.crypto;
 
-import TransactionType from "src/transactions/models/tx/base/transaction-type-enum";
-import TransactionScriptType from "src/transactions/models/tx/base/transaction-script-type-enum";
+import TransactionTypeEnum from "src/transactions/models/tx/base/transaction-type-enum";
+import TransactionScriptTypeEnum from "src/transactions/models/tx/base/transaction-script-type-enum";
 
 import BaseTransaction from "./../base/base-transaction";
 import Vin from "./parts/vin";
@@ -19,20 +19,20 @@ export default class SimpleTransaction extends BaseTransaction {
 
                 version: {
 
-                    default: TransactionType.PUBLIC_TRANSACTION,
+                    default: TransactionTypeEnum.PUBLIC_TRANSACTION,
 
                     validation(version){
-                        return version === TransactionType.PUBLIC_TRANSACTION;
+                        return version === TransactionTypeEnum.PUBLIC_TRANSACTION;
                     }
 
                 },
 
                 scriptVersion:{
 
-                    default: TransactionScriptType.TX_SCRIPT_SIMPLE_TRANSACTION,
+                    default: TransactionScriptTypeEnum.TX_SCRIPT_SIMPLE_TRANSACTION,
 
                     validation(script){
-                        return script === TransactionScriptType.TX_SCRIPT_SIMPLE_TRANSACTION;
+                        return script === TransactionScriptTypeEnum.TX_SCRIPT_SIMPLE_TRANSACTION;
                     }
                 },
 

@@ -96,7 +96,7 @@ function setFillStyle(canvas, byte) {
 
 function drawIdenticon(canvas, address ) {
 
-    var bytes = CryptoHelper.dkeccak256Buffer(address);
+    var bytes = CryptoHelper.dkeccak256(address);
 
     var matrix = generateMatrix(bytes, true);
 
