@@ -1,6 +1,6 @@
 const {Helper} = global.kernel.helpers;
 const {DBSchema} = global.kernel.marshal.db;
-import EthCrypto from 'eth-crypto';
+const {CryptoHelper} = global.kernel.helpers.crypto;
 
 /**
  * This is used to store the private key
@@ -80,6 +80,34 @@ export default class PrivateKeyAddress extends DBSchema {
         const pubKey = this._scope.cryptography.cryptoSignature.createPublicKey( this.privateKey );
 
         return value.equals(pubKey);
+    }
+
+    /**
+     * Get delegate stake private key
+     */
+    getDelegateStakePrivateAddress(delegateNonce){
+
+        if (typeof delegateNonce !== "number") throw new Exception(this, "DelegateNonce is missing");
+
+        const privateKey = this.privateKey;
+        const publicKey = this.publicKey;
+
+        let delegateNonceHex = delegateNonce.toString(16);
+        if (delegateNonceHex.length % 2 === 1) delegateNonceHex = "0"+delegateNonceHex;
+
+        let delegatePrivateKey = CryptoHelper.dkeccak256( "50524956" + privateKey.toString("hex") + publicKey.toString("hex") + "44454c4547415445" );               //dkeccak256( PRIV + privateKey + publicKey + DELEGATE ) => delegatePrivateKey
+        delegatePrivateKey = delegatePrivateKey.toString("hex") + delegateNonceHex;                                                                                 //delegatePrivateKey + delegateNonceHex      => delegatePrivateKey
+
+        delegatePrivateKey = CryptoHelper.dkeccak256(delegatePrivateKey);                                                                                           //dkeccak256( delegatePrivateKey )           => delegatePrivateKey
+        delegatePrivateKey = CryptoHelper.dsha256( "5354414b45" + delegatePrivateKey.toString("hex") + "534543524554" );                                            //STAKE + delegatePrivateKey + SECRET        => delegatePrivateKey
+
+        // dsha256( STAKE + dkeccak256( dkeccak256( PRIV + privateKey + publicKey + DELEGATE) + NONCE ) + SECRET )
+
+        const delegatePrivateAddress = new PrivateKeyAddress( this._scope, undefined, {
+            privateKey,
+        } );
+
+        return delegatePrivateAddress;
     }
 
 }

@@ -73,7 +73,7 @@ export default class SimpleTransaction extends BaseTransaction {
 
                     classObject: Vout,
 
-                    minSize: 0,
+                    minSize: 1,
                     maxSize: 255,
 
                     validation(vout){
