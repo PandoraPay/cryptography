@@ -95,11 +95,26 @@ export default class PrivateKeyAddress extends DBSchema {
         let delegateNonceHex = delegateNonce.toString(16);
         if (delegateNonceHex.length % 2 === 1) delegateNonceHex = "0"+delegateNonceHex;
 
-        let delegatePrivateKey = CryptoHelper.dkeccak256( Buffer.from("PRIV").toString("hex") + privateKey.toString("hex") + publicKey.toString("hex") + Buffer.from("DELEGATE").toString("hex") );               //dkeccak256( PRIV + privateKey + publicKey + DELEGATE )
-        delegatePrivateKey = delegatePrivateKey.toString("hex") + delegateNonceHex;                                                                                                                                                          //delegatePrivateKey + delegateNonceHex
+        const concat = Buffer.concat([
+            Buffer.from("PRIV"),
+            privateKey,
+            publicKey,
+            Buffer.from("DELEGATE"),
+        ]);
 
-        delegatePrivateKey = CryptoHelper.dkeccak256(delegatePrivateKey);                                                                                                                                                                    //dkeccak256( delegatePrivateKey )
-        delegatePrivateKey = CryptoHelper.dsha256( Buffer.from("STAKE").toString("hex") + delegatePrivateKey.toString("hex") + Buffer.from("SECRET").toString("hex") );                                           //dsha256( STAKE + delegatePrivateKey + SECRET)
+        let delegatePrivateKey = CryptoHelper.dkeccak256( concat );                                  //dkeccak256( PRIV + privateKey + publicKey + DELEGATE )
+        delegatePrivateKey = delegatePrivateKey.toString("hex") + delegateNonceHex;                  //delegatePrivateKey + delegateNonceHex
+
+        delegatePrivateKey = CryptoHelper.dkeccak256(delegatePrivateKey);                            //dkeccak256( delegatePrivateKey )
+
+
+        const concat2 = Buffer.concat([
+            Buffer.from("STAKE"),
+            delegatePrivateKey,
+            Buffer.from("SECRET")
+        ]);
+
+        delegatePrivateKey = CryptoHelper.dsha256( concat2 );                                       //dsha256( STAKE + delegatePrivateKey + SECRET)
 
         // dsha256( STAKE + dkeccak256( dkeccak256( PRIV + privateKey + publicKey + DELEGATE) + NONCE ) + SECRET )
 
@@ -122,13 +137,27 @@ export default class PrivateKeyAddress extends DBSchema {
         const myPrivateKey = this.privateKey;
         const myPublicKey = this.publicKey;
 
-        let delegatePrivateKey = CryptoHelper.dkeccak256( Buffer.from("DELEGATOR").toString("hex") + myPrivateKey.toString("hex") + myPublicKey.toString("hex") + Buffer.from("DELEGATE").toString("hex") );               //dkeccak256( DELEGATOR + myPrivateKey + myPublicKey + DELEGATE )
-        delegatePrivateKey = CryptoHelper.dsha256(delegatePrivateKey);                                                                                                                                                                                //dsha256( delegatePrivateKey )
+        const concat = Buffer.concat([
+            Buffer.from("DELEGATOR"),
+            myPrivateKey,
+            myPublicKey,
+            Buffer.from("DELEGATE"),
+        ]);
 
-        delegatePrivateKey = delegatePrivateKey.toString("hex") + publicKey.toString("hex")                                                                                                                                                  //delegatePrivateKey + publicKey
+        let delegatePrivateKey = CryptoHelper.dkeccak256( concat );                                         //dkeccak256( DELEGATOR + myPrivateKey + myPublicKey + DELEGATE )
+        delegatePrivateKey = CryptoHelper.dsha256(delegatePrivateKey);                                      //dsha256( delegatePrivateKey )
 
-        delegatePrivateKey = CryptoHelper.dkeccak256(delegatePrivateKey);                                                                                                                                                                             //dkeccak256( delegatePrivateKey )
-        delegatePrivateKey = CryptoHelper.dsha256( Buffer.from("DELEGATE").toString("hex") + delegatePrivateKey.toString("hex") + Buffer.from("VALUE").toString("hex") );                                                  //dsha256(DELEGATE + delegatePrivateKey + VALUE)
+        delegatePrivateKey = delegatePrivateKey.toString("hex") + publicKey.toString("hex");       //delegatePrivateKey + publicKey
+
+        delegatePrivateKey = CryptoHelper.dkeccak256(delegatePrivateKey);                                   //dkeccak256( delegatePrivateKey )
+
+        const concat2 = Buffer.concat([
+            Buffer.from("DELEGATE"),
+            delegatePrivateKey,
+            Buffer.from("VALUE")
+        ]);
+
+        delegatePrivateKey = CryptoHelper.dsha256( concat2 );                                               //dsha256(DELEGATE + delegatePrivateKey + VALUE)
 
         // dsha256( DELEGATE + dkeccak256( (  dsha256( dkeccak256( DELEGATOR + myPrivateKey + myPublicKey + DELEGATE ) ) + publicKey)  ) + VALUE )
 
