@@ -85,6 +85,9 @@ export default class PrivateKeyAddress extends DBSchema {
 
     /**
      * Get delegate stake private key
+     *
+     * dsha256( STAKE + dkeccak256( dkeccak256( PRIV + privateKey + publicKey + DELEGATE) + NONCE ) + SECRET )
+     *
      */
     getDelegateStakePrivateAddress(delegateNonce){
 
@@ -117,8 +120,6 @@ export default class PrivateKeyAddress extends DBSchema {
 
         delegatePrivateKey = CryptoHelper.dsha256( concat2 );                                       //dsha256( STAKE + delegatePrivateKey + SECRET)
 
-        // dsha256( STAKE + dkeccak256( dkeccak256( PRIV + privateKey + publicKey + DELEGATE) + NONCE ) + SECRET )
-
         const delegatePrivateAddress = new PrivateKeyAddress( this._scope, undefined, {
             privateKey: delegatePrivateKey,
         } );
@@ -128,6 +129,9 @@ export default class PrivateKeyAddress extends DBSchema {
 
     /**
      * Get Node delegator stake private key
+     *
+     * dsha256( DELEGATE + dkeccak256( (  dsha256( dkeccak256( DELEGATOR + myPrivateKey + myPublicKey + DELEGATE ) ) + publicKey)  ) + VALUE )
+     *
      */
     getDelegatorStakePrivateAddress(publicKey){
 
@@ -159,8 +163,6 @@ export default class PrivateKeyAddress extends DBSchema {
         ]);
 
         delegatePrivateKey = CryptoHelper.dsha256( concat2 );                                               //dsha256(DELEGATE + delegatePrivateKey + VALUE)
-
-        // dsha256( DELEGATE + dkeccak256( (  dsha256( dkeccak256( DELEGATOR + myPrivateKey + myPublicKey + DELEGATE ) ) + publicKey)  ) + VALUE )
 
         const delegatePrivateAddress = new PrivateKeyAddress( this._scope, undefined, {
             privateKey: delegatePrivateKey,

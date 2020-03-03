@@ -7,6 +7,8 @@ export default {
 
     TX_SCRIPT_DELEGATE_STAKE_TRANSACTION: 1,
 
+    TX_SCRIPT_TOKEN_CREATOR_TRANSACTION: 2,
+
     _name: "TransactionScriptTypeEnum",
 
 }

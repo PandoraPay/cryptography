@@ -72,7 +72,7 @@ export default class AddressGenerator{
     generatePublicKeyHash(publicKey){
 
         if (typeof publicKey === "string" && StringHelper.isHex(publicKey)) publicKey = Buffer.from(publicKey, "hex");
-        if (!Buffer.isBuffer(publicKey)) throw new Exception(this, "PublicKey is not a buffer");
+        if (!Buffer.isBuffer(publicKey) || publicKey.length !== 33 ) throw new Exception(this, "PublicKey is invalid");
 
         const publicKeyHash = CryptoHelper.dkeccak256( publicKey );
 
@@ -85,6 +85,9 @@ export default class AddressGenerator{
 
     generateAddressFromPublicKey(publicKey, networkByte = this._scope.argv.crypto.addresses.publicAddress.publicAddressNetworkByte_Main){
 
+        if (typeof publicKey === "string" && StringHelper.isHex(publicKey)) publicKey = Buffer.from(publicKey, "hex");
+        if (!Buffer.isBuffer(publicKey) || publicKey.length !== 33 ) throw new Exception(this, "PublicKey is invalid");
+
         const publicKeyHash = this.generatePublicKeyHash(publicKey);
 
         return new Address(this._scope, undefined, {
@@ -95,6 +98,9 @@ export default class AddressGenerator{
     }
 
     generateAddressFromPublicKeyHash(publicKeyHash, networkByte = this._scope.argv.crypto.addresses.publicAddress.publicAddressNetworkByte_Main){
+
+        if (typeof publicKeyHash === "string" && StringHelper.isHex(publicKeyHash)) publicKeyHash = Buffer.from(publicKeyHash, "hex");
+        if (!Buffer.isBuffer(publicKeyHash) || publicKeyHash.length !== 20 ) throw new Exception(this, "PublicKeyHash is invalid");
 
         return new Address(this._scope, undefined, {
             networkByte: networkByte,
@@ -111,6 +117,26 @@ export default class AddressGenerator{
 
     }
 
+    generateContractPublicKeyHashFromAccountPublicKeyHash(publicKeyHash, nonce ){
+
+        if (typeof publicKeyHash === "string" && StringHelper.isHex(publicKeyHash)) publicKeyHash = Buffer.from(publicKeyHash, "hex");
+        if (!Buffer.isBuffer(publicKeyHash) || publicKeyHash.length !== 20 ) throw new Exception(this, "PublicKeyHash is invalid");
+
+        if (typeof nonce !== "number") throw new Exception(this, "Nonce is missing");
+
+        let nonceHex = nonce.toString(16);
+        if (nonceHex.length % 2 === 1) nonceHex = "0"+nonceHex;
+
+        const concat = Buffer.concat([
+            publicKeyHash,
+            Buffer.from(nonceHex, 'hex'),
+        ]);
+
+        const contractPublicKeyHash = CryptoHelper.dsha256( concat );
+
+        return contractPublicKeyHash;
+
+    }
 
 }
 
