@@ -52,23 +52,6 @@ export default class BaseTransaction extends DBSchema {
                     position: 102,
                 },
 
-                tokenCurrency: {
-
-                    type: "buffer",
-                    maxSize: 20,
-                    minSize: 1,
-
-                    default: Buffer.from( TransactionTokenCurrencyTypeEnum.TX_TOKEN_CURRENCY_NATIVE_TYPE.id, "hex"),
-
-                    validation(value){
-
-                        let tokenCurrencyString = value.toString("hex");
-                        return EnumHelper.validateEnum(tokenCurrencyString, TransactionTokenCurrencyTypeEnum );
-                    },
-
-                    position : 103,
-                },
-
             },
 
             options: {

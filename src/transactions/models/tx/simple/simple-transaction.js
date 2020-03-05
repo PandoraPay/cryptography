@@ -1,3 +1,5 @@
+import TransactionTokenCurrencyTypeEnum from "../base/tokens/transaction-token-currency-type-enum";
+
 const {Helper} = global.kernel.helpers;
 const {Exception, StringHelper, BufferHelper} = global.kernel.helpers;
 const {CryptoHelper} = global.kernel.helpers.crypto;
@@ -36,6 +38,21 @@ export default class SimpleTransaction extends BaseTransaction {
                     }
                 },
 
+                tokenCurrency: {
+
+                    type: "buffer",
+                    maxSize: 20,
+                    minSize: 1,
+
+                    default: TransactionTokenCurrencyTypeEnum.TX_TOKEN_CURRENCY_NATIVE_TYPE.idBuffer,
+
+                    validation(value) {
+                        return value.equals( TransactionTokenCurrencyTypeEnum.TX_TOKEN_CURRENCY_NATIVE_TYPE.idBuffer ) || (value.length === 20);
+                    },
+
+                    position : 1000,
+                },
+
                 vin:{
                     type: "array",
                     classObject: Vin,
@@ -58,14 +75,14 @@ export default class SimpleTransaction extends BaseTransaction {
                         return true;
                     },
 
-                    position: 1000,
+                    position: 1001,
 
                 },
 
                 nonce: {
                     type: "number",
 
-                    position: 1001,
+                    position: 1002,
                 },
 
                 vout:{
@@ -97,7 +114,7 @@ export default class SimpleTransaction extends BaseTransaction {
                         return true;
                     },
 
-                    position: 1002,
+                    position: 1003,
 
                 },
 
