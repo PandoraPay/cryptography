@@ -117,7 +117,7 @@ export default class AddressGenerator{
 
     }
 
-    generateContractPublicKeyHashFromAccountPublicKeyHash(publicKeyHash, nonce ){
+    generateContractPublicKeyHashFromAccountPublicKeyHash( publicKeyHash, nonce ){
 
         if (typeof publicKeyHash === "string" && StringHelper.isHex(publicKeyHash)) publicKeyHash = Buffer.from(publicKeyHash, "hex");
         if (!Buffer.isBuffer(publicKeyHash) || publicKeyHash.length !== 20 ) throw new Exception(this, "PublicKeyHash is invalid");
@@ -132,9 +132,14 @@ export default class AddressGenerator{
             Buffer.from(nonceHex, 'hex'),
         ]);
 
+
         const contractPublicKeyHash = CryptoHelper.dsha256( concat );
 
-        return contractPublicKeyHash;
+        //copy the last 20 bytes
+        const last20Bytes = Buffer.alloc( 20 );
+        contractPublicKeyHash.copy(last20Bytes, 0, 12, 32);
+
+        return last20Bytes;
 
     }
 
