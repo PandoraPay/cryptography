@@ -1,3 +1,5 @@
+import TransactionTokenCurrencyTypeEnum from "../../base/tokens/transaction-token-currency-type-enum";
+
 const {Helper, Exception, StringHelper, BufferHelper} = global.kernel.helpers;
 const {DBSchema} = global.kernel.marshal.db;
 const {CryptoHelper} = global.kernel.helpers.crypto;
@@ -30,17 +32,34 @@ export default class Vin extends DBSchema {
                     type: "number",
 
                     minSize: 1,
-                    maxSize: Number.MAX_SAFE_INTEGER,
 
                     position: 101,
                 },
+
+                tokenCurrency: {
+
+                    type: "buffer",
+                    maxSize: 20,
+                    minSize: 1,
+
+                    default: TransactionTokenCurrencyTypeEnum.TX_TOKEN_CURRENCY_NATIVE_TYPE.idBuffer,
+
+                    validation(value) {
+                        return value.equals( TransactionTokenCurrencyTypeEnum.TX_TOKEN_CURRENCY_NATIVE_TYPE.idBuffer ) || (value.length === 20);
+                    },
+
+                    position : 102,
+                },
+
 
                 signature: {
 
                     type: "buffer",
                     fixedBytes: 65,
 
-                    position: 102,
+                    removeLeadingZeros: true, //it used useful when two inputs have the same publicKeyHash as the 2nd signature will be filled with zeros
+
+                    position: 103,
                 }
 
             },

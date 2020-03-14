@@ -1,4 +1,3 @@
-import TransactionTokenCurrencyTypeEnum from "../base/tokens/transaction-token-currency-type-enum";
 
 const {Helper} = global.kernel.helpers;
 const {Exception, StringHelper, BufferHelper} = global.kernel.helpers;
@@ -36,21 +35,7 @@ export default class SimpleTransaction extends BaseTransaction {
                     validation(script){
                         return script === TransactionScriptTypeEnum.TX_SCRIPT_SIMPLE_TRANSACTION;
                     }
-                },
 
-                tokenCurrency: {
-
-                    type: "buffer",
-                    maxSize: 20,
-                    minSize: 1,
-
-                    default: TransactionTokenCurrencyTypeEnum.TX_TOKEN_CURRENCY_NATIVE_TYPE.idBuffer,
-
-                    validation(value) {
-                        return value.equals( TransactionTokenCurrencyTypeEnum.TX_TOKEN_CURRENCY_NATIVE_TYPE.idBuffer ) || (value.length === 20);
-                    },
-
-                    position : 1000,
                 },
 
                 vin:{
@@ -60,16 +45,26 @@ export default class SimpleTransaction extends BaseTransaction {
                     minSize: 1,
                     maxSize: 255,
 
-                    validation(vin){
+                    /**
+                     * Verify two conditions
+                     *  Every (input, tokenCurrency) is unique
+                     *  Every input contains maximum two tokenCurrencies
+                     * @param input
+                     * @returns {boolean}
+                     */
+                    validation(input){
 
-                        //verify if all vins are unique
-                        const map = {};
-                        for (let i=0; i < vin.length; i++){
+                        const mapTokens = {};
 
-                            const publicKey = vin[i].publicKey.toString("hex");
+                        for (const vin of input){
 
-                            if (map[publicKey]) throw new Exception(this, "vin contains identical inputs", vin[i]  );
-                            map[publicKey] = true;
+                            const publicKeyHash = vin.publicKeyHash.toString("hex");
+                            const tokenCurrency = vin.tokenCurrency.toString('hex');
+
+                            if (!mapTokens[publicKeyHash]) mapTokens[publicKeyHash] = {};
+
+                            if (mapTokens[publicKeyHash][tokenCurrency] ) throw new Exception(this, 'vin input uses same currency twice', vin);
+                            mapTokens[publicKeyHash][tokenCurrency] = true;
                         }
 
                         return true;
@@ -93,23 +88,40 @@ export default class SimpleTransaction extends BaseTransaction {
                     minSize: 1,
                     maxSize: 255,
 
-                    validation(vout){
+                    /**
+                     * Verify three conditions
+                     *  Every (output, tokenCurrency) is unique
+                     *  Every output contains maximum two tokenCurrencies
+                     *  Every (input, tokenCurrency) and (output, tokenCurrency) are unique
+                     * @param output
+                     * @returns {boolean}
+                     */
+                    validation(output){
 
-                        const map = {};
+                        const mapTokens = {};
+                        const sumIn = {}, sumOut = {};
 
-                        for (let i=0; i < this.vin.length; i++){
-                            const publicKeyHash = this.vin[i].publicKeyHash.toString("hex");
+                        for (const vout of output){
 
-                            if (map[publicKeyHash]) throw new Exception(this, "vin contains identical inputs", this.vin[i] );
-                            map[publicKeyHash] = true;
+                            const publicKeyHash = vout.publicKeyHash.toString("hex");
+                            const tokenCurrency = vout.tokenCurrency.toString('hex');
+
+                            if (!mapTokens[publicKeyHash]) mapTokens[publicKeyHash] = {};
+
+                            if (mapTokens[publicKeyHash][tokenCurrency]) throw new Exception(this, 'vout input uses same currency twice', vout);
+                            mapTokens[publicKeyHash][tokenCurrency] = true;
+
+                            sumOut[tokenCurrency] = (sumOut[tokenCurrency] || 0) + vout.amount;
                         }
 
-                        for (let i=0; i < vout.length; i++){
-                            const publicKeyHash = vout[i].publicKeyHash.toString("hex");
+                        for (const vin of this.vin){
+                            const tokenCurrency = vin.tokenCurrency.toString('hex');
 
-                            if (map[publicKeyHash]) throw new Exception(this, "vout contains identical outputs", vout[i] );
-                            map[publicKeyHash] = true;
+                            sumIn[tokenCurrency] = (sumIn[tokenCurrency] || 0) + vin.amount;
                         }
+
+                        this.validateOuts(sumIn, sumOut);
+                        this.validateFee(sumIn, sumOut);
 
                         return true;
                     },
@@ -117,6 +129,7 @@ export default class SimpleTransaction extends BaseTransaction {
                     position: 1003,
 
                 },
+
 
             }
 
@@ -126,24 +139,32 @@ export default class SimpleTransaction extends BaseTransaction {
 
     signTransaction( privateKeys ){
 
-        const buffer = this.prefixBufferForSignature();
+        const buffer = this._prefixBufferForSignature();
 
         if (privateKeys.length !== this.vin.length) throw new Exception(this, "privateKeys array must have vin length", this.vin.length);
 
         const signatures = {};
+        const alreadySigned = {};
 
         for (let i=0; i < this.vin.length; i++){
 
             if (!privateKeys[i]) continue;
 
             const vin = this.vin[i];
+            const publicKeyHash = vin.publicKeyHash.toString('hex');
+
+            if (alreadySigned[ publicKeyHash ]){
+                signatures[i] = Buffer.alloc(65);
+                continue;
+            }
 
             const out = this._scope.cryptography.cryptoSignature.sign( buffer, privateKeys[i].privateKey );
             if (!out) throw new Exception(this, "Signature invalid", vin.toJSON() );
 
             signatures[i] = out;
-
             vin.signature = out;
+
+            alreadySigned[publicKeyHash] = true;
 
         }
 
@@ -153,13 +174,18 @@ export default class SimpleTransaction extends BaseTransaction {
 
     verifyTransactionSignatures(){
 
-        const buffer = this.prefixBufferForSignature();
+        const buffer = this._prefixBufferForSignature();
+        const alreadySigned = {};
 
         for (const vin of this.vin){
+
+            const publicKeyHash = vin.publicKeyHash.toString('hex');
+            if (alreadySigned[publicKeyHash]) continue;
 
             const out = this._scope.cryptography.cryptoSignature.verify( buffer, vin.signature, vin.publicKey );
             if (!out) throw new Exception(this, "Signature invalid", vin.toJSON() );
 
+            alreadySigned[publicKeyHash] = true;
         }
 
         return true;
@@ -168,32 +194,93 @@ export default class SimpleTransaction extends BaseTransaction {
 
     sumOut(){
 
-        let sum = 0;
-        for (const out of this.vout)
-            sum += out.amount ;
+        let sum = {};
+        for (const out of this.vout) {
+
+            const tokenCurrency = out.tokenCurrency.toString('hex');
+            if (!sum[tokenCurrency]) sum[tokenCurrency] = 0;
+
+            sum[tokenCurrency] += out.amount;
+        }
 
         return sum;
     }
 
     sumIn(){
 
-        let sum = 0;
-        for (const out of this.vin)
-            sum += out.amount ;
+        let sum = {};
+        for (const vin of this.vin) {
+
+            const tokenCurrency = vin.tokenCurrency.toString('hex');
+            if (!sum[tokenCurrency]) sum[tokenCurrency] = 0;
+
+            sum[tokenCurrency] += vin.amount;
+        }
 
         return sum;
     }
 
+    validateOuts(sumIn, sumOut){
 
-    get fee(){
-        return this.sumIn() - this.sumOut();
+        if (!sumIn) sumIn = this.sumIn();
+        if (!sumOut) sumOut = this.sumOut();
+
+        for (const tokenCurrency in sumOut)
+            if (!sumIn[tokenCurrency] || sumOut[tokenCurrency] > sumIn[tokenCurrency] ) throw new Exception(this, 'sumOut > sumIn', {tokenCurrency, sumOut: sumOut[tokenCurrency], sumIn: sumIn[tokenCurrency]});
+
+
+        return true;
     }
+
+    fee(sumIn, sumOut){
+
+        if (!sumIn) sumIn = this.sumIn();
+        if (!sumOut) sumOut = this.sumOut();
+
+        const fees = {};
+
+        let feeTokenCurrencies = 0, lastTokenCurrency;
+
+        for (const tokenCurrency in sumOut)
+            if (sumOut[tokenCurrency] < sumIn[tokenCurrency] ) {
+                fees[tokenCurrency] = sumIn[tokenCurrency] - sumOut[tokenCurrency] ;
+                feeTokenCurrencies += 1;
+                lastTokenCurrency = tokenCurrency;
+            }
+
+        if (feeTokenCurrencies === 0) return undefined;
+        if (feeTokenCurrencies === 1) return {
+            tokenCurrency: lastTokenCurrency,
+            amount: fees[lastTokenCurrency],
+        };
+
+        throw new Exception(this, 'too many fee token currencies', {feeTokenCurrencies});
+    }
+
+
+
+    validateFee(sumIn, sumOut){
+
+        if (!sumIn) sumIn = this.sumIn();
+        if (!sumOut) sumOut = this.sumOut();
+
+        let feeTokenCurrencies = 0;
+
+        for (const tokenCurrency in sumOut)
+            if ( sumOut[tokenCurrency] < sumIn[tokenCurrency] )
+                feeTokenCurrencies += 1;
+
+        if (feeTokenCurrencies > 1) throw new Exception(this, 'too many fee token currencies', {feeTokenCurrencies});
+
+        return true;
+    }
+
 
     noOuts(){
         return this.vout.length;
     }
 
-    prefixBufferForSignature(){
+    _prefixBufferForSignature(){
 
         //const hash
         const buffer = this.toBuffer( undefined, {
@@ -206,6 +293,7 @@ export default class SimpleTransaction extends BaseTransaction {
                 vin: {
                     address: true,
                     amount: true,
+                    tokenCurrency: true,
                 },
                 vout: true,
             }

@@ -1,3 +1,5 @@
+import TransactionTokenCurrencyTypeEnum from "../../base/tokens/transaction-token-currency-type-enum";
+
 const {CryptoHelper} = global.kernel.helpers.crypto;
 const {Helper} = global.kernel.helpers;
 const {DBSchema} = global.kernel.marshal.db;
@@ -30,9 +32,24 @@ export default class Vout extends DBSchema {
                     type: "number",
 
                     minSize: 1,
-                    maxSize: Number.MAX_SAFE_INTEGER,
                     position: 101,
                 },
+
+                tokenCurrency: {
+
+                    type: "buffer",
+                    maxSize: 20,
+                    minSize: 1,
+
+                    default: TransactionTokenCurrencyTypeEnum.TX_TOKEN_CURRENCY_NATIVE_TYPE.idBuffer,
+
+                    validation(value) {
+                        return value.equals( TransactionTokenCurrencyTypeEnum.TX_TOKEN_CURRENCY_NATIVE_TYPE.idBuffer ) || (value.length === 20);
+                    },
+
+                    position : 102,
+                },
+
 
 
             },

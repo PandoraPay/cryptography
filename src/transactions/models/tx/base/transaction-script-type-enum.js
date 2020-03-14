@@ -11,6 +11,10 @@ export default {
 
     TX_SCRIPT_TOKEN_UPDATE_SUPPLY_TRANSACTION: 3,
 
+    TX_SCRIPT_ZETHER_DEPOSIT : 16,
+    TX_SCRIPT_ZETHER_TRANSFER: 17,
+    TX_SCRIPT_ZETHER_WITHDRAW: 18,
+
     _name: "TransactionScriptTypeEnum",
 
 }
