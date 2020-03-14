@@ -1,14 +1,12 @@
-import SimpleTransaction from "../simple/simple-transaction";
-
 const {Helper} = global.kernel.helpers;
 const {Exception, StringHelper, BufferHelper} = global.kernel.helpers;
-const {CryptoHelper} = global.kernel.helpers.crypto;
 
 import TransactionTypeEnum from "src/transactions/models/tx/base/transaction-type-enum";
 import TransactionScriptTypeEnum from "src/transactions/models/tx/base/transaction-script-type-enum";
 import TransactionTokenCurrencyTypeEnum from "../base/tokens/transaction-token-currency-type-enum";
 
 import SimpleTransaction from "./../simple/simple-transaction";
+import VoutZetherDeposit from "./parts/vout-zether-deposit"
 
 export default class ZetherDepositTransaction extends SimpleTransaction {
 
@@ -51,9 +49,34 @@ export default class ZetherDepositTransaction extends SimpleTransaction {
                 },
 
                 vout: {
-                    minSize: 0,
-                    maxSize: 0,
-                    fixedBytes: 0,
+                    classObject: VoutZetherDeposit,
+                    minSize: 1,
+                    maxSize: 1,
+                    fixedBytes: 1,
+
+                    validation(output){
+
+                        const sumIn = {}, sumOut = {};
+
+                        for (const vout of output){
+                            const tokenCurrency = vout.tokenCurrency.toString('hex');
+                            sumOut[tokenCurrency] = (sumOut[tokenCurrency] || 0) + vout.amount;
+                        }
+
+                        for (const vin of this.vin){
+                            const tokenCurrency = vin.tokenCurrency.toString('hex');
+                            sumIn[tokenCurrency] = (sumIn[tokenCurrency] || 0) + vin.amount;
+                        }
+
+                        this.validateOuts(sumIn, sumOut);
+                        this.validateFee(sumIn, sumOut);
+
+                        const fee = this.fee(sumIn, sumOut);
+                        if (this.vin.length === 2 && !fee ) throw new Exception(this, 'One output needs to be fee');
+
+                        return true;
+                    },
+
                 },
 
                 proof: {
@@ -68,6 +91,16 @@ export default class ZetherDepositTransaction extends SimpleTransaction {
 
     }
 
+    toJSONRaw(){
+
+        const json = this.toJSON( );
+
+        for (let i=0; i < json.vin.length; i++)
+            json.vin[i].address = this.vin[i].address;
+
+        return json;
+
+    }
 
 
 }

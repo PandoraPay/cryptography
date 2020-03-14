@@ -78,10 +78,6 @@ export default async function run () {
             const privateAddress3 = this._scope.cryptography.addressGenerator.generateAddressFromMnemonic( ).privateAddress;
             const address3 = privateAddress3.getAddress();
 
-            const privateAddress4 = this._scope.cryptography.addressGenerator.generateAddressFromMnemonic( ).privateAddress;
-            const address4 = privateAddress4.getAddress();
-
-
             const tx = new SimpleTransaction(this._scope, undefined, {
 
                 vin: [ {
