@@ -90,8 +90,8 @@ export default class AddressGenerator{
         const publicKeyHash = this.generatePublicKeyHash(publicKey);
 
         return new Address(this._scope, undefined, {
-            networkByte: networkByte,
-            publicKeyHash: publicKeyHash,
+            networkByte,
+            publicKeyHash,
         })
 
     }
@@ -102,8 +102,8 @@ export default class AddressGenerator{
         if (!Buffer.isBuffer(publicKeyHash) || publicKeyHash.length !== 20 ) throw new Exception(this, "PublicKeyHash is invalid");
 
         return new Address(this._scope, undefined, {
-            networkByte: networkByte,
-            publicKeyHash: publicKeyHash,
+            networkByte,
+            publicKeyHash,
         })
 
     }

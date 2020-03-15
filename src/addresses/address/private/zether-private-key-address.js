@@ -20,11 +20,11 @@ export default class ZetherPrivateKeyAddress extends DBSchema {
                     fixedBytes: 32,
 
                     default() {
-                        return this._scope.cryptography.cryptoSignature.createPrivateKey();
+                        return this._scope.cryptography.zetherCryptoSignature.createPrivateKey();
                     },
 
                     preprocessor(privateKey) {
-                        this.__data.publicKey = this._scope.cryptography.cryptoSignature.createPublicKey(privateKey);
+                        this.__data.publicKey = this._scope.cryptography.zetherCryptoSignature.createPublicKey(privateKey);
                         return privateKey;
                     },
 
@@ -45,11 +45,11 @@ export default class ZetherPrivateKeyAddress extends DBSchema {
                     skipSaving: true,
 
                     default() {
-                        return this._scope.cryptography.cryptoSignature.createPublicKey(this.privateKey);
+                        return this._scope.cryptography.zetherCryptoSignature.createPublicKey(this.privateKey);
                     },
 
                     validation(value) {
-                        const pubKey = this._scope.cryptography.cryptoSignature.createPublicKey(this.privateKey);
+                        const pubKey = this._scope.cryptography.zetherCryptoSignature.createPublicKey(this.privateKey);
                         return value.equals(pubKey);
                     },
 
@@ -61,5 +61,24 @@ export default class ZetherPrivateKeyAddress extends DBSchema {
         }, schema, false), data, type, creationOptions);
 
     }
+
+    /**
+     * returns a publicAddress
+     */
+    getZetherAddress(networkByte ){
+
+        return this._scope.cryptography.zetherAddressGenerator.generateZetherAddressFromPublicKey( this.publicKey, networkByte);
+
+    }
+
+    validateZetherPublicKey(value){
+
+        if (!value) value = this.publicKey;
+
+        const pubKey = this._scope.cryptography.zetherCryptoSignature.createPublicKey( this.privateKey );
+
+        return value.equals(pubKey);
+    }
+
 
 }

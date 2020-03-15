@@ -2,8 +2,6 @@ import Address from "src/addresses/address/public/address";
 import PrivateKeyAddress from "src/addresses/address/private/private-key-address";
 
 const {Exception, Base58, StringHelper, BufferReader} = global.kernel.helpers;
-const {MarshalData} = global.kernel.marshal;
-import Argv from "bin/argv/argv"
 import EthCrypto from 'eth-crypto';
 
 export default class AddressValidator {
@@ -40,6 +38,7 @@ export default class AddressValidator {
 
         if (!input) throw new Exception(this, "Input is invalid");
         if (input instanceof PrivateKeyAddress) return input.getAddress();
+        if (input instanceof Address && input.validate() ) return input;
 
         //an optimization
         if (typeof input === "string" ){
@@ -58,8 +57,6 @@ export default class AddressValidator {
 
         }
 
-        if (input instanceof Address && input.validate() ) return input;
-
         if (Buffer.isBuffer(input)){
 
             const netbyte = input[0];
@@ -72,6 +69,7 @@ export default class AddressValidator {
 
         return undefined;
     }
+
 
     validatePrivateAddress( input ){
 

@@ -42,7 +42,27 @@ export default async function run () {
 
             }
 
-        }
+        },
+
+        "generate zether address": async function (){
+
+            for (const networkByte of [this._scope.argv.crypto.addresses.publicAddress.publicAddressNetworkByte_Main, this._scope.argv.crypto.addresses.publicAddress.publicAddressNetworkByte_Testnet]){
+
+                const address = this._scope.cryptography.addressGenerator.generateAddressFromMnemonic( );
+                const privateAddress = address.privateAddress;
+
+                const zetherPrivateAddress = privateAddress.getZetherPrivateAddress();
+                this.expect(typeof zetherPrivateAddress, "object");
+
+                const zetherPublicAddress = zetherPrivateAddress.getZetherAddress(networkByte);
+                this.expect(typeof zetherPublicAddress, "object");
+
+                const addressBase58 = zetherPublicAddress.calculateAddress( );
+                this.expect(typeof addressBase58,  "string");
+
+            }
+
+        },
 
     })
 

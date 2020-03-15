@@ -12,7 +12,10 @@ const Address = require("src/addresses/address/public/address").default;
 const ZetherAddress = require("src/addresses/address/public/zether-address").default;
 
 const AddressGenerator = require("src/addresses/address-generator/address-generator").default;
-const AddressValidator = require("src/addresses/address-generator/address-validator").default;
+const ZetherAddressGenerator = require("src/addresses/address-generator/zether-address-generator").default;
+
+const AddressValidator = require("src/addresses/address-validator/address-validator").default;
+const ZetherAddressValidator = require("src/addresses/address-validator/zether-address-validator").default;
 
 const AES = require("src/crypto/encryption/aes").default;
 const BaseTransaction = require("src/transactions/models/tx/base/base-transaction").default;
@@ -69,7 +72,10 @@ const library = {
         },
 
         AddressValidator,
+        ZetherAddressValidator,
         AddressGenerator,
+        ZetherAddressGenerator
+
     },
 
     encryption:{

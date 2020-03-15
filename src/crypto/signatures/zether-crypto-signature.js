@@ -1,5 +1,3 @@
-import EthCrypto from "eth-crypto";
-
 const {Exception, StringHelper, BufferHelper} = global.kernel.helpers;
 const {CryptoHelper} = global.kernel.helpers.crypto;
 
@@ -43,9 +41,9 @@ export default class ZetherCryptoSignature {
 
         if (typeof privateKey !== "string" || privateKey.length !== 64) throw new Exception(this, "Invalid Private Key to sign the transaction");
 
-        const publicKey = this._scope.cryptography.zether.utils.determinePublicKey(privateKey);
+        const publicKey = this._scope.cryptography.Zether.utils.determinePublicKey('0x'+privateKey);
 
-        return Buffer.from( compressed, "hex");
+        return Buffer.from( publicKey[0].slice(2) + publicKey[1].slice(2), "hex");
     }
 
 }

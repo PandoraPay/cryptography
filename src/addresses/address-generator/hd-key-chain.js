@@ -2,8 +2,8 @@
  * Based on https://github.com/reckscott/hd-keychain/blob/master/lib/HDKeychain.js
  */
 
-var HDKey = require('hdkey');
-var bip39 = require('bip39');
+const HDKey = require('hdkey');
+const bip39 = require('bip39');
 
 export default class HDKeyChain{
 
