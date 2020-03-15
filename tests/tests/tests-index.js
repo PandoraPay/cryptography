@@ -1,7 +1,7 @@
 import ArgvTest from "./argv/argv-test"
 
 import TestsAddresses from "./tests-files/addresses/tests-addresses"
-import TestTransactions from "./tests-files/transactions/tests-transactions"
+import TestsTransactions from "./tests-files/transactions/tests-transactions"
 import TestsCrypto from "./tests-files/crypto/tests-crypto"
 
 import TestsTransactionsHelper from "./tests-files/transactions/tests-transactions-helper"
@@ -22,7 +22,7 @@ export default {
 
         await TestsCrypto();
         await TestsAddresses();
-        await TestTransactions();
+        await TestsTransactions();
 
     },
 

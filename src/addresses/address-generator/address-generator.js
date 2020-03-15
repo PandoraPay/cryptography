@@ -40,7 +40,7 @@ export default class AddressGenerator{
 
     }
 
-    generateAddressFromMnemonic( words=[], sequence = 0 ){
+    generateAddressFromMnemonic( words = [], sequence = 0 ){
 
         if (!Array.isArray(words)) throw new Exception(this, "Seed for Address generation is not an array");
 

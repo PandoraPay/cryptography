@@ -22,19 +22,7 @@ export default class CryptoSignature {
     }
 
     createPrivateKey(secret){
-
-        let x;
-        if (secret){
-            if (typeof secret === "string") secret = Buffer.from(secret, "hex");
-            if (secret.length !== 32) throw "secret is not length 32";
-
-            x = new BN( secret.toString("hex"), 16).toRed(bn128.q);
-        }else {
-            x = bn128.randomScalar();
-        }
-
-        return Buffer.from( bn128.bytes(x).slice(2), "hex");
-
+        return BufferHelper.generateRandomBuffer(32);
     }
 
     createPublicKey(privateKey){

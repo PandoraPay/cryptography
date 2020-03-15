@@ -5,7 +5,7 @@ const {CryptoHelper} = global.kernel.helpers.crypto;
 const {DBSchema} = global.kernel.marshal.db;
 import Identicon from "src/utils/identicons/identicon";
 
-export default class Address extends DBSchema {
+export default class ZetherAddress extends DBSchema {
 
     constructor(scope, schema={},  data, type, creationOptions){
 
@@ -35,9 +35,9 @@ export default class Address extends DBSchema {
 
                 },
 
-                publicKeyHash: {
+                publicKey: {
                     type: "buffer",
-                    fixedBytes: 20,
+                    fixedBytes: 64,
 
                     position: 11,
                 },
@@ -46,7 +46,6 @@ export default class Address extends DBSchema {
 
                     type: "buffer",
                     fixedBytes: 4,
-
 
                     default(){
                         return this.calculateCheckSum(this);
@@ -68,7 +67,7 @@ export default class Address extends DBSchema {
 
     calculateCheckSum(){
 
-        const preAddr = MarshalData.marshalOneByte(this.networkByte).toString("hex") + this.publicKeyHash.toString("hex");
+        const preAddr = MarshalData.marshalOneByte(this.networkByte).toString("hex") + this.publicKey.toString("hex");
 
         const hash = CryptoHelper.keccak256( preAddr );
         const buffer = Buffer.alloc( 4 );

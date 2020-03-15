@@ -4,6 +4,8 @@ import Argv from "bin/argv/argv"
 import Tests from "tests/tests/tests-index"
 
 import CryptoSignature from "src/crypto/signatures/crypto-signature"
+import ZetherCryptoSignature from "src/crypto/signatures/zether-crypto-signature"
+
 import AddressValidator from "src/addresses/address-generator/address-validator";
 import AddressGenerator from "src/addresses/address-generator/address-generator"
 import EncryptedMessage from "src/crypto/encryption/encrypted-message/encrypted-message"
@@ -14,7 +16,7 @@ import ChatMessageValidator from "src/crypto/encryption/encrypted-message/valida
 
 import AES from "src/crypto/encryption/aes"
 
-import {ZSC} from "zetherjs"
+import Zether from "zetherjs"
 
 export default class App extends Protocol.utils.App {
 
@@ -26,6 +28,7 @@ export default class App extends Protocol.utils.App {
 
             this._scope.cryptography = {
                 CryptoSignature,
+                ZetherCryptoSignature,
                 AddressValidator,
                 AddressGenerator,
                 AES,
@@ -34,7 +37,7 @@ export default class App extends Protocol.utils.App {
                 EncryptedMessageCreator,
                 EncryptedMessageValidator,
                 ChatMessageValidator,
-                ZSC,
+                Zether,
                 ...this._scope.cryptography||{},
             };
 
@@ -52,6 +55,7 @@ export default class App extends Protocol.utils.App {
             if (!this.cryptography.aes) this.cryptography.aes = new this.cryptography.AES(this._scope);
 
             if (!this.cryptography.cryptoSignature) this.cryptography.cryptoSignature = new this.cryptography.CryptoSignature(this._scope);
+            if (!this.cryptography.zetherCryptoSignature) this.cryptography.zetherCryptoSignature = new this.cryptography.ZetherCryptoSignature(this._scope);
 
             if (!this.cryptography.addressValidator) this.cryptography.addressValidator = new this.cryptography.AddressValidator(this._scope);
             if (!this.cryptography.addressGenerator) this.cryptography.addressGenerator = new this.cryptography.AddressGenerator(this._scope);
@@ -59,8 +63,6 @@ export default class App extends Protocol.utils.App {
             if (!this.cryptography.encryptedMessageCreator) this.cryptography.encryptedMessageCreator = new this.cryptography.EncryptedMessageCreator(this._scope);
             if (!this.cryptography.encryptedMessageValidator) this.cryptography.encryptedMessageValidator = new this.cryptography.EncryptedMessageValidator(this._scope);
             if (!this.cryptography.chatMessageValidator) this.cryptography.chatMessageValidator = new this.cryptography.ChatMessageValidator(this._scope);
-
-            if (!this.cryptography.zsc) this.cryptography.zsc = new this.cryptography.ZSC(this._scope);
 
             this._scope.logger.info(`Status`, `Crypto has been started`);
         });
