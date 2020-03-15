@@ -2,7 +2,6 @@ const {Exception, StringHelper, ArrayHelper, BufferHelper, BufferReader, Base58}
 const {CryptoHelper} = global.kernel.helpers.crypto;
 const {Logger} = global.kernel;
 
-import Argv from "bin/argv/argv"
 import PrivateKeyAddress from "../address/private/private-key-address";
 import Address from "../address/public/address";
 

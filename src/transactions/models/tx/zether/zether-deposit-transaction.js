@@ -25,21 +25,6 @@ export default class ZetherDepositTransaction extends SimpleTransaction {
                     }
                 },
 
-                tokenCurrency: {
-
-                    type: "buffer",
-                    maxSize: 20,
-                    minSize: 1,
-
-                    default: TransactionTokenCurrencyTypeEnum.TX_TOKEN_CURRENCY_NATIVE_TYPE.idBuffer,
-
-                    validation(value) {
-                        return value.equals( TransactionTokenCurrencyTypeEnum.TX_TOKEN_CURRENCY_NATIVE_TYPE.idBuffer ) || (value.length === 20);
-                    },
-
-                    position : 1000,
-                },
-
                 /**
                  * size === 1 means that the fee is
                  */
@@ -79,8 +64,10 @@ export default class ZetherDepositTransaction extends SimpleTransaction {
 
                 },
 
-                proof: {
+                // public key is made from two separate public keys
+                zetherPublicKey: {
                     type: "buffer",
+                    fixedBytes: 64,
 
                     position: 2000,
                 }
@@ -99,6 +86,23 @@ export default class ZetherDepositTransaction extends SimpleTransaction {
             json.vin[i].address = this.vin[i].address;
 
         return json;
+
+    }
+
+    transactionAddedToZether(zsc = this._scope.zsc){
+
+        const zetherPubKey1 = Buffer.alloc(32);
+        this.zetherPublicKey.copy( outputzetherPubKey1,   0, 0,        32 );
+
+        const zetherPubKey2 = Buffer.alloc(32);
+        this.zetherPublicKey.copy( zetherPubKey2,   0, 32,        64 );
+
+        const zetherPublicKey = [
+            '0x'+zetherPubKey1.toString('hex'),
+            '0x'+zetherPubKey2.toString('hex'),
+        ];
+
+        return zsc.fund( zetherPublicKey, value);
 
     }
 

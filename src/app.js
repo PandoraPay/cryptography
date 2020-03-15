@@ -14,6 +14,8 @@ import ChatMessageValidator from "src/crypto/encryption/encrypted-message/valida
 
 import AES from "src/crypto/encryption/aes"
 
+import {ZSC} from "zetherjs"
+
 export default class App extends Protocol.utils.App {
 
     setAdditionalEvents(){
@@ -32,6 +34,7 @@ export default class App extends Protocol.utils.App {
                 EncryptedMessageCreator,
                 EncryptedMessageValidator,
                 ChatMessageValidator,
+                ZSC,
                 ...this._scope.cryptography||{},
             };
 
@@ -57,6 +60,7 @@ export default class App extends Protocol.utils.App {
             if (!this.cryptography.encryptedMessageValidator) this.cryptography.encryptedMessageValidator = new this.cryptography.EncryptedMessageValidator(this._scope);
             if (!this.cryptography.chatMessageValidator) this.cryptography.chatMessageValidator = new this.cryptography.ChatMessageValidator(this._scope);
 
+            if (!this.cryptography.zsc) this.cryptography.zsc = new this.cryptography.ZSC(this._scope);
 
             this._scope.logger.info(`Status`, `Crypto has been started`);
         });

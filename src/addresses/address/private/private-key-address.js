@@ -3,6 +3,8 @@ const {DBSchema} = global.kernel.marshal.db;
 const {CryptoHelper} = global.kernel.helpers.crypto;
 const {Exception, Base58, StringHelper, BufferReader} = global.kernel.helpers;
 
+import ZetherPrivateKeyAddress from "./zether-private-key-address"
+
 /**
  * This is used to store the private key
  */
@@ -15,9 +17,6 @@ export default class PrivateKeyAddress extends DBSchema {
 
             fields: {
 
-                /**
-                 * EdDSA ed25519
-                 */
                 privateKey:{
                     type: "buffer",
                     fixedBytes: 32,
@@ -81,6 +80,33 @@ export default class PrivateKeyAddress extends DBSchema {
         const pubKey = this._scope.cryptography.cryptoSignature.createPublicKey( this.privateKey );
 
         return value.equals(pubKey);
+    }
+
+    getZetherPrivateAddress(){
+
+        const privateKey = this.privateKey;
+
+        const concat = Buffer.concat([
+            Buffer.from("ZETHER"),
+            privateKey,
+            Buffer.from("KEY"),
+        ]);
+
+        let zetherPrivateKey = CryptoHelper.dkeccak256( concat );                                  //dkeccak256( PRIV + privateKey + publicKey + DELEGATE )
+
+        const concat2 = Buffer.concat([
+            Buffer.from("ZERO"),
+            zetherPrivateKey,
+            Buffer.from("SECRET")
+        ]);
+
+        zetherPrivateKey = CryptoHelper.dsha256( concat2 );
+
+        const zetherPrivateAddress = new ZetherPrivateKeyAddress(this._scope, undefined, {
+            privateKey: zetherPrivateKey,
+        });
+
+        return zetherPrivateAddress;
     }
 
     /**
