@@ -13,7 +13,7 @@ export default {
 
     TX_SCRIPT_ZETHER_DEPOSIT : 16,
     TX_SCRIPT_ZETHER_TRANSFER: 17,
-    TX_SCRIPT_ZETHER_WITHDRAW: 18,
+    TX_SCRIPT_ZETHER_BURN: 18,
 
     _name: "TransactionScriptTypeEnum",
 

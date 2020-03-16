@@ -1,4 +1,4 @@
-import ZetherRegistration from "./parts/zether-registration";
+import ZetherVoutDeposit from "./parts/zether-vout-deposit";
 
 const {Helper} = global.kernel.helpers;
 const {Exception, StringHelper, BufferHelper} = global.kernel.helpers;
@@ -6,9 +6,9 @@ const {Exception, StringHelper, BufferHelper} = global.kernel.helpers;
 import TransactionScriptTypeEnum from "src/transactions/models/tx/base/transaction-script-type-enum";
 
 import SimpleTransaction from "./../simple/simple-transaction";
-import ZetherVoutDeposit from "./parts/zether-vout-deposit"
+import Vout from "../simple/parts/vout";
 
-export default class ZetherDepositTransaction extends SimpleTransaction {
+export default class ZetherBurnTransaction extends SimpleTransaction {
 
     constructor(scope, schema={}, data, type, creationOptions) {
 
@@ -18,10 +18,10 @@ export default class ZetherDepositTransaction extends SimpleTransaction {
 
                 scriptVersion:{
 
-                    default: TransactionScriptTypeEnum.TX_SCRIPT_ZETHER_DEPOSIT ,
+                    default: TransactionScriptTypeEnum.TX_SCRIPT_ZETHER_BURN ,
 
                     validation(script){
-                        return script === TransactionScriptTypeEnum.TX_SCRIPT_ZETHER_DEPOSIT;
+                        return script === TransactionScriptTypeEnum.TX_SCRIPT_ZETHER_BURN;
                     }
                 },
 
@@ -29,12 +29,18 @@ export default class ZetherDepositTransaction extends SimpleTransaction {
                  * size === 1 means that the fee is
                  */
                 vin: {
-                    minSize: 1,
-                    maxSize: 2,
+                    minSize: 0,
+                    maxSize: 1,
+                },
+
+                zetherInput: {
+                    classObject: ZetherVoutDeposit,
+                    position: 1003,
                 },
 
                 vout: {
-                    classObject: ZetherVoutDeposit,
+
+                    classObject: Vout,
                     minSize: 1,
                     maxSize: 1,
                     fixedBytes: 1,
@@ -62,11 +68,7 @@ export default class ZetherDepositTransaction extends SimpleTransaction {
                         return true;
                     },
 
-                },
-
-                registration:{
-                    type: "object",
-                    classObject:ZetherRegistration,
+                    position: 1004,
                 },
 
             }
@@ -75,7 +77,14 @@ export default class ZetherDepositTransaction extends SimpleTransaction {
 
     }
 
+    sumIn(input = this.vin){
+        const sumIn = super.sumIn(input);
 
+        const tokenCurrency = this.zetherInput.tokenCurrency.toString('hex');
+        if (!sumIn[tokenCurrency]) sumIn[tokenCurrency] = 0;
+
+        sumIn[tokenCurrency] += this.zetherInput.amount;
+    }
 
     transactionAddedToZether(chain = this._scope.mainChain, chainData = chain.data){
 
@@ -103,7 +112,6 @@ export default class ZetherDepositTransaction extends SimpleTransaction {
 
     }
 
-
     _prefixBufferForSignature(){
         //const hash
         const buffer = this.toBuffer( undefined, {
@@ -118,8 +126,8 @@ export default class ZetherDepositTransaction extends SimpleTransaction {
                     amount: true,
                     tokenCurrency: true,
                 },
+                zetherInput: true,
                 vout: true,
-                registration: true
             }
 
         } );
@@ -127,17 +135,6 @@ export default class ZetherDepositTransaction extends SimpleTransaction {
         return buffer;
     }
 
-
-    toJSONRaw(){
-
-        const json = this.toJSON( );
-
-        for (let i=0; i < json.vin.length; i++)
-            json.vin[i].address = this.vin[i].address;
-
-        return json;
-
-    }
 
 }
 
