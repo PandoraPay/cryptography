@@ -1,9 +1,7 @@
 const {Helper} = global.kernel.helpers;
 const {Exception, StringHelper, BufferHelper} = global.kernel.helpers;
 
-import TransactionTypeEnum from "src/transactions/models/tx/base/transaction-type-enum";
 import TransactionScriptTypeEnum from "src/transactions/models/tx/base/transaction-script-type-enum";
-import TransactionTokenCurrencyTypeEnum from "../base/tokens/transaction-token-currency-type-enum";
 
 import SimpleTransaction from "./../simple/simple-transaction";
 import VoutZetherDeposit from "./parts/vout-zether-deposit"
@@ -64,14 +62,6 @@ export default class ZetherDepositTransaction extends SimpleTransaction {
 
                 },
 
-                // public key is made from two separate public keys
-                zetherPublicKey: {
-                    type: "buffer",
-                    fixedBytes: 64,
-
-                    position: 2000,
-                }
-
             }
 
         }, schema, false), data, type, creationOptions);
@@ -89,20 +79,20 @@ export default class ZetherDepositTransaction extends SimpleTransaction {
 
     }
 
-    transactionAddedToZether(zsc = this._scope.zsc){
+    transactionAddedToZether(chain = this._scope.mainChain, chainData = chain.data){
 
         const zetherPubKey1 = Buffer.alloc(32);
-        this.zetherPublicKey.copy( outputzetherPubKey1,   0, 0,        32 );
+        this.vout[0].zetherPublicKey.copy( zetherPubKey1,   0, 0,        32 );
 
         const zetherPubKey2 = Buffer.alloc(32);
-        this.zetherPublicKey.copy( zetherPubKey2,   0, 32,        64 );
+        this.vout[0].zetherPublicKey.copy( zetherPubKey2,   0, 32,        64 );
 
         const zetherPublicKey = [
             '0x'+zetherPubKey1.toString('hex'),
             '0x'+zetherPubKey2.toString('hex'),
         ];
 
-        return zsc.fund( zetherPublicKey, value);
+        return chainData.zsc.fund( zetherPublicKey, this.vout[0].amount );
 
     }
 

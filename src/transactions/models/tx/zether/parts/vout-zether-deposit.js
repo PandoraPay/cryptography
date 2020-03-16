@@ -36,6 +36,14 @@ export default class VoutZetherDeposit extends DBSchema {
                     position : 102,
                 },
 
+                // public key is made from two separate public keys
+                zetherPublicKey: {
+                    type: "buffer",
+                    fixedBytes: 64,
+
+                    position: 103,
+                }
+
             },
 
             options: {
