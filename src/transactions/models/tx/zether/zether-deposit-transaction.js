@@ -1,10 +1,12 @@
+import ZetherRegistration from "./parts/zether-registration";
+
 const {Helper} = global.kernel.helpers;
 const {Exception, StringHelper, BufferHelper} = global.kernel.helpers;
 
 import TransactionScriptTypeEnum from "src/transactions/models/tx/base/transaction-script-type-enum";
 
 import SimpleTransaction from "./../simple/simple-transaction";
-import VoutZetherDeposit from "./parts/vout-zether-deposit"
+import ZetherVoutDeposit from "./parts/zether-vout-deposit"
 
 export default class ZetherDepositTransaction extends SimpleTransaction {
 
@@ -32,7 +34,7 @@ export default class ZetherDepositTransaction extends SimpleTransaction {
                 },
 
                 vout: {
-                    classObject: VoutZetherDeposit,
+                    classObject: ZetherVoutDeposit,
                     minSize: 1,
                     maxSize: 1,
                     fixedBytes: 1,
@@ -60,6 +62,11 @@ export default class ZetherDepositTransaction extends SimpleTransaction {
                         return true;
                     },
 
+                },
+
+                registration:{
+                    type: "object",
+                    classObject:ZetherRegistration,
                 },
 
             }
@@ -91,6 +98,10 @@ export default class ZetherDepositTransaction extends SimpleTransaction {
             '0x'+zetherPubKey1.toString('hex'),
             '0x'+zetherPubKey2.toString('hex'),
         ];
+
+        if (this.registration.registered === 1){
+            chainData.zsc.register( this._scope.cryptography.Zether.utils.G1PointArray(zetherPublicKey), this._scope.cryptography.Zether.utils.BNFieldfromHex( this.registration.c), this._scope.cryptography.Zether.utils.BNFieldfromHex( this.registration.s ) );
+        }
 
         return chainData.zsc.fund( zetherPublicKey, this.vout[0].amount );
 

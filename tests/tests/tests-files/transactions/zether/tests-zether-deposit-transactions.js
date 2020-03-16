@@ -23,19 +23,27 @@ export default async function run () {
 
             for (const fee of [0, 200]){
 
-
                 const tx = new ZetherDepositTransaction(this._scope, undefined, {
 
                     vin: [ {
                         amount: 1000,
                         publicKey: privateAddress.publicKey,
-                        }
-                    ],
+                    }],
 
                     vout: [{
-                        amount: fee ? 1000 : 1000 -fee,
+                        amount: fee ? 1000 - fee : 1000,
                         zetherPublicKey: zetherAddress.publicKey,
                     }],
+
+                    registration:{
+
+                        registered: 1,
+
+                        c: zetherRegistration.c,
+
+                        s: zetherRegistration.s,
+
+                    },
 
                 } );
 

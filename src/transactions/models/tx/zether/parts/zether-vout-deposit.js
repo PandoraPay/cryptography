@@ -1,11 +1,9 @@
 import TransactionTokenCurrencyTypeEnum from "../../base/tokens/transaction-token-currency-type-enum";
 
-const {CryptoHelper} = global.kernel.helpers.crypto;
 const {Helper} = global.kernel.helpers;
 const {DBSchema} = global.kernel.marshal.db;
-const {Exception, StringHelper, BufferHelper} = global.kernel.helpers;
 
-export default class VoutZetherDeposit extends DBSchema {
+export default class ZetherVoutDeposit extends DBSchema {
 
     constructor(scope, schema={}, data, type, creationOptions) {
 
