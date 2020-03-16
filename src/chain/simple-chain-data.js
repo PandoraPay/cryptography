@@ -8,7 +8,7 @@ export default class SimpleChainData {
 
         this._scope = scope;
 
-        this.zsc = new this._scope.cryptography.Zether.ZSC(this);
+        this.zsc = new this._scope.cryptography.Zether.ZSC(this, this._scope.argv.transactions.zether.zscAddress);
 
         this.clearData();
 

@@ -1,9 +1,9 @@
 import ArgvCoinbase from "./coinbase/argv-coinbase"
-import ArgvRingTransaction from "./ring/argv-ring-transactions"
+import ArgvZether from "./zether/argv-zether"
 
 export default {
 
     coinbase: ArgvCoinbase,
-    ring: ArgvRingTransaction
+    zether: ArgvZether
 
 }

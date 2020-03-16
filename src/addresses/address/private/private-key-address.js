@@ -84,7 +84,7 @@ export default class PrivateKeyAddress extends DBSchema {
 
     getZetherPrivateAddress(){
 
-        const privateKey = this.privateKey;
+        const privateKey = CryptoHelper.dkeccak256(this.privateKey);
 
         const concat = Buffer.concat([
             Buffer.from("ZETHER"),
@@ -112,15 +112,14 @@ export default class PrivateKeyAddress extends DBSchema {
     /**
      * Get delegate stake private key
      *
-     * dsha256( STAKE + dkeccak256( dkeccak256( PRIV + privateKey + publicKey + DELEGATE) + NONCE ) + SECRET )
+     * dsha256( STAKE + dkeccak256( dkeccak256( PRIV + privateKey + DELEGATE) + NONCE ) + SECRET )
      *
      */
     getDelegateStakePrivateAddress(delegateNonce){
 
         if (typeof delegateNonce !== "number") throw new Exception(this, "DelegateNonce is missing");
 
-        const privateKey = this.privateKey;
-        const publicKey = this.publicKey;
+        const privateKey = CryptoHelper.dkeccak256(this.privateKey);
 
         let delegateNonceHex = delegateNonce.toString(16);
         if (delegateNonceHex.length % 2 === 1) delegateNonceHex = "0"+delegateNonceHex;
@@ -128,11 +127,10 @@ export default class PrivateKeyAddress extends DBSchema {
         const concat = Buffer.concat([
             Buffer.from("PRIV"),
             privateKey,
-            publicKey,
             Buffer.from("DELEGATE"),
         ]);
 
-        let delegatePrivateKey = CryptoHelper.dkeccak256( concat );                                  //dkeccak256( PRIV + privateKey + publicKey + DELEGATE )
+        let delegatePrivateKey = CryptoHelper.dkeccak256( concat );                                  //dkeccak256( PRIV + privateKey +  DELEGATE )
         delegatePrivateKey = delegatePrivateKey.toString("hex") + delegateNonceHex;                  //delegatePrivateKey + delegateNonceHex
 
         delegatePrivateKey = CryptoHelper.dkeccak256(delegatePrivateKey);                            //dkeccak256( delegatePrivateKey )
@@ -165,14 +163,14 @@ export default class PrivateKeyAddress extends DBSchema {
 
         if (!Buffer.isBuffer(publicKey) || publicKey.length !== 33) throw new Exception(this, "PublicKey is invalid");
 
-        const myPrivateKey = this.privateKey;
+        const myPrivateKey = CryptoHelper.dkeccak256(this.privateKey);
         const myPublicKey = this.publicKey;
 
         const concat = Buffer.concat([
             Buffer.from("DELEGATOR"),
             myPrivateKey,
             myPublicKey,
-            Buffer.from("DELEGATE"),
+            Buffer.from("KEY"),
         ]);
 
         let delegatePrivateKey = CryptoHelper.dkeccak256( concat );                                         //dkeccak256( DELEGATOR + myPrivateKey + myPublicKey + DELEGATE )

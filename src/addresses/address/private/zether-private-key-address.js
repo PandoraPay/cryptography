@@ -2,6 +2,7 @@ const {Helper} = global.kernel.helpers;
 const {DBSchema} = global.kernel.marshal.db;
 const {CryptoHelper} = global.kernel.helpers.crypto;
 const {Exception, Base58, StringHelper, BufferReader} = global.kernel.helpers;
+const {BN} = global.kernel.utils;
 
 /**
  * This is used to store the Zether private key
@@ -80,5 +81,45 @@ export default class ZetherPrivateKeyAddress extends DBSchema {
         return value.equals(pubKey);
     }
 
+    getZetherRegistration(){
+
+        const [c, s] = this._scope.cryptography.Zether.utils.sign( this._scope.argv.transactions.zether.zscAddress, this.zetherKeyPair(), this._zetherRegistrationSecret() );
+        return {
+            c: this._scope.cryptography.Zether.bn128.toBuffer(c),
+            s: this._scope.cryptography.Zether.bn128.toBuffer(s),
+        }
+
+    }
+
+    zetherKeyPair(){
+
+        const publicKey = this.publicKey.toString('hex');
+        return {
+            x: '0x'+this.privateKey.toString('hex'),
+            y: [ '0x'+publicKey.slice(0, 64), '0x'+publicKey.slice(64) ],
+        }
+    }
+
+    _zetherRegistrationSecret(){
+
+        const privateKey = CryptoHelper.dkeccak256(this.privateKey);
+
+        const concat = Buffer.concat([
+            Buffer.from("REGISTRATION"),
+            privateKey,
+            Buffer.from("SECRET"),
+        ]);
+
+        let zetherRegistrationSecret = CryptoHelper.dkeccak256( concat );                                  //dkeccak256( PRIV + privateKey + publicKey + DELEGATE )
+
+        const concat2 = Buffer.concat([
+            Buffer.from("ZETHER"),
+            zetherRegistrationSecret,
+            Buffer.from("KEY")
+        ]);
+
+        zetherRegistrationSecret = CryptoHelper.dsha256( concat2 );
+        return zetherRegistrationSecret;
+    }
 
 }
