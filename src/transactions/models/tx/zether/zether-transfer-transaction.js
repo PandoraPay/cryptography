@@ -1,3 +1,5 @@
+import ZetherRegistrationIndex from "./parts/zether-registration-index";
+
 const {Helper} = global.kernel.helpers;
 const {Exception, StringHelper, BufferHelper} = global.kernel.helpers;
 
@@ -10,8 +12,6 @@ import ZetherTransferFee from "./parts/zether-transfer-fee";
 import ZetherPointBuffer from "./parts/zether-point-buffer"
 
 const {BN} = global.kernel.utils;
-
-import ZetherPublicKeyRegistration from "./parts/zether-public-key-registration"
 
 export default class ZetherTransferTransaction extends SimpleTransaction {
 
@@ -66,15 +66,6 @@ export default class ZetherTransferTransaction extends SimpleTransaction {
                     position: 1004,
                 },
 
-                registrations:{
-
-                    type: "array",
-                    classObject: ZetherPublicKeyRegistration,
-
-                    minSize: 0,
-                    maxSize: 255,
-                },
-
                 y: {
                     type: "array",
                     classObject: ZetherPointBuffer,
@@ -84,46 +75,58 @@ export default class ZetherTransferTransaction extends SimpleTransaction {
                     position: 2000,
                 },
 
+                registrations:{
+
+                    type: "array",
+                    classObject: ZetherRegistrationIndex,
+
+                    minSize: 0,
+                    maxSize: 255,
+
+                    position: 2001,
+                },
+
+
                 C: {
                     type: "array",
                     classObject: ZetherPointBuffer,
                     minSize: 2,
                     maxSize: 255,
 
-                    position: 2001,
+                    position: 2002,
                 },
 
                 D: {
                     type: "buffer",
                     fixedBytes: 64,
 
-                    position: 2002,
+                    position: 2003,
                 },
 
                 u: {
                     type: "buffer",
                     fixedBytes: 64,
 
-                    position: 2003,
+                    position: 2004,
                 },
 
                 proof:{
                     type: "buffer",
                     minSize: 1024,
                     maxSize: 10*1024,
-                    position: 2004,
+                    position: 2005,
                 },
 
                 whisperSender:{
                     type: "buffer",
                     fixedBytes: 32,
-                    position: 2005,
+                    position: 2006,
                 },
 
                 whisperReceiver:{
                     type: "buffer",
                     fixedBytes: 32,
-                    position: 2006,
+                    position: 2007,
                 },
 
 
@@ -258,6 +261,32 @@ export default class ZetherTransferTransaction extends SimpleTransaction {
 
     }
 
+    fillRegistrations(registrations){
+
+        this.registrations = [];
+
+        for (const registration of registrations){
+
+            let found = -1;
+            for (let i=0; i < this.y.length; i++)
+                if (registration.publicKey.equals( this.y[i] )){
+                    found = i;
+                    break;
+                }
+
+            if (found === -1)
+                throw new Exception(this, "Registration PublicKey was not found in the ring", {publicKey: registration.publicKey });
+
+            this.pushArray("registrations", {
+                index: found,
+                c: registration.c,
+                s: registration.s,
+            }, "object",);
+
+        }
+
+    }
+
     _prefixBufferForSignature(){
         //const hash
         const buffer = this.toBuffer( undefined, {
@@ -272,8 +301,16 @@ export default class ZetherTransferTransaction extends SimpleTransaction {
                     amount: true,
                     tokenCurrency: true,
                 },
-                zetherInput: true,
+                transferFee: true,
                 vout: true,
+                y: true,
+                registrations: true,
+                C: true,
+                D: true,
+                u: true,
+                proof: true,
+                whisperSender: true,
+                whisperReceiver: true,
             }
 
         } );

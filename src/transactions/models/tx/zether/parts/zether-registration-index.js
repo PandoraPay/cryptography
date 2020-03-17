@@ -1,7 +1,7 @@
 const {Helper} = global.kernel.helpers;
 const {DBSchema} = global.kernel.marshal.db;
 
-export default class ZetherPublicKeyRegistration extends DBSchema {
+export default class ZetherRegistrationIndex extends DBSchema {
 
     constructor(scope, schema={}, data, type, creationOptions) {
 
@@ -9,25 +9,26 @@ export default class ZetherPublicKeyRegistration extends DBSchema {
 
             fields: {
 
-                publicKey:{
-                    type: "buffer",
-                    fixedBytes: 64,
-
-                    position: 101,
+                index:{
+                    type: "number",
+                    maxSize: 255,
+                    position: 100,
                 },
 
                 c: {
+
+                    type: "buffer",
+                    fixedBytes: 32,
+
+                    position : 101,
+                },
+
+                s: {
+
                     type: "buffer",
                     fixedBytes: 32,
 
                     position : 102,
-                },
-
-                s: {
-                    type: "buffer",
-                    fixedBytes: 32,
-
-                    position : 103,
                 },
 
             },

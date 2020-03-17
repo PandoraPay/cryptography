@@ -60,12 +60,12 @@ export default async function run () {
 
                     vout: [],
 
-                    registrations:[{
-                        publicKey: zetherAddress2.publicKey,
-                        ...zetherAddress2,
-                    }],
-
                 }, "object", {skipProcessingConstructionValues: true, skipValidation: true} );
+
+                tx.fillRegistrations([{
+                    publicKey: zetherAddress2.publicKey,
+                    ...zetherAddress2,
+                }]);
 
                 tx.createZetherTransferProof( zetherPrivateAddress,  zetherAddress2,500, [], balance, this._scope.simpleChain );
 
