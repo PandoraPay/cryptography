@@ -1,5 +1,3 @@
-import ZetherVoutDeposit from "./parts/zether-vout-deposit";
-
 const {Helper} = global.kernel.helpers;
 const {Exception, StringHelper, BufferHelper} = global.kernel.helpers;
 
@@ -8,8 +6,9 @@ import TransactionScriptTypeEnum from "src/transactions/models/tx/base/transacti
 import SimpleTransaction from "./../simple/simple-transaction";
 import Vout from "../simple/parts/vout";
 import Zether from "zetherjs"
-import TransactionTokenCurrencyTypeEnum from "../base/tokens/transaction-token-currency-type-enum";
 import ZetherTransferFee from "./parts/zether-transfer-fee";
+import ZetherPointBuffer from "./parts/zether-point-buffer"
+
 const {BN} = global.kernel.utils;
 
 import ZetherPublicKeyRegistration from "./parts/zether-public-key-registration"
@@ -76,19 +75,58 @@ export default class ZetherTransferTransaction extends SimpleTransaction {
                     maxSize: 255,
                 },
 
-                u: {
-                    type: "buffer",
-                    fixedBytes: 64,
+                y: {
+                    type: "array",
+                    classObject: ZetherPointBuffer,
+                    minSize: 2,
+                    maxSize: 255,
 
                     position: 2000,
                 },
 
-                proof:{
-                    type: "buffer",
-                    minSize: 100,
-                    maxSize: 2*1024,
+                C: {
+                    type: "array",
+                    classObject: ZetherPointBuffer,
+                    minSize: 2,
+                    maxSize: 255,
+
                     position: 2001,
                 },
+
+                D: {
+                    type: "buffer",
+                    fixedBytes: 64,
+
+                    position: 2002,
+                },
+
+                u: {
+                    type: "buffer",
+                    fixedBytes: 64,
+
+                    position: 2003,
+                },
+
+                proof:{
+                    type: "buffer",
+                    minSize: 1024,
+                    maxSize: 10*1024,
+                    position: 2004,
+                },
+
+                whisperSender:{
+                    type: "buffer",
+                    fixedBytes: 32,
+                    position: 2005,
+                },
+
+                whisperReceiver:{
+                    type: "buffer",
+                    fixedBytes: 32,
+                    position: 2006,
+                },
+
+
 
             }
 
@@ -113,9 +151,12 @@ export default class ZetherTransferTransaction extends SimpleTransaction {
 
     transactionAddedToZether(chain = this._scope.mainChain, chainData = chain.data){
 
-        const y =  Zether.bn128.unserializeFromBuffer(this.zetherInput.zetherPublicKey);
+        const C = this.C.map( it => Zether.bn128.unserializeFromBuffer(it.buffer) );
+        const y = this.y.map( it => Zether.bn128.unserializeFromBuffer(it.buffer) );
+        const D = Zether.bn128.unserializeFromBuffer(this.D);
+        const u = Zether.bn128.unserializeFromBuffer(this.u);
 
-        const verify = chainData.zsc.burn( y, this.zetherInput.amount, Zether.bn128.unserializeFromBuffer(this.u), this.proof, '0x'+this.vout[0].publicKeyHash.toString('hex') );
+        const verify = chainData.zsc.transfer(  C, D, y, u, this.proof);
         if (!verify) throw new Exception(this, "Burn verification failed");
 
         return true;
@@ -176,26 +217,44 @@ export default class ZetherTransferTransaction extends SimpleTransaction {
 
         const unserialized = result.map(account => account );
 
-        if (unserialized.some((account) => account[0].eq( Zether.bn128.zero) && account[1].eq( Zether.bn128.zero )))
+        let notRegistered = 0;
+        for (let i=0; i < y.length; i++){
+
+            const account = unserialized[i];
+
+            if (account[0].eq( Zether.bn128.zero) && account[1].eq( Zether.bn128.zero )  )
+                notRegistered += 1;
+        }
+
+        if (notRegistered !== this.registrations.length)
             throw new Error("Please make sure all parties (including decoys) are registered."); // todo: better error message, i.e., which friend?
 
+
         const r = Zether.bn128.randomScalar();
-        let C = y.map((party, i) => Zether.bn128.curve.g.mul(i === index[0] ? new BN(-value) : i === index[1] ? new BN(value ) : new BN(0)).add( party.mul(r)));
+        let C = y.map((party, i) => Zether.bn128.curve.g.mul(i === index[0] ? new BN(-amount) : i === index[1] ? new BN( amount ) : new BN(0)).add( party.mul(r)));
 
         let D = Zether.bn128.curve.g.mul(r);
         let CLn = unserialized.map((account, i) =>  account[0].add( C[i] ));
         let CRn = unserialized.map((account) => account[1].add( D ));
 
+        const proof = Zether.Service.proveTransfer( CLn, CRn, C, D, y, lastRollOver, accountKeyPair.x, r, amount, totalBalanceAvailable - amount, index);
+        const u = Zether.utils.u(lastRollOver, accountKeyPair.x);
 
-        // const simulated = result[0];
-        // const CLn = simulated[0].add( Zether.bn128.curve.g.mul( new BN( - this.zetherInput.amount ) ));
-        // const CRn = simulated[1];
-        //
-        // const proof = Zether.Service.proveBurn(CLn, CRn, y, lastRollOver, '0x'+this.vout[0].publicKeyHash.toString('hex'), Zether.utils.BNFieldfromHex( zetherPrivateAddress.privateKey ), totalBalanceAvailable - this.zetherInput.amount );
-        // const u = Zether.utils.u( lastRollOver, Zether.utils.BNFieldfromHex(zetherPrivateAddress.privateKey) );
+        //whisper the value to the receiver
+        let v = Zether.utils.hash( Zether.bn128.representation( y[ index[1] ].mul( r )  ));
+        v = v.redAdd( new BN(amount).toRed( Zether.bn128.q) );
 
+        //whisper the value to the receiver
+        let v2 = Zether.utils.hash( Zether.bn128.representation( D.mul(  accountKeyPair.x ) ) );
+        v2 = v2.redAdd( new BN(amount).toRed( Zether.bn128.q) );
+
+        this.y = y.map( (it, i) => this._createSchemaObject( {buffer: Zether.bn128.serializeToBuffer(it, i)}, "object", 'y', undefined, i) );
+        this.C = C.map( (it, i) => this._createSchemaObject( {buffer: Zether.bn128.serializeToBuffer(it, i)}, "object", 'C', undefined, i) );
+        this.D = Zether.bn128.serializeToBuffer(D);
         this.proof = Buffer.from( proof.slice(2), 'hex');
         this.u = Zether.bn128.serializeToBuffer(u);
+        this.whisperSender = Zether.bn128.toBuffer(v2);
+        this.whisperReceiver = Zether.bn128.toBuffer(v);
 
     }
 

@@ -65,7 +65,7 @@ export default async function run () {
                         ...zetherAddress2,
                     }],
 
-                } );
+                }, "object", {skipProcessingConstructionValues: true, skipValidation: true} );
 
                 tx.createZetherTransferProof( zetherPrivateAddress,  zetherAddress2,500, [], balance, this._scope.simpleChain );
 
