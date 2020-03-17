@@ -50,7 +50,7 @@ export default async function run () {
                 const tx = new ZetherBurnTransaction(this._scope, undefined, {
 
                     vin: [ {
-                        amount: 1000,
+                        amount: 500 + fee,
                         publicKey: privateAddress.publicKey,
                     }],
 
@@ -61,7 +61,7 @@ export default async function run () {
 
                     vout: [{
                         amount: 1000,
-                        publicKey: address2,
+                        publicKeyHash: address2.publicKeyHash,
                     }],
 
 

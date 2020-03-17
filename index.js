@@ -3,7 +3,6 @@ const kernel = global.kernel;
 const CryptoSignature = require("src/crypto/signatures/crypto-signature").default;
 const App = require('src/app').default;
 const Base58 = require("src/utils/base58/base58").default;
-const bn128 = require("src/utils/crypto-utils/bn128").default;
 
 const PrivateKeyAddress  = require("src/addresses/address/private/private-key-address").default;
 const ZetherPrivateKeyAddress  = require("src/addresses/address/private/zether-private-key-address").default;
@@ -92,7 +91,6 @@ const library = {
         ...kernel.utils,
         App,
         Base58,
-        bn128,
         CreateIdenticon,
         Identicon,
     },

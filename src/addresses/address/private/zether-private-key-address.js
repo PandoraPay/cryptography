@@ -3,6 +3,7 @@ const {DBSchema} = global.kernel.marshal.db;
 const {CryptoHelper} = global.kernel.helpers.crypto;
 const {Exception, Base58, StringHelper, BufferReader} = global.kernel.helpers;
 const {BN} = global.kernel.utils;
+import Zether from "zetherjs"
 
 /**
  * This is used to store the Zether private key
@@ -93,10 +94,9 @@ export default class ZetherPrivateKeyAddress extends DBSchema {
 
     zetherKeyPair(){
 
-        const publicKey = this.publicKey.toString('hex');
         return {
-            x: '0x'+this.privateKey.toString('hex'),
-            y: [ '0x'+publicKey.slice(0, 64), '0x'+publicKey.slice(64) ],
+            x: Zether.utils.BNFieldfromHex(this.privateKey),
+            y: Zether.bn128.unserializeFromBuffer(this.publicKey),
         }
     }
 

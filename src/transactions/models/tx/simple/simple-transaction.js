@@ -99,6 +99,7 @@ export default class SimpleTransaction extends BaseTransaction {
                     validation(output){
 
                         const mapTokens = {};
+                        const sumIn = {}, sumOut = {};
 
                         for (const vout of output){
 
@@ -109,10 +110,15 @@ export default class SimpleTransaction extends BaseTransaction {
 
                             if (mapTokens[publicKeyHash][tokenCurrency]) throw new Exception(this, 'vout input uses same currency twice', vout);
                             mapTokens[publicKeyHash][tokenCurrency] = true;
+
+                            sumOut[tokenCurrency] = (sumOut[tokenCurrency] || 0) + vout.amount;
                         }
 
-                        const sumIn = this.sumIn();
-                        const sumOut = this.sumOut(output);
+                        for (const vin of this.vin){
+                            const tokenCurrency = vin.tokenCurrency.toString('hex');
+
+                            sumIn[tokenCurrency] = (sumIn[tokenCurrency] || 0) + vin.amount;
+                        }
 
                         this.validateOuts(sumIn, sumOut);
                         this.validateFee(sumIn, sumOut);

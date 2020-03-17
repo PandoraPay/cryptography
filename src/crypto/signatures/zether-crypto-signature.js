@@ -1,7 +1,7 @@
 const {Exception, StringHelper, BufferHelper} = global.kernel.helpers;
 const {CryptoHelper} = global.kernel.helpers.crypto;
 
-import bn128 from "src/utils/crypto-utils/bn128";
+import Zether from "zetherjs"
 const {BN} = global.kernel.utils;
 
 export default class ZetherCryptoSignature {
@@ -26,12 +26,12 @@ export default class ZetherCryptoSignature {
             if (typeof secret === "string") secret = Buffer.from(secret, "hex");
             if (secret.length !== 32) throw "secret is not length 32";
 
-            x = new BN( secret.toString("hex"), 16).toRed(bn128.q);
+            x = new BN( secret.toString("hex"), 16).toRed( Zether.bn128.q);
         }else {
-            x = bn128.randomScalar();
+            x = Zether.bn128.randomScalar();
         }
 
-        return Buffer.from( bn128.bytes(x).slice(2), "hex");
+        return Zether.bn128.toBuffer(x);
 
     }
 
@@ -41,9 +41,9 @@ export default class ZetherCryptoSignature {
 
         if (typeof privateKey !== "string" || privateKey.length !== 64) throw new Exception(this, "Invalid Private Key to sign the transaction");
 
-        const publicKey = this._scope.cryptography.Zether.utils.determinePublicKey('0x'+privateKey);
+        const publicKey = Zether.utils.determinePublicKey( Zether.utils.BNFieldfromHex( '0x'+privateKey) );
 
-        return Buffer.from( publicKey[0].slice(2) + publicKey[1].slice(2), "hex");
+        return Zether.bn128.serializeToBuffer( publicKey);
     }
 
 }

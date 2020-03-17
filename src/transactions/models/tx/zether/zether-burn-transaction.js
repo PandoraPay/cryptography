@@ -34,6 +34,7 @@ export default class ZetherBurnTransaction extends SimpleTransaction {
                 },
 
                 zetherInput: {
+                    type: "object",
                     classObject: ZetherVoutDeposit,
                     position: 1003,
                 },
@@ -47,17 +48,8 @@ export default class ZetherBurnTransaction extends SimpleTransaction {
 
                     validation(output){
 
-                        const sumIn = {}, sumOut = {};
-
-                        for (const vout of output){
-                            const tokenCurrency = vout.tokenCurrency.toString('hex');
-                            sumOut[tokenCurrency] = (sumOut[tokenCurrency] || 0) + vout.amount;
-                        }
-
-                        for (const vin of this.vin){
-                            const tokenCurrency = vin.tokenCurrency.toString('hex');
-                            sumIn[tokenCurrency] = (sumIn[tokenCurrency] || 0) + vin.amount;
-                        }
+                        const sumIn = this.sumIn(this.vin);
+                        const sumOut = this.sumOut(output);
 
                         this.validateOuts(sumIn, sumOut);
                         this.validateFee(sumIn, sumOut);
@@ -69,6 +61,20 @@ export default class ZetherBurnTransaction extends SimpleTransaction {
                     },
 
                     position: 1004,
+                },
+
+                u: {
+                    type: "buffer",
+                    fixedBytes: 64,
+
+                    position: 2000,
+                },
+
+                proof:{
+                    type: "buffer",
+                    minSize: 100,
+                    maxSize: 2*1024,
+                    position: 2001,
                 },
 
             }
@@ -84,6 +90,8 @@ export default class ZetherBurnTransaction extends SimpleTransaction {
         if (!sumIn[tokenCurrency]) sumIn[tokenCurrency] = 0;
 
         sumIn[tokenCurrency] += this.zetherInput.amount;
+
+        return sumIn;
     }
 
     transactionAddedToZether(chain = this._scope.mainChain, chainData = chain.data){
@@ -99,16 +107,9 @@ export default class ZetherBurnTransaction extends SimpleTransaction {
             '0x'+zetherPubKey2.toString('hex'),
         ];
 
-        if (this.registration.registered === 1){
+        const y = this._scope.cryptography.Zether.utils.G1Point(...zetherPublicKey);
 
-            const y = this._scope.cryptography.Zether.utils.G1PointArray(zetherPublicKey);
-
-            const yHash = this._scope.cryptography.Zether.utils.keccak256( this._scope.cryptography.Zether.utils.encodedPackaged( this._scope.cryptography.Zether.bn128.serialize( y ) ) );
-            if ( !chainData.zsc.registered(yHash)  )
-                chainData.zsc.register( y, this._scope.cryptography.Zether.utils.BNFieldfromHex( this.registration.c), this._scope.cryptography.Zether.utils.BNFieldfromHex( this.registration.s ) );
-        }
-
-        return chainData.zsc.fund( zetherPublicKey, this.vout[0].amount );
+        return chainData.zsc.burn( y, this.vout[0].amount, G1Point(...this.u), '0x'+this.proof.toString('hex'), '0x'+this.vout[0].publicKeyHash.toString('hex') );
 
     }
 

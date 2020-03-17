@@ -2,7 +2,6 @@ const {Exception, StringHelper, BufferHelper} = global.kernel.helpers;
 const {CryptoHelper} = global.kernel.helpers.crypto;
 
 import EthCrypto from 'eth-crypto';
-import bn128 from "src/utils/crypto-utils/bn128";
 const {BN} = global.kernel.utils;
 const ecies = require("eth-ecies");
 

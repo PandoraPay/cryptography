@@ -7,6 +7,7 @@ import TransactionScriptTypeEnum from "src/transactions/models/tx/base/transacti
 
 import SimpleTransaction from "./../simple/simple-transaction";
 import ZetherVoutDeposit from "./parts/zether-vout-deposit"
+import Zether from "zetherjs"
 
 export default class ZetherDepositTransaction extends SimpleTransaction {
 
@@ -79,27 +80,16 @@ export default class ZetherDepositTransaction extends SimpleTransaction {
 
     transactionAddedToZether(chain = this._scope.mainChain, chainData = chain.data){
 
-        const zetherPubKey1 = Buffer.alloc(32);
-        this.vout[0].zetherPublicKey.copy( zetherPubKey1,   0, 0,        32 );
-
-        const zetherPubKey2 = Buffer.alloc(32);
-        this.vout[0].zetherPublicKey.copy( zetherPubKey2,   0, 32,        64 );
-
-        const zetherPublicKey = [
-            '0x'+zetherPubKey1.toString('hex'),
-            '0x'+zetherPubKey2.toString('hex'),
-        ];
+        const y =  Zether.bn128.unserializeFromBuffer(this.vout[0].zetherPublicKey);
 
         if (this.registration.registered === 1){
 
-            const y = this._scope.cryptography.Zether.utils.G1PointArray(zetherPublicKey);
-
-            const yHash = this._scope.cryptography.Zether.utils.keccak256( this._scope.cryptography.Zether.utils.encodedPackaged( this._scope.cryptography.Zether.bn128.serialize( y ) ) );
+            const yHash = Zether.utils.keccak256( Zether.utils.encodedPackaged( Zether.bn128.serialize( y ) ) );
             if ( !chainData.zsc.registered(yHash)  )
-                chainData.zsc.register( y, this._scope.cryptography.Zether.utils.BNFieldfromHex( this.registration.c), this._scope.cryptography.Zether.utils.BNFieldfromHex( this.registration.s ) );
+                chainData.zsc.register( y, Zether.utils.BNFieldfromHex( this.registration.c), Zether.utils.BNFieldfromHex( this.registration.s ) );
         }
 
-        return chainData.zsc.fund( zetherPublicKey, this.vout[0].amount );
+        return chainData.zsc.fund( y, this.vout[0].amount );
 
     }
 
