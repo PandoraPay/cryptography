@@ -8,8 +8,6 @@ export default class SimpleChainData {
 
         this._scope = scope;
 
-        this.zsc = new this._scope.cryptography.Zether.ZSC(this, this._scope.argv.transactions.zether.zscAddress);
-
         this.clearData();
 
     }
@@ -33,10 +31,15 @@ export default class SimpleChainData {
         this._transactions = {};
         this.end = 0;
         this.start = 0;
+        this.zsc = new this._scope.cryptography.Zether.ZSC(this, this._scope.argv.transactions.zether.zscAddress);
     }
 
     getEpoch(){
-        return this.end / 10;
+        return Math.floor( this.end / 10 );
+    }
+
+    fakeIncrementEpoch(){
+        this.end += 10;
     }
 
 }

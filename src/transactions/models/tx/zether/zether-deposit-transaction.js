@@ -89,8 +89,10 @@ export default class ZetherDepositTransaction extends SimpleTransaction {
                 chainData.zsc.register( y, Zether.utils.BNFieldfromHex( this.registration.c), Zether.utils.BNFieldfromHex( this.registration.s ) );
         }
 
-        return chainData.zsc.fund( y, this.vout[0].amount );
+        const verify = chainData.zsc.fund( y, this.vout[0].amount );
+        if (!verify) throw new Exception(this, "Deposit verification failed");
 
+        return true;
     }
 
 

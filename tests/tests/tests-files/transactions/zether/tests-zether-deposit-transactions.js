@@ -50,18 +50,12 @@ export default async function run () {
                     this.expect( feeOut.tokenCurrency, TransactionTokenCurrencyTypeEnum.TX_TOKEN_CURRENCY_NATIVE_TYPE.id );
                     this.expect( feeOut.amount, fee);
 
-                } else {
+                } else
                     this.expect( feeOut , undefined);
-                }
 
-                const out = await tx.signTransaction([ privateAddress ]);
 
-                this.expect( typeof out === "object", true);
-                this.expect( out[0].length, 65 );
-
-                const verification = tx.verifyTransactionSignatures( );
-
-                this.expect( verification, true );
+                await tx.signTransaction([ privateAddress ]);
+                this.expect( tx.verifyTransactionSignatures( ), true );
 
                 tx.transactionAddedToZether(this._scope.simpleChain);
 
