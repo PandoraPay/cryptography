@@ -21,15 +21,17 @@ export default async function run () {
             const privateAddress2 = this._scope.cryptography.addressGenerator.generateAddressFromMnemonic( ).privateAddress;
             const address2 = privateAddress2.getAddress();
 
+            let balance = 1000;
+
             const tx = new ZetherDepositTransaction(this._scope, undefined, {
 
                 vin: [ {
-                    amount: 1000,
+                    amount: balance,
                     publicKey: privateAddress.publicKey,
                 }],
 
                 vout: [{
-                    amount: 1000,
+                    amount: balance,
                     zetherPublicKey: zetherAddress.publicKey,
                 }],
 
@@ -68,7 +70,7 @@ export default async function run () {
 
                 } );
 
-                tx.createZetherBurnProof( zetherPrivateAddress, fee ? 500 : 1000, this._scope.simpleChain );
+                tx.createZetherBurnProof( zetherPrivateAddress, balance, this._scope.simpleChain );
 
                 const feeOut = tx.fee();
                 if (fee){
@@ -85,6 +87,8 @@ export default async function run () {
                 tx.transactionAddedToZether(this._scope.simpleChain);
 
                 this._scope.simpleChain.data.fakeIncrementEpoch();
+                balance -= 500;
+
             }
 
         },
@@ -101,15 +105,17 @@ export default async function run () {
             const privateAddress2 = this._scope.cryptography.addressGenerator.generateAddressFromMnemonic( ).privateAddress;
             const address2 = privateAddress2.getAddress();
 
+            let balance = 1000;
+
             const tx = new ZetherDepositTransaction(this._scope, undefined, {
 
                 vin: [ {
-                    amount: 1000,
+                    amount: balance,
                     publicKey: privateAddress.publicKey,
                 }],
 
                 vout: [{
-                    amount: 1000,
+                    amount: balance,
                     zetherPublicKey: zetherAddress.publicKey,
                 }],
 
@@ -145,7 +151,7 @@ export default async function run () {
 
                 } );
 
-                tx.createZetherBurnProof( zetherPrivateAddress, fee ? 500 : 1000, this._scope.simpleChain );
+                tx.createZetherBurnProof( zetherPrivateAddress, balance, this._scope.simpleChain );
 
                 const feeOut = tx.fee();
                 if (fee){
@@ -157,6 +163,7 @@ export default async function run () {
                 tx.transactionAddedToZether(this._scope.simpleChain);
 
                 this._scope.simpleChain.data.fakeIncrementEpoch();
+                balance -= 500;
             }
 
         }

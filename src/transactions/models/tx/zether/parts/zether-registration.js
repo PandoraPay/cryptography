@@ -59,6 +59,10 @@ export default class ZetherRegistration extends DBSchema {
                     parentHashingPropagation: true,
                     fct: (b)=>b,
                 },
+            },
+
+            saving: {
+                storeDataNotId: true,
             }
 
         }, schema, false), data, type, creationOptions);
