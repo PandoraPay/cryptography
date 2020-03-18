@@ -21,8 +21,10 @@ export default async function run () {
             const privateAddress2 = this._scope.cryptography.addressGenerator.generateAddressFromMnemonic( ).privateAddress;
             const address2 = privateAddress2.getAddress();
 
+            let step = -1;
             for (const fee of [0, 200]){
 
+                step++;
                 const tx = new ZetherDepositTransaction(this._scope, undefined, {
 
                     vin: [ {
@@ -35,11 +37,11 @@ export default async function run () {
                         zetherPublicKey: zetherAddress.publicKey,
                     }],
 
-                    registration:{
+                    registration: step ? undefined : {
                         registered: 1,
                         c: zetherRegistration.c,
                         s: zetherRegistration.s,
-                    },
+                    } ,
 
                 } );
 

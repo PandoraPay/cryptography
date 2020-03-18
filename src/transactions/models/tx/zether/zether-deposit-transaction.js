@@ -87,6 +87,8 @@ export default class ZetherDepositTransaction extends SimpleTransaction {
             const yHash = Zether.utils.keccak256( Zether.utils.encodedPackaged( Zether.bn128.serialize( y ) ) );
             if ( !chainData.zsc.registered(yHash)  )
                 chainData.zsc.register( y, Zether.utils.BNFieldfromHex( this.registration.c), Zether.utils.BNFieldfromHex( this.registration.s ) );
+            else
+                throw new Exception(this, "Account already registered");
         }
 
         const verify = chainData.zsc.fund( y, this.vout[0].amount );

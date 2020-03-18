@@ -48,8 +48,10 @@ export default async function run () {
 
             this._scope.simpleChain.data.fakeIncrementEpoch();
 
+            let step = -1;
             for (const fee of [0, 200]){
 
+                step +=1;
                 const tx = new ZetherBurnTransaction(this._scope, undefined, {
 
                     vin: fee ? [ {
@@ -132,8 +134,10 @@ export default async function run () {
 
             this._scope.simpleChain.data.fakeIncrementEpoch();
 
+            let step = -1;
             for (const fee of [0, 200]){
 
+                step +=1;
                 const tx = new ZetherBurnTransaction(this._scope, undefined, {
 
                     vin: [],

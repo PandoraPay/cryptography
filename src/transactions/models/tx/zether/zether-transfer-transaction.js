@@ -83,6 +83,14 @@ export default class ZetherTransferTransaction extends SimpleTransaction {
                     minSize: 0,
                     maxSize: 255,
 
+                    validation(registrations){
+                        for (let i=0; i <registrations.length; i++)
+                            if (registrations[i].index < 0 || registrations[i].index > this.y.length )
+                                throw new Exception(this, "index invalid for registration", {index: registrations[i].index});
+
+                        return true;
+                    },
+
                     position: 2001,
                 },
 
@@ -92,6 +100,10 @@ export default class ZetherTransferTransaction extends SimpleTransaction {
                     classObject: ZetherPointBuffer,
                     minSize: 2,
                     maxSize: 255,
+
+                    validation(C){
+                        return C.length === this.y.length;
+                    },
 
                     position: 2002,
                 },
@@ -159,13 +171,21 @@ export default class ZetherTransferTransaction extends SimpleTransaction {
         const D = Zether.bn128.unserializeFromBuffer(this.D);
         const u = Zether.bn128.unserializeFromBuffer(this.u);
 
+        for (const registration of this.registrations){
+
+            const yHash = Zether.utils.keccak256( '0x'+this.y[ registration.index ].toString('hex') );
+            if ( !chainData.zsc.registered(yHash)  )
+                chainData.zsc.register( y[ registration.index ], Zether.utils.BNFieldfromHex( registration.c), Zether.utils.BNFieldfromHex( registration.s ) );
+
+        }
+
         const verify = chainData.zsc.transfer(  C, D, y, u, this.proof);
         if (!verify) throw new Exception(this, "Burn verification failed");
 
         return true;
     }
 
-    createZetherTransferProof( zetherPrivateAddress, zetherDestinationAddress, amount, decoys = [], totalBalanceAvailable, chain = this._scope.mainChain, chainData = chain.data ){
+    createZetherTransferProof( zetherPrivateAddress, zetherDestinationAddress, amount, decoys = [], totalBalanceAvailable, registrations = [], chain = this._scope.mainChain, chainData = chain.data ){
 
         const size = 2 + decoys.length;
 
@@ -185,6 +205,9 @@ export default class ZetherTransferTransaction extends SimpleTransaction {
         };
 
         const destinationPublicKey = Zether.bn128.unserializeFromBuffer( zetherDestinationAddress.publicKey );
+
+        for (let i=0; i < registrations.length; i++)
+            registrations[i].publicKeyBN = Zether.bn128.unserializeFromBuffer(registrations[i].publicKey);
 
         if ( this._match( destinationPublicKey, accountKeyPair.y  ) )
             throw "Sending to yourself is currently unsupported (and useless!).";
@@ -213,25 +236,44 @@ export default class ZetherTransferTransaction extends SimpleTransaction {
             index[1] = index[1] + (index[1] % 2 === 0 ? 1 : -1);
         } // make sure you and your friend have opposite parity
 
+        const registrationsFinal = [];
+        for (let i=0; i < y.length; i++){
+
+            const yHash = Zether.utils.keccak256( Zether.utils.encodedPackaged( Zether.bn128.serialize( y[i] ) ) );
+            if ( !chainData.zsc.registered(yHash)  ){
+
+                let found = -1;
+                for (let j=0; j < registrations.length; j++)
+                    if (registrations[j].publicKeyBN.eq( y[ i ]) ){
+                        found = j;
+                        break;
+                    }
+
+                if (found === -1 )
+                    throw new Exception(this, "Please make sure all parties (including decoys) are registered.", {}); // todo: better error message, i.e., which friend?
+
+                registrationsFinal.push(this._createSchemaObject({
+                    index: i,
+                    c: registrations[found].c,
+                    s: registrations[found].s,
+                }, "object", 'registrations' ));
+
+            }
+
+        }
+
+        if (registrationsFinal.length > registrations.length ) throw new Exception(this, "Too many registrations");
+        if (registrationsFinal.length < registrations.length ) throw new Exception(this, "Too few registrations");
 
         const lastRollOver = chainData.getEpoch();
 
-        let result = chainData.zsc.simulateAccounts( y, chainData.getEpoch() );
+        let unserialized = chainData.zsc.simulateAccounts( y, chainData.getEpoch() );
 
-        const unserialized = result.map(account => account );
-
-        let notRegistered = 0;
-        for (let i=0; i < y.length; i++){
-
-            const account = unserialized[i];
-
-            if (account[0].eq( Zether.bn128.zero) && account[1].eq( Zether.bn128.zero )  )
-                notRegistered += 1;
-        }
-
-        if (notRegistered !== this.registrations.length)
-            throw new Error("Please make sure all parties (including decoys) are registered."); // todo: better error message, i.e., which friend?
-
+        //extra: simulate registrations
+        for (let i=0; i < unserialized.length; i++)
+            if ( unserialized[i][0].eq( Zether.bn128.zero) && unserialized[i][1].eq( Zether.bn128.zero) ){
+                unserialized[i] = [ y[i], Zether.utils.g()  ]
+            }
 
         const r = Zether.bn128.randomScalar();
         let C = y.map((party, i) => Zether.bn128.curve.g.mul(i === index[0] ? new BN(-amount) : i === index[1] ? new BN( amount ) : new BN(0)).add( party.mul(r)));
@@ -256,6 +298,7 @@ export default class ZetherTransferTransaction extends SimpleTransaction {
         this.D = Zether.bn128.serializeToBuffer(D);
         this.proof = Buffer.from( proof.slice(2), 'hex');
         this.u = Zether.bn128.serializeToBuffer(u);
+        this.registrations = registrationsFinal;
         this.whisperSender = Zether.bn128.toBuffer(v2);
         this.whisperReceiver = Zether.bn128.toBuffer(v);
 

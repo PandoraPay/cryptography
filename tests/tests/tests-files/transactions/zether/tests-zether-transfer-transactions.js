@@ -9,7 +9,7 @@ export default async function run () {
 
     describe("Zether Trasnfer Transaction", {
 
-        "one input burn": async function () {
+        "zether transfer": async function () {
 
             this._scope.simpleChain.data.clearData();
 
@@ -49,8 +49,10 @@ export default async function run () {
 
             this._scope.simpleChain.data.fakeIncrementEpoch();
 
+            let step = -1;
             for (const fee of [0, 200]){
 
+                step += 1;
                 const tx = new ZetherTransferTransaction(this._scope, undefined, {
 
                     vin: fee ? [ {
@@ -60,14 +62,12 @@ export default async function run () {
 
                     vout: [],
 
-                }, "object", {skipProcessingConstructionValues: true, skipValidation: true} );
+                }, "object", { skipValidation: true} );
 
-                tx.fillRegistrations([{
+                tx.createZetherTransferProof( zetherPrivateAddress,  zetherAddress2,500, [], balance, step ? [] : [{
                     publicKey: zetherAddress2.publicKey,
-                    ...zetherAddress2,
-                }]);
-
-                tx.createZetherTransferProof( zetherPrivateAddress,  zetherAddress2,500, [], balance, this._scope.simpleChain );
+                    ...zetherRegistration2,
+                }], this._scope.simpleChain );
 
                 const feeOut = tx.fee();
                 if (fee){

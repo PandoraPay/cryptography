@@ -241,6 +241,13 @@ export default class SimpleTransaction extends BaseTransaction {
 
         let feeTokenCurrencies = 0, lastTokenCurrency;
 
+        for (const tokenCurrency in sumIn )
+            if (sumIn[tokenCurrency] && sumOut[tokenCurrency] === undefined ) {
+                fees[tokenCurrency] = sumIn[tokenCurrency];
+                feeTokenCurrencies += 1;
+                lastTokenCurrency = tokenCurrency;
+            }
+
         for (const tokenCurrency in sumOut)
             if (sumOut[tokenCurrency] < sumIn[tokenCurrency] ) {
                 fees[tokenCurrency] = sumIn[tokenCurrency] - sumOut[tokenCurrency] ;
