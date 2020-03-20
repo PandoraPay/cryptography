@@ -59,7 +59,7 @@ export default async function run () {
                 await tx.signTransaction([ privateAddress ]);
                 this.expect( tx.verifyTransactionSignatures( ), true );
 
-                tx.transactionAddedToZether(this._scope.simpleChain);
+                await tx.transactionAddedToZether(this._scope.simpleChain);
 
             }
 

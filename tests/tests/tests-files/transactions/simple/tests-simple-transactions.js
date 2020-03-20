@@ -63,6 +63,25 @@ export default async function run () {
 
                 this.expect( verification, true );
 
+                const buffer = tx.toBuffer();
+                const tx2 = new SimpleTransaction(this._scope, undefined, {
+
+                    vin: [ {
+                        amount: 50,
+                        publicKey: privateAddress.publicKey,
+                    }],
+
+                    vout: [ {
+                        amount: 50,
+                        publicKeyHash: address2.publicKeyHash,
+                    }],
+
+
+                } );
+
+                tx2.fromBuffer(buffer);
+                this.expect( tx2.toHex(), tx.toHex() );
+
             }
 
         },

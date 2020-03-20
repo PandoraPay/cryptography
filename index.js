@@ -110,7 +110,11 @@ const library = {
                 DBSchemaEncryptionTypeEnum,
             }
         }
-    }
+    },
+
+    zether:{
+        ...Zether
+    },
 
 
 };

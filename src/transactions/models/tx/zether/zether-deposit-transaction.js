@@ -78,15 +78,15 @@ export default class ZetherDepositTransaction extends SimpleTransaction {
 
 
 
-    transactionAddedToZether(chain = this._scope.mainChain, chainData = chain.data){
+    async transactionAddedToZether(chain = this._scope.mainChain, chainData = chain.data){
 
         const y =  Zether.bn128.unserializeFromBuffer(this.vout[0].zetherPublicKey);
 
         if (this.registration.registered === 1){
 
             const yHash = Zether.utils.keccak256( Zether.utils.encodedPackaged( Zether.bn128.serialize( y ) ) );
-            if ( !chainData.zsc.registered(yHash)  )
-                chainData.zsc.register( y, Zether.utils.BNFieldfromHex( this.registration.c), Zether.utils.BNFieldfromHex( this.registration.s ) );
+            if ( await chainData.zsc.registered(yHash) === false )
+                await chainData.zsc.register( y, Zether.utils.BNFieldfromHex( this.registration.c), Zether.utils.BNFieldfromHex( this.registration.s ) );
             else
                 throw new Exception(this, "Account already registered");
         }

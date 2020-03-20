@@ -44,7 +44,7 @@ export default async function run () {
             } );
 
             await tx.signTransaction([ privateAddress ]);
-            tx.transactionAddedToZether(this._scope.simpleChain);
+            await tx.transactionAddedToZether(this._scope.simpleChain);
 
             this._scope.simpleChain.data.fakeIncrementEpoch();
 
@@ -72,7 +72,7 @@ export default async function run () {
 
                 } );
 
-                tx.createZetherBurnProof( zetherPrivateAddress, balance, this._scope.simpleChain );
+                await tx.createZetherBurnProof( zetherPrivateAddress, balance, this._scope.simpleChain );
 
                 const feeOut = tx.fee();
                 if (fee){
@@ -86,7 +86,7 @@ export default async function run () {
                 await tx.signTransaction(fee ? [ privateAddress ] : []);
                 this.expect( tx.verifyTransactionSignatures( ), true );
 
-                tx.transactionAddedToZether(this._scope.simpleChain);
+                await tx.transactionAddedToZether(this._scope.simpleChain);
 
                 this._scope.simpleChain.data.fakeIncrementEpoch();
                 balance -= 500;
@@ -130,7 +130,7 @@ export default async function run () {
             } );
 
             await tx.signTransaction([ privateAddress ]);
-            tx.transactionAddedToZether(this._scope.simpleChain);
+            await tx.transactionAddedToZether(this._scope.simpleChain);
 
             this._scope.simpleChain.data.fakeIncrementEpoch();
 
@@ -155,7 +155,7 @@ export default async function run () {
 
                 } );
 
-                tx.createZetherBurnProof( zetherPrivateAddress, balance, this._scope.simpleChain );
+                await tx.createZetherBurnProof( zetherPrivateAddress, balance, this._scope.simpleChain );
 
                 const feeOut = tx.fee();
                 if (fee){
@@ -164,7 +164,7 @@ export default async function run () {
                 } else
                     this.expect( feeOut , undefined);
 
-                tx.transactionAddedToZether(this._scope.simpleChain);
+                await tx.transactionAddedToZether(this._scope.simpleChain);
 
                 this._scope.simpleChain.data.fakeIncrementEpoch();
                 balance -= 500;

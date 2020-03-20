@@ -45,7 +45,7 @@ export default async function run () {
             } );
 
             await tx.signTransaction([ privateAddress ]);
-            tx.transactionAddedToZether(this._scope.simpleChain);
+            await tx.transactionAddedToZether(this._scope.simpleChain);
 
             this._scope.simpleChain.data.fakeIncrementEpoch();
 
@@ -64,7 +64,7 @@ export default async function run () {
 
                 }, "object", { skipValidation: true} );
 
-                tx.createZetherTransferProof( zetherPrivateAddress,  zetherAddress2,500, [], balance, step ? [] : [{
+                await tx.createZetherTransferProof( zetherPrivateAddress,  zetherAddress2,500, [], balance, step ? [] : [{
                     publicKey: zetherAddress2.publicKey,
                     ...zetherRegistration2,
                 }], this._scope.simpleChain );
@@ -81,7 +81,7 @@ export default async function run () {
                 await tx.signTransaction(fee ? [ privateAddress ] : []);
                 this.expect( tx.verifyTransactionSignatures( ), true );
 
-                tx.transactionAddedToZether(this._scope.simpleChain);
+                await tx.transactionAddedToZether(this._scope.simpleChain);
 
                 this._scope.simpleChain.data.fakeIncrementEpoch();
                 balance -= 500;

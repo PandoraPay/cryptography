@@ -164,7 +164,7 @@ export default class ZetherTransferTransaction extends SimpleTransaction {
         return sumIn;
     }
 
-    transactionAddedToZether(chain = this._scope.mainChain, chainData = chain.data){
+    async transactionAddedToZether(chain = this._scope.mainChain, chainData = chain.data){
 
         const C = this.C.map( it => Zether.bn128.unserializeFromBuffer(it.buffer) );
         const y = this.y.map( it => Zether.bn128.unserializeFromBuffer(it.buffer) );
@@ -174,8 +174,8 @@ export default class ZetherTransferTransaction extends SimpleTransaction {
         for (const registration of this.registrations){
 
             const yHash = Zether.utils.keccak256( '0x'+this.y[ registration.index ].toString('hex') );
-            if ( !chainData.zsc.registered(yHash)  )
-                chainData.zsc.register( y[ registration.index ], Zether.utils.BNFieldfromHex( registration.c), Zether.utils.BNFieldfromHex( registration.s ) );
+            if ( await chainData.zsc.registered(yHash) === false )
+                await chainData.zsc.register( y[ registration.index ], Zether.utils.BNFieldfromHex( registration.c), Zether.utils.BNFieldfromHex( registration.s ) );
 
         }
 
@@ -185,7 +185,7 @@ export default class ZetherTransferTransaction extends SimpleTransaction {
         return true;
     }
 
-    createZetherTransferProof( zetherPrivateAddress, zetherDestinationAddress, amount, decoys = [], totalBalanceAvailable, registrations = [], chain = this._scope.mainChain, chainData = chain.data ){
+    async createZetherTransferProof( zetherPrivateAddress, zetherDestinationAddress, amount, decoys = [], totalBalanceAvailable, registrations = [], chain = this._scope.mainChain, chainData = chain.data ){
 
         const size = 2 + decoys.length;
 
@@ -240,7 +240,7 @@ export default class ZetherTransferTransaction extends SimpleTransaction {
         for (let i=0; i < y.length; i++){
 
             const yHash = Zether.utils.keccak256( Zether.utils.encodedPackaged( Zether.bn128.serialize( y[i] ) ) );
-            if ( !chainData.zsc.registered(yHash)  ){
+            if ( await chainData.zsc.registered(yHash) === false ){
 
                 let found = -1;
                 for (let j=0; j < registrations.length; j++)
@@ -267,7 +267,7 @@ export default class ZetherTransferTransaction extends SimpleTransaction {
 
         const lastRollOver = chainData.getEpoch();
 
-        let unserialized = chainData.zsc.simulateAccounts( y, chainData.getEpoch() );
+        let unserialized = await chainData.zsc.simulateAccounts( y, chainData.getEpoch() );
 
         //extra: simulate registrations
         for (let i=0; i < unserialized.length; i++)

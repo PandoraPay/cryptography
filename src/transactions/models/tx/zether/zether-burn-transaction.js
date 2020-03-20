@@ -93,7 +93,7 @@ export default class ZetherBurnTransaction extends SimpleTransaction {
         return sumIn;
     }
 
-    transactionAddedToZether(chain = this._scope.mainChain, chainData = chain.data){
+    async transactionAddedToZether(chain = this._scope.mainChain, chainData = chain.data){
 
         const y =  Zether.bn128.unserializeFromBuffer(this.zetherInput.zetherPublicKey);
 
@@ -103,13 +103,13 @@ export default class ZetherBurnTransaction extends SimpleTransaction {
         return true;
     }
 
-    createZetherBurnProof( zetherPrivateAddress, totalBalanceAvailable, chain = this._scope.mainChain, chainData = chain.data ){
+    async createZetherBurnProof( zetherPrivateAddress, totalBalanceAvailable, chain = this._scope.mainChain, chainData = chain.data ){
 
         const y =  Zether.bn128.unserializeFromBuffer(this.zetherInput.zetherPublicKey);
 
         const lastRollOver = chainData.getEpoch();
 
-        let result = chainData.zsc.simulateAccounts( [y], chainData.getEpoch() );
+        let result = await chainData.zsc.simulateAccounts( [y], chainData.getEpoch() );
 
         const simulated = result[0];
         const CLn = simulated[0].add( Zether.bn128.curve.g.mul( new BN( - this.zetherInput.amount ) ));
