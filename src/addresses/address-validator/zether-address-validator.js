@@ -43,13 +43,14 @@ export default class ZetherAddressValidator {
         if (typeof input === "string" ){
 
             /**
-             * 38 = Address WIF ( 1 + 64 + 4)
+             * 70 = Address WIF ( 1 + 64 + 1 + 4 )
+             * or
+             * 134 = Address WIF (1 + 64 + 1 + 32 + 32 + 4 )
              */
             if ( Base58.verify( input )) {
 
                 const base  = Base58.decode(input);
-                if ( (base.length === 69) )
-                    input = base;
+                if ( base.length === 70 || base.length === 134 ) input = base;
 
             } else
                 throw new Exception(this, "Input is string but not base58");

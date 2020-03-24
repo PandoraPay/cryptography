@@ -4,7 +4,7 @@ export default async function run () {
 
     describe("Addresses Generator", {
 
-        "generateAddressFromMnemonic check": async function (){
+        "generate address": async function (){
 
             for (const networkByte of [this._scope.argv.crypto.addresses.publicAddress.publicAddressNetworkByte_Main, this._scope.argv.crypto.addresses.publicAddress.publicAddressNetworkByte_Testnet]){
 
@@ -27,7 +27,7 @@ export default async function run () {
 
         },
 
-        "checkAddressFromMnemonic check": async function (){
+        "validateAddress check": async function (){
 
             for (const networkByte of [this._scope.argv.crypto.addresses.publicAddress.publicAddressNetworkByte_Main, this._scope.argv.crypto.addresses.publicAddress.publicAddressNetworkByte_Testnet]){
 
@@ -36,9 +36,10 @@ export default async function run () {
                 const publicAddress = address.privateAddress.getAddress(networkByte);
                 const publicAddressString = publicAddress.calculateAddress();
 
-                const address2 = this._scope.cryptography.addressValidator.validateAddress( publicAddressString );
+                const publicAddress2 = this._scope.cryptography.addressValidator.validateAddress( publicAddressString );
 
-                this.expect(publicAddress.publicKeyHash, address2.publicKeyHash );
+                this.expect(publicAddress.publicKeyHash, publicAddress2.publicKeyHash );
+                this.expect(publicAddress.calculateAddress( ), publicAddress2.calculateAddress( ) );
 
             }
 
@@ -73,6 +74,34 @@ export default async function run () {
                 this.expect(typeof addressBase58Registration,  "string");
 
                 this.expect(addressBase58Registration.length > addressBase58.length,  true);
+
+            }
+
+        },
+
+        "validate zether address": async function (){
+
+            for (const networkByte of [this._scope.argv.crypto.addresses.publicAddress.publicAddressNetworkByte_Main, this._scope.argv.crypto.addresses.publicAddress.publicAddressNetworkByte_Testnet]){
+
+                const address = this._scope.cryptography.addressGenerator.generateAddressFromMnemonic( );
+                const zetherPrivateAddress = address.privateAddress.getZetherPrivateAddress();
+
+                const zetherPublicAddress = zetherPrivateAddress.getZetherAddress(false, networkByte);
+                const zetherPublicAddressString = zetherPublicAddress.calculateAddress();
+
+                const zetherPublicAddress2 = this._scope.cryptography.zetherAddressValidator.validateZetherAddress( zetherPublicAddressString );
+
+                this.expect(zetherPublicAddress.publicKey, zetherPublicAddress2.publicKey );
+                this.expect(zetherPublicAddress.calculateAddress( ), zetherPublicAddress2.calculateAddress( ) );
+
+
+                const zetherPublicAddressRegistration = zetherPrivateAddress.getZetherAddress(true, networkByte);
+                const zetherPublicAddressRegistrationString = zetherPublicAddressRegistration.calculateAddress();
+
+                const zetherPublicAddressRegistration2 = this._scope.cryptography.zetherAddressValidator.validateZetherAddress( zetherPublicAddressRegistrationString );
+
+                this.expect(zetherPublicAddressRegistration.publicKey, zetherPublicAddressRegistration2.publicKey );
+                this.expect(zetherPublicAddressRegistration.calculateAddress( ), zetherPublicAddressRegistration2.calculateAddress( ) );
 
             }
 

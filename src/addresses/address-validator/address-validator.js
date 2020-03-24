@@ -49,8 +49,7 @@ export default class AddressValidator {
             if ( Base58.verify( input )) {
 
                 const base  = Base58.decode(input);
-                if ( (base.length === 25) )
-                    input = base;
+                if ( base.length === 25) input = base;
 
             } else
                 throw new Exception(this, "Input is string but not base58");
