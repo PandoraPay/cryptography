@@ -7,7 +7,7 @@ import TransactionTokenCurrencyTypeEnum from "src/transactions/models/tx/base/to
 export default async function run () {
 
 
-    describe("Zether Trasnfer Transaction", {
+    describe("Zether Transfer Transaction", {
 
         "zether transfer": async function () {
 

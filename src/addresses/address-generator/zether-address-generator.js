@@ -16,14 +16,19 @@ export default class ZetherAddressGenerator{
 
     }
 
-    generateZetherAddressFromPublicKey(publicKey, networkByte = this._scope.argv.crypto.addresses.publicAddress.publicAddressNetworkByte_Main){
+    generateZetherAddressFromPublicKey(publicKey, registration, networkByte = this._scope.argv.crypto.addresses.publicAddress.publicAddressNetworkByte_Main){
 
         if (typeof publicKey === "string" && StringHelper.isHex(publicKey)) publicKey = Buffer.from(publicKey, "hex");
         if (!Buffer.isBuffer(publicKey) || publicKey.length !== 64 ) throw new Exception(this, "PublicKey is invalid");
 
         return new ZetherAddress(this._scope, undefined, {
             networkByte,
-            publicKey
+            publicKey,
+            registration: registration ? {
+                registered: 1,
+                c: registration.c,
+                s: registration.s,
+            } : undefined,
         })
 
     }

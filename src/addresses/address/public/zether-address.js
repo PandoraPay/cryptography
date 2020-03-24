@@ -1,3 +1,5 @@
+import ZetherRegistration from "./zether-registration";
+
 const {Exception, StringHelper, BufferHelper} = global.kernel.helpers;
 const {MarshalData} = global.kernel.marshal;
 const {Helper} = global.kernel.helpers;
@@ -42,6 +44,14 @@ export default class ZetherAddress extends DBSchema {
                     position: 11,
                 },
 
+                registration: {
+
+                    type: "object",
+                    classObject: ZetherRegistration,
+
+                    position: 12.
+                },
+
                 checkSum:{
 
                     type: "buffer",
@@ -55,7 +65,7 @@ export default class ZetherAddress extends DBSchema {
                         return value.equals( this.calculateCheckSum(this) );
                     },
 
-                    position: 12,
+                    position: 13,
 
                 }
 
@@ -67,7 +77,18 @@ export default class ZetherAddress extends DBSchema {
 
     calculateCheckSum(){
 
-        const preAddr = MarshalData.marshalOneByte(this.networkByte).toString("hex") + this.publicKey.toString("hex");
+        const array = [
+            MarshalData.marshalOneByte(this.networkByte),
+            this.publicKey,
+            MarshalData.marshalOneByte(this.registration.registered),
+        ];
+
+        if (this.registration.registered === 1) {
+            array.push( this.registration.c );
+            array.push( this.registration.s );
+        }
+
+        const preAddr = Buffer.concat(array );
 
         const hash = CryptoHelper.keccak256( preAddr );
         const buffer = Buffer.alloc( 4 );

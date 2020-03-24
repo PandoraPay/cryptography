@@ -179,8 +179,8 @@ export default class ZetherTransferTransaction extends SimpleTransaction {
 
         }
 
-        const verify = chainData.zsc.transfer(  C, D, y, u, this.proof);
-        if (!verify) throw new Exception(this, "Burn verification failed");
+        const verify = await chainData.zsc.transfer(  C, D, y, u, this.proof);
+        if (!verify) throw new Exception(this, "Transfer verification failed");
 
         return true;
     }

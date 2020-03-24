@@ -97,7 +97,7 @@ export default class ZetherBurnTransaction extends SimpleTransaction {
 
         const y =  Zether.bn128.unserializeFromBuffer(this.zetherInput.zetherPublicKey);
 
-        const verify = chainData.zsc.burn( y, this.zetherInput.amount, Zether.bn128.unserializeFromBuffer(this.u), this.proof, '0x'+this.vout[0].publicKeyHash.toString('hex') );
+        const verify = await chainData.zsc.burn( y, this.zetherInput.amount, Zether.bn128.unserializeFromBuffer(this.u), this.proof, '0x'+this.vout[0].publicKeyHash.toString('hex') );
         if (!verify) throw new Exception(this, "Burn verification failed");
 
         return true;

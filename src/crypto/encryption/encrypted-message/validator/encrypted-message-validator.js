@@ -38,6 +38,7 @@ export default class EncryptedMessageValidator {
     validateEncryptedMessage(input){
 
         const encryptedChatClass = this.getEncryptedMessageClass( input );
+        if (input instanceof encryptedChatClass) return input;
         return new encryptedChatClass( this._scope, undefined, input )
 
     }

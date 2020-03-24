@@ -11,6 +11,7 @@ export default class ZetherRegistration extends DBSchema {
 
                 registered:{
                     type: "number",
+                    fixedBytes: 1,
 
                     validation(registration){
                         return registration === 0 || registration === 1;
@@ -25,11 +26,11 @@ export default class ZetherRegistration extends DBSchema {
                     fixedBytes: 32,
 
                     skipMarshal(){
-                        return this.__data.registration === 1 ? false : true;
+                        return this.__data.registered === 1 ? false : true;
                     },
 
                     skipSaving(){
-                        return this.__data.registration === 1 ? false : true;
+                        return this.__data.registered === 1 ? false : true;
                     },
 
                     position : 101,
@@ -41,11 +42,11 @@ export default class ZetherRegistration extends DBSchema {
                     fixedBytes: 32,
 
                     skipMarshal(){
-                        return this.__data.registration === 1 ? false : true;
+                        return this.__data.registered === 1 ? false : true;
                     },
 
                     skipSaving(){
-                        return this.__data.registration === 1 ? false : true;
+                        return this.__data.registered === 1 ? false : true;
                     },
 
                     position : 102,

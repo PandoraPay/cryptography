@@ -68,7 +68,10 @@ export default class Address extends DBSchema {
 
     calculateCheckSum(){
 
-        const preAddr = MarshalData.marshalOneByte(this.networkByte).toString("hex") + this.publicKeyHash.toString("hex");
+        const preAddr = Buffer.concat([
+            MarshalData.marshalOneByte(this.networkByte),
+            this.publicKeyHash
+        ]);
 
         const hash = CryptoHelper.keccak256( preAddr );
         const buffer = Buffer.alloc( 4 );

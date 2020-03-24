@@ -67,19 +67,17 @@ export default class ZetherPrivateKeyAddress extends DBSchema {
     /**
      * returns a publicAddress
      */
-    getZetherAddress(networkByte ){
+    getZetherAddress( registration = false, networkByte ){
 
-        return this._scope.cryptography.zetherAddressGenerator.generateZetherAddressFromPublicKey( this.publicKey, networkByte);
+        return this._scope.cryptography.zetherAddressGenerator.generateZetherAddressFromPublicKey( this.publicKey, registration ? this.getZetherRegistration() : undefined, networkByte);
 
     }
 
     validateZetherPublicKey(value){
 
-        if (!value) value = this.publicKey;
-
         const pubKey = this._scope.cryptography.zetherCryptoSignature.createPublicKey( this.privateKey );
-
         return value.equals(pubKey);
+
     }
 
     getZetherRegistration(){

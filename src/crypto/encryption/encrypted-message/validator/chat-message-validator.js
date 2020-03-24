@@ -37,6 +37,7 @@ export default class ChatMessageValidator {
     validateChatMessage(input){
 
         const chatMessageClass = this.getChatMessageClass( input );
+        if (input instanceof chatMessageClass) return input;
         return new chatMessageClass( this._scope, undefined, input )
 
     }

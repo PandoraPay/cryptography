@@ -54,11 +54,25 @@ export default async function run () {
                 const zetherPrivateAddress = privateAddress.getZetherPrivateAddress();
                 this.expect(typeof zetherPrivateAddress, "object");
 
-                const zetherPublicAddress = zetherPrivateAddress.getZetherAddress(networkByte);
+                const zetherPublicAddress = zetherPrivateAddress.getZetherAddress(false, networkByte);
                 this.expect(typeof zetherPublicAddress, "object");
+
+                const zetherPublicAddressRegistration = zetherPrivateAddress.getZetherAddress(true, networkByte);
+                this.expect(typeof zetherPublicAddressRegistration, "object");
+
+                this.expect(zetherPublicAddress.publicKey, zetherPublicAddressRegistration.publicKey);
+
+                this.expect(zetherPublicAddressRegistration.registration.registered, 1);
+                this.expect(zetherPublicAddressRegistration.registration.s.equals(Buffer.alloc(32)), false);
+                this.expect(zetherPublicAddressRegistration.registration.c.equals(Buffer.alloc(32)), false);
 
                 const addressBase58 = zetherPublicAddress.calculateAddress( );
                 this.expect(typeof addressBase58,  "string");
+
+                const addressBase58Registration = zetherPublicAddressRegistration.calculateAddress( );
+                this.expect(typeof addressBase58Registration,  "string");
+
+                this.expect(addressBase58Registration.length > addressBase58.length,  true);
 
             }
 

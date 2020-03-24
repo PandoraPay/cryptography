@@ -1,4 +1,4 @@
-import ZetherRegistration from "./parts/zether-registration";
+import ZetherRegistration from "src/addresses/address/public/zether-registration";
 
 const {Helper} = global.kernel.helpers;
 const {Exception, StringHelper, BufferHelper} = global.kernel.helpers;
@@ -91,7 +91,7 @@ export default class ZetherDepositTransaction extends SimpleTransaction {
                 throw new Exception(this, "Account already registered");
         }
 
-        const verify = chainData.zsc.fund( y, this.vout[0].amount );
+        const verify = await chainData.zsc.fund( y, this.vout[0].amount );
         if (!verify) throw new Exception(this, "Deposit verification failed");
 
         return true;
