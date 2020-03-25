@@ -49,11 +49,13 @@ export default async function run () {
 
             for (const networkByte of [this._scope.argv.crypto.addresses.publicAddress.publicAddressNetworkByte_Main, this._scope.argv.crypto.addresses.publicAddress.publicAddressNetworkByte_Testnet]){
 
-                const address = this._scope.cryptography.addressGenerator.generateAddressFromMnemonic( );
-                const privateAddress = address.privateAddress;
+                const address = this._scope.cryptography.zetherAddressGenerator.generateZetherAddressFromMnemonic( );
 
-                const zetherPrivateAddress = privateAddress.getZetherPrivateAddress();
-                this.expect(typeof zetherPrivateAddress, "object");
+                this.expect( Array.isArray(address.mnemonic), true);
+                this.expect( address.mnemonic.length > 10, true);
+                this.expect( typeof address.privateAddress, "object");
+
+                const zetherPrivateAddress = address.privateAddress;
 
                 const zetherPublicAddress = zetherPrivateAddress.getZetherAddress(false, networkByte);
                 this.expect(typeof zetherPublicAddress, "object");
@@ -83,8 +85,8 @@ export default async function run () {
 
             for (const networkByte of [this._scope.argv.crypto.addresses.publicAddress.publicAddressNetworkByte_Main, this._scope.argv.crypto.addresses.publicAddress.publicAddressNetworkByte_Testnet]){
 
-                const address = this._scope.cryptography.addressGenerator.generateAddressFromMnemonic( );
-                const zetherPrivateAddress = address.privateAddress.getZetherPrivateAddress();
+                const address = this._scope.cryptography.zetherAddressGenerator.generateZetherAddressFromMnemonic( );
+                const zetherPrivateAddress = address.privateAddress;
 
                 const zetherPublicAddress = zetherPrivateAddress.getZetherAddress(false, networkByte);
                 const zetherPublicAddressString = zetherPublicAddress.calculateAddress();

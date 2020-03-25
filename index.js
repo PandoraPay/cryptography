@@ -22,7 +22,11 @@ const BaseTransaction = require("src/transactions/models/tx/base/base-transactio
 const TransactionTypeEnum = require("src/transactions/models/tx/base/transaction-type-enum").default;
 const TransactionScriptTypeEnum = require("src/transactions/models/tx/base/transaction-script-type-enum").default;
 const TransactionTokenCurrencyTypeEnum = require("src/transactions/models/tx/base/tokens/transaction-token-currency-type-enum").default;
+
 const SimpleTransaction = require("src/transactions/models/tx/simple/simple-transaction").default;
+const ZetherDepositTransaction = require("src/transactions/models/tx/zether/zether-deposit-transaction").default;
+const ZetherBurnTransaction = require("src/transactions/models/tx/zether/zether-burn-transaction").default;
+const ZetherTransferTransaction = require("src/transactions/models/tx/zether/zether-transfer-transaction").default;
 
 const TestsFiles = require("tests/tests/tests-index").default;
 const DBEncryptedSchema = require("src/crypto/encryption/db-encrypted-schema/db-encrypted-schema").default;
@@ -50,6 +54,9 @@ const library = {
 
         simpleTransaction:{
             SimpleTransaction,
+            ZetherDepositTransaction,
+            ZetherBurnTransaction,
+            ZetherTransferTransaction,
         },
 
         TransactionTypeEnum,

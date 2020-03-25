@@ -4,6 +4,7 @@ const {Logger} = global.kernel;
 
 import PrivateKeyAddress from "../address/private/private-key-address";
 import Address from "../address/public/address";
+import Generator from "./generator"
 
 const bip39 = require('bip39');
 import HDKeyChain from "./hd-key-chain";
@@ -12,33 +13,7 @@ import HDKeyChain from "./hd-key-chain";
  * Enables Hierarchical Deterministic Wallets
  */
 
-export default class AddressGenerator{
-
-    constructor(scope){
-
-        this._scope = scope;
-
-        this.bip39 = bip39;
-
-    }
-
-    getAvailableMnemonicWordlists(){
-
-        const languages = [];
-        for (const key in bip39.wordlists)
-            if (key && bip39.wordlists[key].length > 1000)
-                languages.push(key);
-
-        return languages;
-    }
-
-    generateMnemonic(  language = 'english' ) {
-
-        const words = bip39.generateMnemonic(256, null, bip39.wordlists[language] );
-
-        return words.split(' ');
-
-    }
+export default class AddressGenerator extends Generator {
 
     generateAddressFromMnemonic( words = [], sequence = 0 ){
 
@@ -54,7 +29,7 @@ export default class AddressGenerator{
         const hdwallet = new HDKeyChain();
         hdwallet.fromSeedMnemonic(mnemonic);
 
-        const privateKey = hdwallet.deriveKey(0,0, sequence);
+        const privateKey = hdwallet.deriveKey(0, 0, sequence)
 
         return {
             mnemonic: words,

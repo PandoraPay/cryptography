@@ -14,7 +14,8 @@ export default async function run () {
 
             const privateAddress = this._scope.cryptography.addressGenerator.generateAddressFromMnemonic( ).privateAddress;
             const address = privateAddress.getAddress();
-            const zetherPrivateAddress = privateAddress.getZetherPrivateAddress();
+
+            const zetherPrivateAddress = this._scope.cryptography.zetherAddressGenerator.generateZetherAddressFromMnemonic( ).privateAddress;
             const zetherAddress = zetherPrivateAddress.getZetherAddress();
             const zetherRegistration = zetherPrivateAddress.getZetherRegistration();
 

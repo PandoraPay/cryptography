@@ -82,33 +82,6 @@ export default class PrivateKeyAddress extends DBSchema {
         return value.equals(pubKey);
     }
 
-    getZetherPrivateAddress(){
-
-        const privateKey = CryptoHelper.dkeccak256(this.privateKey);
-
-        const concat = Buffer.concat([
-            Buffer.from("ZETHER"),
-            privateKey,
-            Buffer.from("KEY"),
-        ]);
-
-        let zetherPrivateKey = CryptoHelper.dkeccak256( concat );                                  //dkeccak256( PRIV + privateKey + publicKey + DELEGATE )
-
-        const concat2 = Buffer.concat([
-            Buffer.from("ZERO"),
-            zetherPrivateKey,
-            Buffer.from("SECRET")
-        ]);
-
-        zetherPrivateKey = CryptoHelper.dsha256( concat2 );
-
-        const zetherPrivateAddress = new ZetherPrivateKeyAddress(this._scope, undefined, {
-            privateKey: zetherPrivateKey,
-        });
-
-        return zetherPrivateAddress;
-    }
-
     /**
      * Get delegate stake private key
      *
