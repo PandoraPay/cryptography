@@ -28,5 +28,40 @@ export default class Generator{
 
     }
 
+    generateAddressFromMnemonic( words = [], sequence = 0 ){
+
+        if (!Array.isArray(words)) throw new Exception(this, "Seed for Address generation is not an array");
+
+        if (words.length === 0) words = this.generateMnemonic();
+
+        const mnemonic = words.join(' ');
+
+        const validation = bip39.validateMnemonic( mnemonic );
+        if (!validation) throw new Exception(this, "Mnemonic is invalid");
+
+        const hdwallet = new HDKeyChain();
+        hdwallet.fromSeedMnemonic(mnemonic);
+
+        const privateKey = this._deriveKey(hdwallet, sequence)
+
+        return {
+            mnemonic: words,
+            sequence,
+            privateAddress: this.generatePrivateAddressFromPrivateKey( privateKey ),
+        };
+
+    }
+
+    generateNewAddress(sequence){
+        return this.generateAddressFromMnemonic([], sequence);
+    }
+
+    _deriveKey(hdwallet, sequence){
+        throw "not defined";
+    }
+
+    generatePrivateAddressFromPrivateKey(privateKey){
+        throw "not defined";
+    }
 
 }

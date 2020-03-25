@@ -15,8 +15,8 @@ export default async function run () {
 
             const privateAddress = this._scope.cryptography.addressGenerator.generateAddressFromMnemonic( ).privateAddress;
 
-            const zetherPrivateAddress = this._scope.cryptography.zetherAddressGenerator.generateZetherAddressFromMnemonic( ).privateAddress;
-            const zetherAddress = zetherPrivateAddress.getZetherAddress();
+            const zetherPrivateAddress = this._scope.cryptography.zetherAddressGenerator.generateAddressFromMnemonic( ).privateAddress;
+            const zetherAddress = zetherPrivateAddress.getAddress();
             const zetherRegistration = zetherPrivateAddress.getZetherRegistration();
 
             const privateAddress2 = this._scope.cryptography.addressGenerator.generateAddressFromMnemonic( ).privateAddress;
@@ -101,8 +101,8 @@ export default async function run () {
             this._scope.simpleChain.data.clearData();
 
             const privateAddress = this._scope.cryptography.addressGenerator.generateAddressFromMnemonic( ).privateAddress;
-            const zetherPrivateAddress = this._scope.cryptography.zetherAddressGenerator.generateZetherAddressFromMnemonic( ).privateAddress;
-            const zetherAddress = zetherPrivateAddress.getZetherAddress();
+            const zetherPrivateAddress = this._scope.cryptography.zetherAddressGenerator.generateAddressFromMnemonic( ).privateAddress;
+            const zetherAddress = zetherPrivateAddress.getAddress();
             const zetherRegistration = zetherPrivateAddress.getZetherRegistration();
 
             const privateAddress2 = this._scope.cryptography.addressGenerator.generateAddressFromMnemonic( ).privateAddress;

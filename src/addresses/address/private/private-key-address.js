@@ -75,11 +75,8 @@ export default class PrivateKeyAddress extends DBSchema {
 
     validatePublicKey(value){
 
-        if (!value) value = this.publicKey;
-
         const pubKey = this._scope.cryptography.cryptoSignature.createPublicKey( this.privateKey );
-
-        return value.equals(pubKey);
+        return this.publicKey.equals(pubKey);
     }
 
     /**

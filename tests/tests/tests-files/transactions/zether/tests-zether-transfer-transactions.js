@@ -14,12 +14,12 @@ export default async function run () {
             this._scope.simpleChain.data.clearData();
 
             const privateAddress = this._scope.cryptography.addressGenerator.generateAddressFromMnemonic( ).privateAddress;
-            const zetherPrivateAddress = this._scope.cryptography.zetherAddressGenerator.generateZetherAddressFromMnemonic( ).privateAddress;
-            const zetherAddress = zetherPrivateAddress.getZetherAddress();
+            const zetherPrivateAddress = this._scope.cryptography.zetherAddressGenerator.generateAddressFromMnemonic( ).privateAddress;
+            const zetherAddress = zetherPrivateAddress.getAddress();
             const zetherRegistration = zetherPrivateAddress.getZetherRegistration();
 
-            const zetherPrivateAddress2 = this._scope.cryptography.zetherAddressGenerator.generateZetherAddressFromMnemonic( ).privateAddress;
-            const zetherAddress2 = zetherPrivateAddress2.getZetherAddress();
+            const zetherPrivateAddress2 = this._scope.cryptography.zetherAddressGenerator.generateAddressFromMnemonic( ).privateAddress;
+            const zetherAddress2 = zetherPrivateAddress2.getAddress();
             const zetherRegistration2 = zetherPrivateAddress2.getZetherRegistration();
 
             let balance = 1000;

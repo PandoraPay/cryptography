@@ -94,14 +94,13 @@ export default class AddressValidator {
          if (typeof privateKeyInput === "string") privateKeyInput = Buffer.from(privateKeyInput, "hex");
          if (!Buffer.isBuffer(privateKeyInput)) throw new Exception(this, "private key must be a buffer");
 
-         if (privateKeyInput.length !== 32) throw new Exception(this, "private key length must be 32");
+         if (privateKeyInput.length !== 32 || privateKeyInput.equals(Buffer.alloc(32))) throw new Exception(this, "private key length must be 32");
 
-         const publicKey = EthCrypto.publicKeyByPrivateKey(privateKeyInput.toString("hex"));
-         const publicKeyCompressed = EthCrypto.publicKey.compress(publicKey);
+         const publicKey = this._scope.cryptography.cryptoSignature.createPublicKey( privateKeyInput );
 
          return {
              privateKey: privateKeyInput,
-             publicKey: publicKeyCompressed,
+             publicKey: publicKey,
          }
 
     }

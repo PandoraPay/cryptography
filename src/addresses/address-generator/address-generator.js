@@ -15,33 +15,6 @@ import HDKeyChain from "./hd-key-chain";
 
 export default class AddressGenerator extends Generator {
 
-    generateAddressFromMnemonic( words = [], sequence = 0 ){
-
-        if (!Array.isArray(words)) throw new Exception(this, "Seed for Address generation is not an array");
-
-        if (words.length === 0) words = this.generateMnemonic();
-
-        const mnemonic = words.join(' ');
-
-        const validation = bip39.validateMnemonic( mnemonic );
-        if (!validation) throw new Exception(this, "Mnemonic is invalid");
-
-        const hdwallet = new HDKeyChain();
-        hdwallet.fromSeedMnemonic(mnemonic);
-
-        const privateKey = hdwallet.deriveKey(0, 0, sequence)
-
-        return {
-            mnemonic: words,
-            sequence,
-            privateAddress: this.generatePrivateAddressFromPrivateKey( privateKey ),
-        };
-
-    }
-
-    generateNewAddress(sequence){
-        return this.generateAddressFromMnemonic([], sequence);
-    }
 
     generatePublicKeyHash(publicKey){
 
@@ -115,6 +88,10 @@ export default class AddressGenerator extends Generator {
 
         return last20Bytes;
 
+    }
+
+    _deriveKey(hdwallet, sequence) {
+        return hdwallet.deriveKey(0, 0, sequence);
     }
 
 }

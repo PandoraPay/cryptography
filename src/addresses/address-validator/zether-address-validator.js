@@ -15,7 +15,7 @@ export default class ZetherAddressValidator {
      * @param data
      * @return {*}
      */
-    _validateZetherAddress(input){
+    _validateAddress(input){
 
         if (input instanceof ZetherAddress && input.validate() ) return input;
 
@@ -33,7 +33,7 @@ export default class ZetherAddressValidator {
      * @param input
      * @return {*}
      */
-    validateZetherAddress(input){
+    validateAddress(input){
 
         if (!input) throw new Exception(this, "Input is invalid");
         if (input instanceof ZetherPrivateKeyAddress) return input.getAddress();
@@ -62,13 +62,49 @@ export default class ZetherAddressValidator {
 
             const netbyte = input[0];
 
-            if ( this._scope.argv.crypto.addresses.publicAddress.isAddress(netbyte) ) return this._validateZetherAddress( input );
+            if ( this._scope.argv.crypto.addresses.publicAddress.isAddress(netbyte) ) return this._validateAddress( input );
 
             throw new Exception(this, "Invalid Address Network Byte: ", netbyte);
 
         }
 
         return undefined;
+    }
+
+    validatePrivateAddress( input ){
+
+
+        if (!input) throw new Exception(this, "invalid input");
+
+        if (input instanceof ZetherPrivateKeyAddress) {
+            if (!input.validatePublicKey()) throw new Exception(this, "public key is invalid 1");
+            return input;
+        }
+
+        const addr = new ZetherPrivateKeyAddress( this._scope, undefined, undefined, undefined, {emptyObject: true} );
+        addr.fromType( input );
+
+        if (!addr.validatePublicKey()) throw new Exception(this, "public key is invalid 2");
+
+        return addr;
+
+    }
+
+
+    validatePrivateKey( privateKeyInput ){
+
+        if (typeof privateKeyInput === "string") privateKeyInput = Buffer.from(privateKeyInput, "hex");
+        if (!Buffer.isBuffer(privateKeyInput)) throw new Exception(this, "private key must be a buffer");
+
+        if (privateKeyInput.length !== 32 || privateKeyInput.equals(Buffer.alloc(32))) throw new Exception(this, "private key length must be 32");
+
+        const publicKey = this._scope.cryptography.zetherCryptoSignature.createPublicKey( privateKeyInput );
+
+        return {
+            privateKey: privateKeyInput,
+            publicKey: publicKey,
+        }
+
     }
 
 }
