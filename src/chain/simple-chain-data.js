@@ -38,6 +38,10 @@ export default class SimpleChainData {
         return Math.floor( this.end / 10 );
     }
 
+    getTimeLockEpoch(epoch){
+        return epoch * 10;
+    }
+
     fakeIncrementEpoch(){
         this.end += 10;
     }

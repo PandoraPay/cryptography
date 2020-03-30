@@ -70,19 +70,6 @@ export default class BaseTransaction extends DBSchema {
         throw new Exception(this, "signTransaction is not defined");
     }
 
-    async verify(chain = this._scope.chain){
-
-        if (this.unlockTime)
-            if (this.unlockTime < chain.height)
-                throw new Exception (this, "Unlock time is invalid");
-
-        const signature = this.verifyTransactionSignatures();
-        if (!signature) throw new Exception(this, "Signature verification failed");
-
-        return true;
-
-    }
-
     verifyTransactionSignatures(){
         throw new Exception(this, "verifyTransaction is not defined");
     }
@@ -93,6 +80,28 @@ export default class BaseTransaction extends DBSchema {
 
     noOuts(){
         return 0;
+    }
+
+
+    _fieldsForSignature(){
+        return {
+            version: true,
+            scriptVersion: true,
+            unlockTime: true,
+        }
+    }
+
+    _prefixBufferForSignature(){
+
+        //const hash
+        const buffer = this.toBuffer( undefined, {
+
+            onlyFields: this._fieldsForSignature(),
+
+        } );
+
+        return buffer;
+
     }
 
 }

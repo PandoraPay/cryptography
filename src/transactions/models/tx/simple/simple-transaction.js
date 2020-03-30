@@ -74,12 +74,6 @@ export default class SimpleTransaction extends BaseTransaction {
 
                 },
 
-                nonce: {
-                    type: "number",
-
-                    position: 1002,
-                },
-
                 vout:{
                     type: "array",
 
@@ -287,28 +281,16 @@ export default class SimpleTransaction extends BaseTransaction {
         return this.vout.length;
     }
 
-    _prefixBufferForSignature(){
-
-        //const hash
-        const buffer = this.toBuffer( undefined, {
-
-            onlyFields:{
-                version: true,
-                scriptVersion: true,
-                unlockTime: true,
-                nonce: true,
-                vin: {
-                    address: true,
-                    amount: true,
-                    tokenCurrency: true,
-                },
-                vout: true,
-            }
-
-        } );
-
-        return buffer;
-
+    _fieldsForSignature(){
+        return {
+            ...super._fieldsForSignature(),
+            vin: {
+                address: true,
+                amount: true,
+                tokenCurrency: true,
+            },
+            vout: true,
+        }
     }
 
     toJSONRaw(){
@@ -324,6 +306,10 @@ export default class SimpleTransaction extends BaseTransaction {
 
         return json;
 
+    }
+
+    get getVinPublicKeyHash(){
+        return this.vin[0].publicKeyHash;
     }
 
 }

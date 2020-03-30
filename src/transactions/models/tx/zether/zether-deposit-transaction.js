@@ -68,6 +68,8 @@ export default class ZetherDepositTransaction extends SimpleTransaction {
                 registration:{
                     type: "object",
                     classObject:ZetherRegistration,
+
+                    position: 2000,
                 },
 
             }
@@ -97,30 +99,12 @@ export default class ZetherDepositTransaction extends SimpleTransaction {
         return true;
     }
 
-
-    _prefixBufferForSignature(){
-        //const hash
-        const buffer = this.toBuffer( undefined, {
-
-            onlyFields:{
-                version: true,
-                scriptVersion: true,
-                unlockTime: true,
-                nonce: true,
-                vin: {
-                    address: true,
-                    amount: true,
-                    tokenCurrency: true,
-                },
-                vout: true,
-                registration: true
-            }
-
-        } );
-
-        return buffer;
+    _fieldsForSignature(){
+        return {
+            ...super._fieldsForSignature(),
+            registration: true,
+        }
     }
-
 
     toJSONRaw(){
 

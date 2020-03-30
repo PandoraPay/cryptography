@@ -123,29 +123,18 @@ export default class ZetherBurnTransaction extends SimpleTransaction {
 
     }
 
-    _prefixBufferForSignature(){
-        //const hash
-        const buffer = this.toBuffer( undefined, {
-
-            onlyFields:{
-                version: true,
-                scriptVersion: true,
-                unlockTime: true,
-                nonce: true,
-                vin: {
-                    address: true,
-                    amount: true,
-                    tokenCurrency: true,
-                },
-                zetherInput: true,
-                vout: true,
-            }
-
-        } );
-
-        return buffer;
+    _fieldsForSignature(){
+        return {
+            ...super._fieldsForSignature(),
+            zetherInput: true,
+            u: true,
+            proof: true,
+        }
     }
 
+    get getVinPublicKeyHash(){
+        return this.vin.length ? this.vin[0].publicKeyHash : undefined;
+    }
 
 }
 

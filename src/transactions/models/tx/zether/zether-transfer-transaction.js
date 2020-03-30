@@ -8,8 +8,8 @@ import TransactionScriptTypeEnum from "src/transactions/models/tx/base/transacti
 import SimpleTransaction from "./../simple/simple-transaction";
 import Vout from "../simple/parts/vout";
 import Zether from "zetherjs"
-import ZetherTransferFee from "./parts/zether-transfer-fee";
 import ZetherPointBuffer from "./parts/zether-point-buffer"
+import TransactionTokenCurrencyTypeEnum from "../base/tokens/transaction-token-currency-type-enum";
 
 const {BN} = global.kernel.utils;
 
@@ -31,19 +31,32 @@ export default class ZetherTransferTransaction extends SimpleTransaction {
                 },
 
                 /**
-                 * size === 1 means that the fee is
+                 * size === 1 means that the fee is payed with vin
                  */
                 vin: {
                     minSize: 0,
                     maxSize: 1,
+
                 },
 
-                transferFee: {
-                    type: "object",
-                    classObject: ZetherTransferFee,
+                transferFeeAmount:{
+                    type: "number",
 
                     position: 1003,
                 },
+
+                transferTokenCurrency:{
+                    type: "buffer",
+                    default: TransactionTokenCurrencyTypeEnum.TX_TOKEN_CURRENCY_NATIVE_TYPE.idBuffer,
+                    maxSize: 20,
+                    minSize: 1,
+
+                    validation(value) {
+                        return value.equals( TransactionTokenCurrencyTypeEnum.TX_TOKEN_CURRENCY_NATIVE_TYPE.idBuffer ) || (value.length === 20);
+                    },
+
+                    position: 1004,
+                } ,
 
                 vout: {
 
@@ -149,15 +162,19 @@ export default class ZetherTransferTransaction extends SimpleTransaction {
 
     }
 
+    sumOut(){
+        return {};
+    }
+
     sumIn(input = this.vin){
         const sumIn = super.sumIn(input);
 
-        if (this.transferFee.subtractFeeEnabled === 1){
+        if (this.transferFeeAmount > 0){
 
-            const tokenCurrency = this.transferFee.feeTokenCurrency.toString('hex');
+            const tokenCurrency = this.transferTokenCurrency.toString('hex');
             if (!sumIn[tokenCurrency]) sumIn[tokenCurrency] = 0;
 
-            sumIn[tokenCurrency] += this.transferFee.feeAmount;
+            sumIn[tokenCurrency] += this.transferFeeAmount;
 
         }
 
@@ -179,13 +196,16 @@ export default class ZetherTransferTransaction extends SimpleTransaction {
 
         }
 
-        const verify = await chainData.zsc.transfer(  C, D, y, u, this.proof);
+        const verify = await chainData.zsc.transfer(  C, D, y, u, this.proof, this.transferFeeAmount );
         if (!verify) throw new Exception(this, "Transfer verification failed");
 
         return true;
     }
 
-    async createZetherTransferProof( zetherPrivateAddress, zetherDestinationAddress, amount, decoys = [], totalBalanceAvailable, registrations = [], chain = this._scope.mainChain, chainData = chain.data ){
+    async createZetherTransferProof( zetherPrivateAddress, zetherDestinationAddress, value, decoys = [], totalBalanceAvailable, registrations = [], chain = this._scope.mainChain, chainData = chain.data ){
+
+        const fee = this.transferFeeAmount;
+        const tokenCurrency = this.transferTokenCurrency;
 
         const size = 2 + decoys.length;
 
@@ -276,22 +296,22 @@ export default class ZetherTransferTransaction extends SimpleTransaction {
             }
 
         const r = Zether.bn128.randomScalar();
-        let C = y.map((party, i) => Zether.bn128.curve.g.mul(i === index[0] ? new BN(-amount) : i === index[1] ? new BN( amount ) : new BN(0)).add( party.mul(r)));
+        let C = y.map((party, i) => Zether.bn128.curve.g.mul(i === index[0] ? new BN( -value - fee ) : i === index[1] ? new BN(value ) : new BN(0)).add( party.mul(r)));
 
         let D = Zether.bn128.curve.g.mul(r);
         let CLn = unserialized.map((account, i) =>  account[0].add( C[i] ));
         let CRn = unserialized.map((account) => account[1].add( D ));
 
-        const proof = Zether.Service.proveTransfer( CLn, CRn, C, D, y, lastRollOver, accountKeyPair.x, r, amount, totalBalanceAvailable - amount, index);
+        const proof = Zether.Service.proveTransfer( CLn, CRn, C, D, y, lastRollOver, accountKeyPair.x, r, value, fee,totalBalanceAvailable - value - fee, index);
         const u = Zether.utils.u(lastRollOver, accountKeyPair.x);
 
         //whisper the value to the receiver
         let v = Zether.utils.hash( Zether.bn128.representation( y[ index[1] ].mul( r )  ));
-        v = v.redAdd( new BN(amount).toRed( Zether.bn128.q) );
+        v = v.redAdd( new BN(value).toRed( Zether.bn128.q) );
 
         //whisper the value to the receiver
         let v2 = Zether.utils.hash( Zether.bn128.representation( D.mul(  accountKeyPair.x ) ) );
-        v2 = v2.redAdd( new BN(amount).toRed( Zether.bn128.q) );
+        v2 = v2.redAdd( new BN(value).toRed( Zether.bn128.q) );
 
         this.y = y.map( (it, i) => this._createSchemaObject( {buffer: Zether.bn128.serializeToBuffer(it, i)}, "object", 'y', undefined, i) );
         this.C = C.map( (it, i) => this._createSchemaObject( {buffer: Zether.bn128.serializeToBuffer(it, i)}, "object", 'C', undefined, i) );
@@ -301,6 +321,7 @@ export default class ZetherTransferTransaction extends SimpleTransaction {
         this.registrations = registrationsFinal;
         this.whisperSender = Zether.bn128.toBuffer(v2);
         this.whisperReceiver = Zether.bn128.toBuffer(v);
+        this.unlockTime = chainData.getTimeLockEpoch(lastRollOver);
 
     }
 
@@ -330,40 +351,29 @@ export default class ZetherTransferTransaction extends SimpleTransaction {
 
     }
 
-    _prefixBufferForSignature(){
-        //const hash
-        const buffer = this.toBuffer( undefined, {
-
-            onlyFields:{
-                version: true,
-                scriptVersion: true,
-                unlockTime: true,
-                nonce: true,
-                vin: {
-                    address: true,
-                    amount: true,
-                    tokenCurrency: true,
-                },
-                transferFee: true,
-                vout: true,
-                y: true,
-                registrations: true,
-                C: true,
-                D: true,
-                u: true,
-                proof: true,
-                whisperSender: true,
-                whisperReceiver: true,
-            }
-
-        } );
-
-        return buffer;
+    _fieldsForSignature(){
+        return {
+            ...super._fieldsForSignature(),
+            transferFee: true,
+            y: true,
+            registrations: true,
+            C: true,
+            D: true,
+            u: true,
+            proof: true,
+            whisperSender: true,
+            whisperReceiver: true,
+        }
     }
-
 
     _match(a,b){
         return a.eq(b);
+    }
+
+
+
+    get getVinPublicKeyHash(){
+        return this.vin.length ? this.vin[0].publicKeyHash : undefined;
     }
 
 }

@@ -48,21 +48,21 @@ export default async function run () {
             this._scope.simpleChain.data.fakeIncrementEpoch();
 
             let step = -1;
-            for (const fee of [0, 200]){
+            for (const fee of [0, 200, 300]){
 
                 step += 1;
                 const tx = new ZetherTransferTransaction(this._scope, undefined, {
 
-                    vin: fee ? [ {
+                    vin: fee === 200 ? [ {
                         amount: fee,
                         publicKey: privateAddress.publicKey,
                     }] : [],
-
+                    transferFeeAmount: fee === 300 ? fee : 0,
                     vout: [],
 
                 }, "object", { skipValidation: true} );
 
-                await tx.createZetherTransferProof( zetherPrivateAddress,  zetherAddress2,500, [], balance, step ? [] : [{
+                await tx.createZetherTransferProof( zetherPrivateAddress,  zetherAddress2,100, [], balance, step ? [] : [{
                     publicKey: zetherAddress2.publicKey,
                     ...zetherRegistration2,
                 }], this._scope.simpleChain );
@@ -76,14 +76,15 @@ export default async function run () {
                     this.expect( feeOut , undefined);
 
 
-                await tx.signTransaction(fee ? [ privateAddress ] : []);
+                await tx.signTransaction(fee === 200 ? [ privateAddress ] : []);
                 this.expect( tx.verifyTransactionSignatures( ), true );
 
                 await tx.transactionAddedToZether(this._scope.simpleChain);
 
                 this._scope.simpleChain.data.fakeIncrementEpoch();
-                balance -= 500;
+                balance -= 100 + tx.transferFeeAmount ;
             }
+
 
         },
 
