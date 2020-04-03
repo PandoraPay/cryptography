@@ -100,7 +100,7 @@ export default class Address extends DBSchema {
         return Identicon.createIdenticon( this.toBuffer(undefined, {
             onlyFields:{
                 networkByte: true,
-                publicKey: true,
+                publicKeyHash: true,
             }
         }) );
     }
