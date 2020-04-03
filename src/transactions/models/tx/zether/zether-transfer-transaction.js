@@ -198,7 +198,7 @@ export default class ZetherTransferTransaction extends SimpleTransaction {
         for (const registration of this.registrations){
 
             const yHash = Zether.utils.keccak256( '0x'+this.y[ registration.index ].toString('hex') );
-            if ( await chainData.zsc.registered(yHash) === false )
+            if ( await chainData.zsc.registered(yHash) !== true )
                 await chainData.zsc.register( y[ registration.index ], Zether.utils.BNFieldfromHex( registration.c), Zether.utils.BNFieldfromHex( registration.s ) );
 
         }
@@ -267,7 +267,7 @@ export default class ZetherTransferTransaction extends SimpleTransaction {
         for (let i=0; i < y.length; i++){
 
             const yHash = Zether.utils.keccak256( Zether.utils.encodedPackaged( Zether.bn128.serialize( y[i] ) ) );
-            if ( await chainData.zsc.registered(yHash) === false ){
+            if ( await chainData.zsc.registered(yHash) !== true ){
 
                 let found = -1;
                 for (let j=0; j < registrations.length; j++)

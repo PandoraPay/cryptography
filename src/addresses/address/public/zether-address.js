@@ -114,11 +114,15 @@ export default class ZetherAddress extends DBSchema {
     }
 
     identiconCanvas(){
-        return Identicon.createIdenticon( this.toBuffer() );
+        return Identicon.createIdenticon( this.toBuffer(undefined, {
+            onlyFields:{
+                networkByte: true,
+                publicKey: true,
+            }
+        }) );
     }
 
     identiconImg(){
-        return Identicon.createIdenticon( this.toBuffer() ).toDataURL();
+        return this.identiconCanvas().toDataURL();
     }
-
 }

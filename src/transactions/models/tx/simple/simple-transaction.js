@@ -102,13 +102,13 @@ export default class SimpleTransaction extends BaseTransaction {
 
     }
 
-    _validateMapUniqueness(input){
+    _validateMapUniqueness(input, propertyName = 'publicKeyHash'){
 
         const mapTokens = {};
 
         for (const vin of input){
 
-            const publicKeyHash = vin.zetherPublicKey ? vin.zetherPublicKey.toString('hex') : vin.publicKeyHash.toString("hex");
+            const publicKeyHash = vin[propertyName].toString('hex');
             const tokenCurrency = vin.tokenCurrency.toString('hex');
 
             if (!mapTokens[publicKeyHash]) mapTokens[publicKeyHash] = {};

@@ -45,7 +45,7 @@ export default class ZetherDepositTransaction extends SimpleTransaction {
 
                     validation(voutZether){
 
-                        if ( this._validateMapUniqueness(voutZether) !== true) throw new Exception(this, "vin validation failed");
+                        if ( this._validateMapUniqueness(voutZether, 'zetherPublicKey') !== true) throw new Exception(this, "vin validation failed");
 
                         const sumIn = this.sumIn(this.vin);
                         const sumOut = this.sumOut(voutZether);
@@ -84,15 +84,14 @@ export default class ZetherDepositTransaction extends SimpleTransaction {
             if (voutZether.registration.registered === 1){
 
                 const yHash = Zether.utils.keccak256( Zether.utils.encodedPackaged( Zether.bn128.serialize( y ) ) );
-                if ( await chainData.zsc.registered(yHash) === false )
+                if ( await chainData.zsc.registered(yHash) !== true )
                     await chainData.zsc.register( y, Zether.utils.BNFieldfromHex( voutZether.registration.c), Zether.utils.BNFieldfromHex( voutZether.registration.s ) );
                 else
                     throw new Exception(this, "Account already registered");
             }
 
 
-            const verify = await chainData.zsc.fund( y, voutZether.amount );
-            if (!verify) throw new Exception(this, "Deposit verification failed");
+            if (await chainData.zsc.fund( y, voutZether.amount ) !== true) throw new Exception(this, "Deposit verification failed");
 
         }
 
