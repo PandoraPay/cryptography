@@ -82,7 +82,7 @@ export default class ZetherPrivateKeyAddress extends DBSchema {
 
     getZetherRegistration(){
 
-        const [c, s] = this._scope.cryptography.Zether.utils.sign( this._scope.argv.transactions.zether.zscAddress, this.zetherKeyPair(), this._zetherRegistrationSecret() );
+        const [c, s] = this._scope.cryptography.Zether.utils.sign( this._scope.argv.blockchain.genesis.zsc.address, this.zetherKeyPair(), this._zetherRegistrationSecret() );
         return {
             c: this._scope.cryptography.Zether.bn128.toBuffer(c),
             s: this._scope.cryptography.Zether.bn128.toBuffer(s),
