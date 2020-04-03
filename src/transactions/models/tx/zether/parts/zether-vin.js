@@ -1,10 +1,9 @@
 import TransactionTokenCurrencyTypeEnum from "../../base/tokens/transaction-token-currency-type-enum";
-import ZetherRegistration from "../../../../../addresses/address/public/zether-registration";
 
 const {Helper} = global.kernel.helpers;
 const {DBSchema} = global.kernel.marshal.db;
 
-export default class ZetherVoutDeposit extends DBSchema {
+export default class ZetherVin extends DBSchema {
 
     constructor(scope, schema={}, data, type, creationOptions) {
 
@@ -41,13 +40,6 @@ export default class ZetherVoutDeposit extends DBSchema {
                     fixedBytes: 64,
 
                     position: 103,
-                },
-
-                registration: {
-                    type: "object",
-                    classObject: ZetherRegistration,
-
-                    position: 104,
                 }
 
             },

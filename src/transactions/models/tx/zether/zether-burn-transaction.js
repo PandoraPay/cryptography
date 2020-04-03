@@ -1,4 +1,4 @@
-import ZetherVoutDeposit from "./parts/zether-vout-deposit";
+import ZetherVin from "./parts/zether-vin";
 
 const {Helper} = global.kernel.helpers;
 const {Exception, StringHelper, BufferHelper} = global.kernel.helpers;
@@ -6,7 +6,6 @@ const {Exception, StringHelper, BufferHelper} = global.kernel.helpers;
 import TransactionScriptTypeEnum from "src/transactions/models/tx/base/transaction-script-type-enum";
 
 import SimpleTransaction from "./../simple/simple-transaction";
-import Vout from "../simple/parts/vout";
 import Zether from "zetherjs"
 const {BN} = global.kernel.utils;
 
@@ -35,15 +34,22 @@ export default class ZetherBurnTransaction extends SimpleTransaction {
                     maxSize: 1,
                 },
 
-                zetherInput: {
-                    type: "object",
-                    classObject: ZetherVoutDeposit,
+                vinZether: {
+                    type: "array",
+                    classObject: ZetherVin,
+                    minSize: 1,
+                    maxSize: 1,
+                    fixedBytes: 1,
+
+                    validation(vinZether){
+                        return vinZether.length === 1;
+                    },
+
                     position: 1003,
                 },
 
                 vout: {
 
-                    classObject: Vout,
                     minSize: 1,
                     maxSize: 1,
                     fixedBytes: 1,
@@ -82,40 +88,41 @@ export default class ZetherBurnTransaction extends SimpleTransaction {
 
     }
 
-    sumIn(input = this.vin){
+    sumIn(input = this.vin, vin){
         const sumIn = super.sumIn(input);
 
-        const tokenCurrency = this.zetherInput.tokenCurrency.toString('hex');
+        const tokenCurrency = this.vinZether[0].tokenCurrency.toString('hex');
         if (!sumIn[tokenCurrency]) sumIn[tokenCurrency] = 0;
-
-        sumIn[tokenCurrency] += this.zetherInput.amount;
+        sumIn[tokenCurrency] += this.vinZether[0].amount;
 
         return sumIn;
     }
 
     async transactionAddedToZether(chain = this._scope.mainChain, chainData = chain.data){
 
-        const y =  Zether.bn128.unserializeFromBuffer(this.zetherInput.zetherPublicKey);
+        for (const vinZether of this.vinZether) {
+            const y = Zether.bn128.unserializeFromBuffer( vinZether.zetherPublicKey);
 
-        const verify = await chainData.zsc.burn( y, this.zetherInput.amount, Zether.bn128.unserializeFromBuffer(this.u), this.proof, '0x'+this.vout[0].publicKeyHash.toString('hex') );
-        if (!verify) throw new Exception(this, "Burn verification failed");
+            const verify = await chainData.zsc.burn(y, vinZether.amount, Zether.bn128.unserializeFromBuffer(this.u), this.proof, '0x' + this.vout[0].publicKeyHash.toString('hex'));
+            if (!verify) throw new Exception(this, "Burn verification failed");
+        }
 
         return true;
     }
 
     async createZetherBurnProof( zetherPrivateAddress, totalBalanceAvailable, chain = this._scope.mainChain, chainData = chain.data ){
 
-        const y =  Zether.bn128.unserializeFromBuffer(this.zetherInput.zetherPublicKey);
+        const y =  Zether.bn128.unserializeFromBuffer( this.vinZether[0].zetherPublicKey);
 
         const lastRollOver = chainData.getEpoch();
 
         let result = await chainData.zsc.simulateAccounts( [y], chainData.getEpoch() );
 
         const simulated = result[0];
-        const CLn = simulated[0].add( Zether.bn128.curve.g.mul( new BN( - this.zetherInput.amount ) ));
+        const CLn = simulated[0].add( Zether.bn128.curve.g.mul( new BN( - this.vinZether[0].amount ) ));
         const CRn = simulated[1];
 
-        const proof = Zether.Service.proveBurn(CLn, CRn, y, lastRollOver, '0x'+this.vout[0].publicKeyHash.toString('hex'), Zether.utils.BNFieldfromHex( zetherPrivateAddress.privateKey ), totalBalanceAvailable - this.zetherInput.amount );
+        const proof = Zether.Service.proveBurn(CLn, CRn, y, lastRollOver, '0x'+this.vout[0].publicKeyHash.toString('hex'), Zether.utils.BNFieldfromHex( zetherPrivateAddress.privateKey ), totalBalanceAvailable - this.vinZether[0].amount );
         const u = Zether.utils.u( lastRollOver, Zether.utils.BNFieldfromHex(zetherPrivateAddress.privateKey) );
 
         this.proof = Buffer.from( proof.slice(2), 'hex');
@@ -126,15 +133,13 @@ export default class ZetherBurnTransaction extends SimpleTransaction {
     _fieldsForSignature(){
         return {
             ...super._fieldsForSignature(),
-            zetherInput: true,
+            vinZether: true,
             u: true,
             proof: true,
         }
     }
 
-    get getVinPublicKeyHash(){
-        return this.vin.length ? this.vin[0].publicKeyHash : undefined;
-    }
+
 
 }
 

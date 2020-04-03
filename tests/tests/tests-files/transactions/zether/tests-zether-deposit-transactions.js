@@ -33,16 +33,15 @@ export default async function run () {
                         publicKey: privateAddress.publicKey,
                     }],
 
-                    vout: [{
+                    voutZether: [{
                         amount: fee ? 1000 - fee : 1000,
                         zetherPublicKey: zetherAddress.publicKey,
+                        registration: {
+                            registered: step ? 0 : 1,
+                            c: step ? undefined : zetherRegistration.c,
+                            s: step ? undefined : zetherRegistration.s,
+                        }
                     }],
-
-                    registration: step ? undefined : {
-                        registered: 1,
-                        c: zetherRegistration.c,
-                        s: zetherRegistration.s,
-                    } ,
 
                 } );
 

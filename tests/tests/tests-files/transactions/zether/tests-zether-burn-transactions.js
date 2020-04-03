@@ -31,16 +31,15 @@ export default async function run () {
                     publicKey: privateAddress.publicKey,
                 }],
 
-                vout: [{
+                voutZether: [{
                     amount: balance,
                     zetherPublicKey: zetherAddress.publicKey,
+                    registration: {
+                        registered: 1,
+                        c: zetherRegistration.c,
+                        s: zetherRegistration.s,
+                    }
                 }],
-
-                registration:{
-                    registered: 1,
-                    c: zetherRegistration.c,
-                    s: zetherRegistration.s,
-                },
 
             } );
 
@@ -60,10 +59,10 @@ export default async function run () {
                         publicKey: privateAddress.publicKey,
                     }] : [],
 
-                    zetherInput:{
+                    vinZether:[{
                         amount: 500,
                         zetherPublicKey: zetherAddress.publicKey,
-                    },
+                    }],
 
                     vout: [{
                         amount: 500,
@@ -117,16 +116,15 @@ export default async function run () {
                     publicKey: privateAddress.publicKey,
                 }],
 
-                vout: [{
+                voutZether: [{
                     amount: balance,
                     zetherPublicKey: zetherAddress.publicKey,
+                    registration: {
+                        registered: 1,
+                        c: zetherRegistration.c,
+                        s: zetherRegistration.s,
+                    }
                 }],
-
-                registration:{
-                    registered: 1,
-                    c: zetherRegistration.c,
-                    s: zetherRegistration.s,
-                },
 
             } );
 
@@ -143,10 +141,10 @@ export default async function run () {
 
                     vin: [],
 
-                    zetherInput:{
+                    vinZether:[{
                         amount: 500,
                         zetherPublicKey: zetherAddress.publicKey,
-                    },
+                    }],
 
                     vout: [{
                         amount: 500 - fee ,

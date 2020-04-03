@@ -6,7 +6,6 @@ const {Exception, StringHelper, BufferHelper} = global.kernel.helpers;
 import TransactionScriptTypeEnum from "src/transactions/models/tx/base/transaction-script-type-enum";
 
 import SimpleTransaction from "./../simple/simple-transaction";
-import Vout from "../simple/parts/vout";
 import Zether from "zetherjs"
 import ZetherPointBuffer from "./parts/zether-point-buffer"
 import TransactionTokenCurrencyTypeEnum from "../base/tokens/transaction-token-currency-type-enum";
@@ -60,7 +59,6 @@ export default class ZetherTransferTransaction extends SimpleTransaction {
 
                 vout: {
 
-                    classObject: Vout,
                     minSize: 0,
                     maxSize: 0,
                     fixedBytes: 0,
@@ -97,9 +95,18 @@ export default class ZetherTransferTransaction extends SimpleTransaction {
                     maxSize: 255,
 
                     validation(registrations){
-                        for (let i=0; i <registrations.length; i++)
-                            if (registrations[i].index < 0 || registrations[i].index > this.y.length )
-                                throw new Exception(this, "index invalid for registration", {index: registrations[i].index});
+
+                        const map = {};
+
+                        for (const registration of registrations) {
+
+                            if (map[registration.index]) throw new Exception(this, "Y registered twice", {index: registration.index});
+                            map[registration.index] = true;
+
+                            if (registration.index < 0 || registration.index > this.y.length)
+                                throw new Exception(this, "index invalid for registration", {index: registration.index});
+
+                        }
 
                         return true;
                     },
@@ -371,10 +378,6 @@ export default class ZetherTransferTransaction extends SimpleTransaction {
     }
 
 
-
-    get getVinPublicKeyHash(){
-        return this.vin.length ? this.vin[0].publicKeyHash : undefined;
-    }
 
 }
 

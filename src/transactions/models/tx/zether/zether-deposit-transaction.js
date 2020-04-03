@@ -1,5 +1,3 @@
-import ZetherRegistration from "src/addresses/address/public/zether-registration";
-
 const {Helper} = global.kernel.helpers;
 const {Exception, StringHelper, BufferHelper} = global.kernel.helpers;
 
@@ -35,24 +33,30 @@ export default class ZetherDepositTransaction extends SimpleTransaction {
                 },
 
                 vout: {
-                    classObject: ZetherVoutDeposit,
-                    minSize: 1,
-                    maxSize: 1,
-                    fixedBytes: 1,
+
+                    minSize: 0,
+                    maxSize: 0,
+                    fixedBytes: 0,
 
                     validation(output){
+                        return output.length === 0;
+                    },
 
-                        const sumIn = {}, sumOut = {};
+                },
 
-                        for (const vout of output){
-                            const tokenCurrency = vout.tokenCurrency.toString('hex');
-                            sumOut[tokenCurrency] = (sumOut[tokenCurrency] || 0) + vout.amount;
-                        }
+                voutZether:{
+                    type: "array",
+                    classObject: ZetherVoutDeposit,
+                    minSIze: 1,
+                    maxSize: 255,
+                    fixedBytes: 1,
 
-                        for (const vin of this.vin){
-                            const tokenCurrency = vin.tokenCurrency.toString('hex');
-                            sumIn[tokenCurrency] = (sumIn[tokenCurrency] || 0) + vin.amount;
-                        }
+                    validation(voutZether){
+
+                        if ( this._validateMapUniqueness(voutZether) !== true) throw new Exception(this, "vin validation failed");
+
+                        const sumIn = this.sumIn(this.vin);
+                        const sumOut = this.sumOut(voutZether);
 
                         this.validateOuts(sumIn, sumOut);
                         this.validateFee(sumIn, sumOut);
@@ -61,16 +65,12 @@ export default class ZetherDepositTransaction extends SimpleTransaction {
                         if (this.vin.length === 2 && !fee ) throw new Exception(this, 'One output needs to be fee');
 
                         return true;
+
                     },
 
+                    position: 1004,
                 },
 
-                registration:{
-                    type: "object",
-                    classObject:ZetherRegistration,
-
-                    position: 2000,
-                },
 
             }
 
@@ -78,23 +78,42 @@ export default class ZetherDepositTransaction extends SimpleTransaction {
 
     }
 
+    sumOut(vout = this.voutZether){
 
+        let sum = {};
+        for (const out of vout) {
+
+            const tokenCurrency = out.tokenCurrency.toString('hex');
+            if (!sum[tokenCurrency]) sum[tokenCurrency] = 0;
+
+            sum[tokenCurrency] += out.amount;
+        }
+
+        return sum;
+    }
 
     async transactionAddedToZether(chain = this._scope.mainChain, chainData = chain.data){
 
-        const y =  Zether.bn128.unserializeFromBuffer(this.vout[0].zetherPublicKey);
+        for (let i=0; i < this.voutZether.length; i++){
 
-        if (this.registration.registered === 1){
+            const voutZether = this.voutZether[i];
 
-            const yHash = Zether.utils.keccak256( Zether.utils.encodedPackaged( Zether.bn128.serialize( y ) ) );
-            if ( await chainData.zsc.registered(yHash) === false )
-                await chainData.zsc.register( y, Zether.utils.BNFieldfromHex( this.registration.c), Zether.utils.BNFieldfromHex( this.registration.s ) );
-            else
-                throw new Exception(this, "Account already registered");
+            const y =  Zether.bn128.unserializeFromBuffer( voutZether.zetherPublicKey);
+
+            if (voutZether.registration.registered === 1){
+
+                const yHash = Zether.utils.keccak256( Zether.utils.encodedPackaged( Zether.bn128.serialize( y ) ) );
+                if ( await chainData.zsc.registered(yHash) === false )
+                    await chainData.zsc.register( y, Zether.utils.BNFieldfromHex( voutZether.registration.c), Zether.utils.BNFieldfromHex( voutZether.registration.s ) );
+                else
+                    throw new Exception(this, "Account already registered");
+            }
+
+
+            const verify = await chainData.zsc.fund( y, voutZether.amount );
+            if (!verify) throw new Exception(this, "Deposit verification failed");
+
         }
-
-        const verify = await chainData.zsc.fund( y, this.vout[0].amount );
-        if (!verify) throw new Exception(this, "Deposit verification failed");
 
         return true;
     }

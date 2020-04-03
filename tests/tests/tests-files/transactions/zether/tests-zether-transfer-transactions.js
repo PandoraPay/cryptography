@@ -30,15 +30,17 @@ export default async function run () {
                     publicKey: privateAddress.publicKey,
                 }],
 
-                vout: [{
+                voutZether: [{
                     amount: balance,
                     zetherPublicKey: zetherAddress.publicKey,
+                    registration:{
+                        registered: 1,
+                        c: zetherRegistration.c,
+                        s: zetherRegistration.s,
+                    },
                 }],
 
-                registration:{
-                    registered: 1,
-                    ...zetherRegistration,
-                },
+
 
             } );
 

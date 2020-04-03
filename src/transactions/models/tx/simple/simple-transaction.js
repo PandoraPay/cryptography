@@ -54,18 +54,7 @@ export default class SimpleTransaction extends BaseTransaction {
                      */
                     validation(input){
 
-                        const mapTokens = {};
-
-                        for (const vin of input){
-
-                            const publicKeyHash = vin.publicKeyHash.toString("hex");
-                            const tokenCurrency = vin.tokenCurrency.toString('hex');
-
-                            if (!mapTokens[publicKeyHash]) mapTokens[publicKeyHash] = {};
-
-                            if (mapTokens[publicKeyHash][tokenCurrency] ) throw new Exception(this, 'vin input uses same currency twice', vin);
-                            mapTokens[publicKeyHash][tokenCurrency] = true;
-                        }
+                        if ( this._validateMapUniqueness(input) !== true) throw new Exception(this, "vin validation failed");
 
                         return true;
                     },
@@ -92,27 +81,9 @@ export default class SimpleTransaction extends BaseTransaction {
                      */
                     validation(output){
 
-                        const mapTokens = {};
-                        const sumIn = {}, sumOut = {};
+                        if ( this._validateMapUniqueness(output) !== true) throw new Exception(this, "vin validation failed");
 
-                        for (const vout of output){
-
-                            const publicKeyHash = vout.publicKeyHash.toString("hex");
-                            const tokenCurrency = vout.tokenCurrency.toString('hex');
-
-                            if (!mapTokens[publicKeyHash]) mapTokens[publicKeyHash] = {};
-
-                            if (mapTokens[publicKeyHash][tokenCurrency]) throw new Exception(this, 'vout input uses same currency twice', vout);
-                            mapTokens[publicKeyHash][tokenCurrency] = true;
-
-                            sumOut[tokenCurrency] = (sumOut[tokenCurrency] || 0) + vout.amount;
-                        }
-
-                        for (const vin of this.vin){
-                            const tokenCurrency = vin.tokenCurrency.toString('hex');
-
-                            sumIn[tokenCurrency] = (sumIn[tokenCurrency] || 0) + vin.amount;
-                        }
+                        const sumIn = this.sumIn(this.vin), sumOut = this.sumOut(output);
 
                         this.validateOuts(sumIn, sumOut);
                         this.validateFee(sumIn, sumOut);
@@ -129,6 +100,24 @@ export default class SimpleTransaction extends BaseTransaction {
 
         }, schema, false), data, type, creationOptions);
 
+    }
+
+    _validateMapUniqueness(input){
+
+        const mapTokens = {};
+
+        for (const vin of input){
+
+            const publicKeyHash = vin.zetherPublicKey ? vin.zetherPublicKey.toString('hex') : vin.publicKeyHash.toString("hex");
+            const tokenCurrency = vin.tokenCurrency.toString('hex');
+
+            if (!mapTokens[publicKeyHash]) mapTokens[publicKeyHash] = {};
+
+            if (mapTokens[publicKeyHash][tokenCurrency] ) throw new Exception(this, 'vin input uses same currency twice', vin);
+            mapTokens[publicKeyHash][tokenCurrency] = true;
+        }
+
+        return true;
     }
 
     signTransaction( privateKeys ){
@@ -186,10 +175,10 @@ export default class SimpleTransaction extends BaseTransaction {
 
     }
 
-    sumOut(output = this.vout){
+    sumOut(vout = this.vout){
 
         let sum = {};
-        for (const out of output) {
+        for (const out of vout) {
 
             const tokenCurrency = out.tokenCurrency.toString('hex');
             if (!sum[tokenCurrency]) sum[tokenCurrency] = 0;
@@ -200,15 +189,15 @@ export default class SimpleTransaction extends BaseTransaction {
         return sum;
     }
 
-    sumIn(input = this.vin){
+    sumIn(vin = this.vin){
 
         let sum = {};
-        for (const vin of input) {
+        for (const input of vin) {
 
-            const tokenCurrency = vin.tokenCurrency.toString('hex');
+            const tokenCurrency = input.tokenCurrency.toString('hex');
             if (!sum[tokenCurrency]) sum[tokenCurrency] = 0;
 
-            sum[tokenCurrency] += vin.amount;
+            sum[tokenCurrency] += input.amount;
         }
 
         return sum;
@@ -308,9 +297,6 @@ export default class SimpleTransaction extends BaseTransaction {
 
     }
 
-    get getVinPublicKeyHash(){
-        return this.vin[0].publicKeyHash;
-    }
 
 }
 
