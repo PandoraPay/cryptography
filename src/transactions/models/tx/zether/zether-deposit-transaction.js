@@ -24,14 +24,6 @@ export default class ZetherDepositTransaction extends SimpleTransaction {
                     }
                 },
 
-                /**
-                 * size === 1 means that the fee is
-                 */
-                vin: {
-                    minSize: 1,
-                    maxSize: 2,
-                },
-
                 vout: {
 
                     minSize: 0,
@@ -61,9 +53,6 @@ export default class ZetherDepositTransaction extends SimpleTransaction {
                         this.validateOuts(sumIn, sumOut);
                         this.validateFee(sumIn, sumOut);
 
-                        const fee = this.fee(sumIn, sumOut);
-                        if (this.vin.length === 2 && !fee ) throw new Exception(this, 'One output needs to be fee');
-
                         return true;
 
                     },
@@ -80,16 +69,8 @@ export default class ZetherDepositTransaction extends SimpleTransaction {
 
     sumOut(vout = this.voutZether){
 
-        let sum = {};
-        for (const out of vout) {
+        return super.sumOut(vout);
 
-            const tokenCurrency = out.tokenCurrency.toString('hex');
-            if (!sum[tokenCurrency]) sum[tokenCurrency] = 0;
-
-            sum[tokenCurrency] += out.amount;
-        }
-
-        return sum;
     }
 
     async transactionAddedToZether(chain = this._scope.mainChain, chainData = chain.data){
