@@ -5,16 +5,12 @@ const App = require('src/app').default;
 const Base58 = require("src/utils/base58/base58").default;
 
 const PrivateKeyAddress  = require("src/addresses/address/private/private-key-address").default;
-const ZetherPrivateKeyAddress  = require("src/addresses/address/private/zether-private-key-address").default;
 
 const Address = require("src/addresses/address/public/address").default;
-const ZetherAddress = require("src/addresses/address/public/zether-address").default;
 
 const AddressGenerator = require("src/addresses/address-generator/address-generator").default;
-const ZetherAddressGenerator = require("src/addresses/address-generator/zether-address-generator").default;
 
 const AddressValidator = require("src/addresses/address-validator/address-validator").default;
-const ZetherAddressValidator = require("src/addresses/address-validator/zether-address-validator").default;
 
 const AES = require("src/crypto/encryption/aes").default;
 const BaseTransaction = require("src/transactions/models/tx/base/base-transaction").default;
@@ -24,9 +20,6 @@ const TransactionScriptTypeEnum = require("src/transactions/models/tx/base/trans
 const TransactionTokenCurrencyTypeEnum = require("src/transactions/models/tx/base/tokens/transaction-token-currency-type-enum").default;
 
 const SimpleTransaction = require("src/transactions/models/tx/simple/simple-transaction").default;
-const ZetherDepositTransaction = require("src/transactions/models/tx/zether/zether-deposit-transaction").default;
-const ZetherBurnTransaction = require("src/transactions/models/tx/zether/zether-burn-transaction").default;
-const ZetherTransferTransaction = require("src/transactions/models/tx/zether/zether-transfer-transaction").default;
 
 const TestsFiles = require("tests/tests/tests-index").default;
 const DBEncryptedSchema = require("src/crypto/encryption/db-encrypted-schema/db-encrypted-schema").default;
@@ -37,8 +30,6 @@ const Identicon = require("src/utils/identicons/identicon").default;
 
 const ChatMessage = require("src/crypto/encryption/encrypted-message/chat-message").default;
 const EncryptedMessage = require("src/crypto/encryption/encrypted-message/encrypted-message").default;
-
-const Zether = require('zetherjs');
 
 const library = {
 
@@ -54,9 +45,6 @@ const library = {
 
         simpleTransaction:{
             SimpleTransaction,
-            ZetherDepositTransaction,
-            ZetherBurnTransaction,
-            ZetherTransferTransaction,
         },
 
         TransactionTypeEnum,
@@ -69,18 +57,14 @@ const library = {
 
         private:{
             PrivateKeyAddress,
-            ZetherPrivateKeyAddress,
         },
 
         public:{
             Address,
-            ZetherAddress,
         },
 
         AddressValidator,
-        ZetherAddressValidator,
         AddressGenerator,
-        ZetherAddressGenerator
 
     },
 
@@ -118,11 +102,6 @@ const library = {
             }
         }
     },
-
-    zether:{
-        ...Zether
-    },
-
 
 };
 

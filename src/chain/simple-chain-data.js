@@ -31,7 +31,6 @@ export default class SimpleChainData {
         this._transactions = {};
         this.end = 0;
         this.start = 0;
-        this.zsc = new this._scope.cryptography.Zether.ZSC(this, this._scope.argv.blockchain.genesis.zsc.address );
     }
 
     getEpoch(){

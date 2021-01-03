@@ -23,7 +23,6 @@ export default async function run () {
 
             for (const fee of [0, 200]){
 
-
                 const tx = new SimpleTransaction(this._scope, undefined, {
 
                     vin: [ {

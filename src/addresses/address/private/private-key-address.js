@@ -3,8 +3,6 @@ const {DBSchema} = global.kernel.marshal.db;
 const {CryptoHelper} = global.kernel.helpers.crypto;
 const {Exception, Base58, StringHelper, BufferReader} = global.kernel.helpers;
 
-import ZetherPrivateKeyAddress from "./zether-private-key-address"
-
 /**
  * This is used to store the private key
  */
