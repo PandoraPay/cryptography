@@ -125,7 +125,7 @@ export default class DBEncryptedSchema extends DBSchema {
         if (this.encryption === DBSchemaEncryptionTypeEnum.PLAIN_TEXT) return this.value;
         if (this._unlocked) return this._unlocked;
 
-        if (typeof password !== "string"){
+        if ( !Buffer.isBuffer(password) || password.length !== 32){
 
             if (!askPassword) throw new Exception(this, "Ask Password is set false");
 

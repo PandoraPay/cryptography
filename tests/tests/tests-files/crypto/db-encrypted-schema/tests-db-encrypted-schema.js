@@ -8,22 +8,22 @@ export default async function run () {
 
     describe("Encrypted Schema", {
 
-        "encrypted schema string password": async function () {
+        "encrypted schema password": async function () {
 
             const obj1 = new DBEncryptedSchema(this._scope);
 
             const secret = BufferHelper.generateRandomBuffer(32 );
-            const password = "Password1";
+            const password = BufferHelper.generateRandomBuffer(32 );
 
             obj1.setPlainTextValue(secret);
 
-            this.expect( secret, obj1.decryptKey("Test"));
+            this.expect( secret, obj1.decryptKey());
 
             obj1.encryptKey (password );
 
             this.expectError( it => obj1.decryptKey("Test"), secret );
 
-            this.expect( secret, obj1.decryptKey(password ));
+            this.expect( secret, obj1.decryptKey( password ));
 
             this.expect( secret, obj1.decryptKey( ));
 
@@ -33,7 +33,7 @@ export default async function run () {
             this.expectError( () => obj2.decryptKey("Test"), secret );
             this.expect( secret, obj2.decryptKey(password ));
 
-            const password2 = "Password2";
+            const password2 = BufferHelper.generateRandomBuffer(32 );
             obj2.changeEncryptionKey(password, password2);
 
             this.expect( obj1.value.equals(obj2.value), false);
@@ -41,31 +41,6 @@ export default async function run () {
             this.expect( obj1.decryptKey(password), obj2.decryptKey(password2 ));
 
         },
-
-        "encrypted schema buffer password": async function () {
-
-            const obj1 = new DBEncryptedSchema(this._scope);
-
-            const secret = BufferHelper.generateRandomBuffer(32);
-            const password = BufferHelper.generateRandomBuffer(32).toString("hex");
-
-            obj1.setPlainTextValue(secret);
-
-            this.expect( secret, obj1.decryptKey("Test"));
-
-            obj1.encryptKey(password );
-
-            this.expectError( it => obj1.decryptKey("Test"), secret );
-            this.expect( secret, obj1.decryptKey(password ));
-
-            const obj2 = new DBEncryptedSchema(this._scope);
-            let json = obj1.toJSON();
-            obj2.fromJSON( json );
-
-            this.expectError( it => obj2.decryptKey("Test"), secret );
-            this.expect( secret, await obj2.decryptKey(password ));
-
-        }
 
     });
 
