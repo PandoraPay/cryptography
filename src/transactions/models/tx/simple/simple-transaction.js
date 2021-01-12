@@ -54,6 +54,7 @@ export default class SimpleTransaction extends BaseTransaction {
                      */
                     validation(input){
 
+                        if ( this._validateSpecialAddresses(input) !== true) throw new Exception(this, "vin validation failed special addresses");
                         if ( this._validateMapUniqueness(input) !== true) throw new Exception(this, "vin validation failed");
 
                         return true;
@@ -100,6 +101,16 @@ export default class SimpleTransaction extends BaseTransaction {
 
         }, schema, false), data, type, creationOptions);
 
+    }
+
+    _validateSpecialAddresses(input){
+
+        for (const vin of input)
+            if ( vin.publicKeyHash.equals(this._scope.argv.blockchain.genesis.BURN_PUBLIC_KEY_HASH) ||
+                 vin.publicKeyHash.equals(this._scope.argv.blockchain.genesis.COINS_LOCKED_PUBLIC_KEY_HASH))
+                throw new Exception(this, 'vin contains SPECIAL ADDRESSES');
+
+        return true;
     }
 
     _validateMapUniqueness(input, propertyName = 'publicKeyHash'){
