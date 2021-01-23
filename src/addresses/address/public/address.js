@@ -69,6 +69,7 @@ export default class Address extends DBSchema {
     calculateCheckSum(){
 
         const preAddr = Buffer.concat([
+            this.addressPrefix(),
             MarshalData.marshalOneByte(this.networkByte),
             this.publicKeyHash
         ]);
@@ -78,6 +79,10 @@ export default class Address extends DBSchema {
         hash.copy(buffer, 0, 0, 4);
         return buffer;
 
+    }
+
+    addressPrefix(){
+        return this._scope.argv.crypto.addresses.publicAddress.getAddressPrefix(this.networkByte);
     }
 
     isAddress(){
@@ -93,7 +98,7 @@ export default class Address extends DBSchema {
     }
 
     calculateAddress(){
-        return this.toBase58();
+        return this._scope.argv.crypto.addresses.publicAddress.getAddressPrefixStr(this.networkByte) + this.toBase58();
     }
 
     identiconCanvas(){
