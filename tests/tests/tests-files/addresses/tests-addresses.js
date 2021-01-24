@@ -1,7 +1,7 @@
-const {describe} = global.kernel.tests;
+const {describe} = require('kernel').tests;
 
-import TestsAddressGenerator from "./address/tests-address-generator"
-import TestsAddressValidator from "./address/tests-address-validator"
+const TestsAddressGenerator = require( "./address/tests-address-generator")
+const TestsAddressValidator = require("./address/tests-address-validator")
 
 /**
  *
@@ -9,7 +9,7 @@ import TestsAddressValidator from "./address/tests-address-validator"
  *
  */
 
-export default async function run () {
+module.exports = async function run () {
 
     await TestsAddressGenerator();
     await TestsAddressValidator();

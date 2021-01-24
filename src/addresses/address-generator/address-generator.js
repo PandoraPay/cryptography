@@ -1,19 +1,19 @@
-const {Exception, StringHelper, ArrayHelper, BufferHelper, BufferReader, Base58} = global.kernel.helpers;
-const {CryptoHelper} = global.kernel.helpers.crypto;
-const {Logger} = global.kernel;
+const {Exception, StringHelper, ArrayHelper, BufferHelper, BufferReader, Base58} = require('kernel').helpers;
+const {CryptoHelper} = require('kernel').helpers.crypto;
+const {Logger} = require('kernel');
 
-import PrivateKeyAddress from "../address/private/private-key-address";
-import Address from "../address/public/address";
-import Generator from "./generator"
+const PrivateKeyAddress = require("../address/private/private-key-address");
+const Address = require("../address/public/address");
+const Generator = require("./generator")
 
 const bip39 = require('bip39');
-import HDKeyChain from "./hd-key-chain";
+const HDKeyChain = require("./hd-key-chain");
 
 /**
  * Enables Hierarchical Deterministic Wallets
  */
 
-export default class AddressGenerator extends Generator {
+module.exports = class AddressGenerator extends Generator {
 
 
     generatePublicKeyHash(publicKey){

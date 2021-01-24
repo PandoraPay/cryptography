@@ -1,7 +1,7 @@
-import ArgvAddresses from "./addresses/argv-addresses"
-import ArgvTransactions from "../transactions/argv-transactions"
+const ArgvAddresses  = require( "./addresses/argv-addresses")
+const ArgvTransactions  = require("../transactions/argv-transactions")
 
-export default {
+module.exports = {
 
     transactions: ArgvTransactions,
     addresses: ArgvAddresses,

@@ -1,4 +1,4 @@
-import CreateIdenticon from "./create-identicon"
+const CreateIdenticon = require( "./create-identicon")
 
 const BUFFER_SIZE = 200; //saving last identicons
 
@@ -46,4 +46,4 @@ class Identicon {
 
 }
 
-export default new Identicon();
+module.exports = new Identicon();

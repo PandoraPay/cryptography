@@ -2,7 +2,7 @@
  * Dummy chain data
  */
 
-export default class SimpleChainData {
+module.exports = class SimpleChainData {
 
     constructor(scope){
 

@@ -2,9 +2,9 @@
  * Dummy chain to keep track of mix rings
  */
 
-import SimpleChainData from "./simple-chain-data"
+const SimpleChainData = require("./simple-chain-data")
 
-export default class SimpleChain{
+module.exports = class SimpleChain{
 
     constructor(scope){
 

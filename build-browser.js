@@ -1,4 +1,5 @@
-import library from "./index"
+const library = require("./index");
 
+window.library = library;
 
-export default library;
+module.exports = library;

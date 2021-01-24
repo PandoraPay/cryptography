@@ -1,6 +1,6 @@
 //THEY MUST BE IN HEX
 
-export default {
+module.exports = {
 
     /**
      * NATIVE CURRENCY

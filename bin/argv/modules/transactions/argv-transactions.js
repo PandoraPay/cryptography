@@ -1,6 +1,6 @@
-import ArgvCoinbase from "./coinbase/argv-coinbase"
+const ArgvCoinbase = require( "./coinbase/argv-coinbase" )
 
-export default {
+module.exports = {
 
     coinbase: ArgvCoinbase,
 

@@ -1,7 +1,7 @@
-const {Exception, EnumHelper, StringHelper, BufferHelper} = global.kernel.helpers;
-import EncryptedMessage from "./../encrypted-message"
+const {Exception, EnumHelper, StringHelper, BufferHelper} = require('kernel').helpers;
+const EncryptedMessage = require( "./../encrypted-message")
 
-export default class EncryptedMessageValidator {
+module.exports = class EncryptedMessageValidator {
 
     constructor(scope){
         this._scope = scope;

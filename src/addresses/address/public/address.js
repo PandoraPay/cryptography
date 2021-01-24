@@ -1,11 +1,11 @@
-const {Exception, StringHelper, BufferHelper} = global.kernel.helpers;
-const {MarshalData} = global.kernel.marshal;
-const {Helper} = global.kernel.helpers;
-const {CryptoHelper} = global.kernel.helpers.crypto;
-const {DBSchema} = global.kernel.marshal.db;
-import Identicon from "src/utils/identicons/identicon";
+const {Exception, StringHelper, BufferHelper} = require('kernel').helpers;
+const {MarshalData} = require('kernel').marshal;
+const {Helper} = require('kernel').helpers;
+const {CryptoHelper} = require('kernel').helpers.crypto;
+const {DBSchema} = require('kernel').marshal.db;
+const Identicon = require("../../../utils/identicons/identicon");
 
-export default class Address extends DBSchema {
+module.exports = class Address extends DBSchema {
 
     constructor(scope, schema={},  data, type, creationOptions){
 

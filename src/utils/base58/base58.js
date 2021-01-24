@@ -1,4 +1,4 @@
-import JSBigInt from "./jsbigint"
+const JSBigInt = require( "./jsbigint" )
 
 const cnBase58 = (function () {
     let b58 = {};
@@ -194,4 +194,4 @@ const cnBase58 = (function () {
     return b58;
 })();
 
-export default cnBase58;
+module.exports = cnBase58;

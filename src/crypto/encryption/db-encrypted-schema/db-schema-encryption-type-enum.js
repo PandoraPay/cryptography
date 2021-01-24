@@ -1,4 +1,4 @@
-export default {
+module.exports = {
 
     NON_EXISTENT: 0,
     PLAIN_TEXT: 1,

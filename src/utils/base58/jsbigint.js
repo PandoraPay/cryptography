@@ -1428,4 +1428,4 @@ var JSBigInt = (function () {
     return BigInteger;
 })();
 
-export default JSBigInt;
+module.exports = JSBigInt;

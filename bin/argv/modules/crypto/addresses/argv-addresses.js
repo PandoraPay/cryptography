@@ -1,6 +1,6 @@
-import ArgvPublicAddress from "./argv-public-address"
+const ArgvPublicAddress = require( "./argv-public-address" )
 
-export default {
+module.exports = {
 
     publicAddress: ArgvPublicAddress,
 

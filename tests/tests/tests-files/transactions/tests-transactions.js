@@ -1,8 +1,8 @@
-const {describe} = global.kernel.tests;
+const {describe} = require('kernel').tests;
 
-import TestsSimpleTransactions from "./simple/tests-simple-transactions";
+const TestsSimpleTransactions = require( "./simple/tests-simple-transactions");
 
-export default async function run () {
+module.exports = async function run () {
 
     await TestsSimpleTransactions();
 

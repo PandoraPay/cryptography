@@ -1,7 +1,7 @@
 // based on https://github.com/Lobstrco/stellar-identicon-js/blob/master/index.js
 
 const DEFAULT_SIZE = 7;
-const {CryptoHelper} = global.kernel.helpers.crypto;
+const {CryptoHelper} = require('kernel').helpers.crypto;
 
 function generateEmptyMatrix(width, height) {
     var matrix = [];
@@ -125,4 +125,4 @@ function createIdenticon( address, options = {}) {
     return canvas;
 }
 
-export default createIdenticon;
+module.exports = createIdenticon;

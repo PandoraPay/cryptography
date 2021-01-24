@@ -1,35 +1,35 @@
-const kernel = global.kernel;
+const kernel = require('kernel');
 
-const CryptoSignature = require("src/crypto/signatures/crypto-signature").default;
-const App = require('src/app').default;
-const Base58 = require("src/utils/base58/base58").default;
+const CryptoSignature = require("./src/crypto/signatures/crypto-signature");
+const App = require('./src/app');
+const Base58 = require("./src/utils/base58/base58");
 
-const PrivateKeyAddress  = require("src/addresses/address/private/private-key-address").default;
+const PrivateKeyAddress  = require("./src/addresses/address/private/private-key-address");
 
-const Address = require("src/addresses/address/public/address").default;
+const Address = require("./src/addresses/address/public/address");
 
-const AddressGenerator = require("src/addresses/address-generator/address-generator").default;
+const AddressGenerator = require("./src/addresses/address-generator/address-generator");
 
-const AddressValidator = require("src/addresses/address-validator/address-validator").default;
+const AddressValidator = require("./src/addresses/address-validator/address-validator");
 
-const AES = require("src/crypto/encryption/aes").default;
-const BaseTransaction = require("src/transactions/models/tx/base/base-transaction").default;
+const AES = require("./src/crypto/encryption/aes");
+const BaseTransaction = require("./src/transactions/models/tx/base/base-transaction");
 
-const TransactionTypeEnum = require("src/transactions/models/tx/base/transaction-type-enum").default;
-const TransactionScriptTypeEnum = require("src/transactions/models/tx/base/transaction-script-type-enum").default;
-const TransactionTokenCurrencyTypeEnum = require("src/transactions/models/tx/base/tokens/transaction-token-currency-type-enum").default;
+const TransactionTypeEnum = require("./src/transactions/models/tx/base/transaction-type-enum");
+const TransactionScriptTypeEnum = require("./src/transactions/models/tx/base/transaction-script-type-enum");
+const TransactionTokenCurrencyTypeEnum = require("./src/transactions/models/tx/base/tokens/transaction-token-currency-type-enum");
 
-const SimpleTransaction = require("src/transactions/models/tx/simple/simple-transaction").default;
+const SimpleTransaction = require("./src/transactions/models/tx/simple/simple-transaction");
 
-const TestsFiles = require("tests/tests/tests-index").default;
-const DBEncryptedSchema = require("src/crypto/encryption/db-encrypted-schema/db-encrypted-schema").default;
-const DBSchemaEncryptionTypeEnum = require("src/crypto/encryption/db-encrypted-schema/db-schema-encryption-type-enum").default;
+const TestsFiles = require("./tests/tests/tests-index");
+const DBEncryptedSchema = require("./src/crypto/encryption/db-encrypted-schema/db-encrypted-schema");
+const DBSchemaEncryptionTypeEnum = require("./src/crypto/encryption/db-encrypted-schema/db-schema-encryption-type-enum");
 
-const CreateIdenticon = require("src/utils/identicons/create-identicon").default;
-const Identicon = require("src/utils/identicons/identicon").default;
+const CreateIdenticon = require("./src/utils/identicons/create-identicon");
+const Identicon = require("./src/utils/identicons/identicon");
 
-const ChatMessage = require("src/crypto/encryption/encrypted-message/chat-message").default;
-const EncryptedMessage = require("src/crypto/encryption/encrypted-message/encrypted-message").default;
+const ChatMessage = require("./src/crypto/encryption/encrypted-message/chat-message");
+const EncryptedMessage = require("./src/crypto/encryption/encrypted-message/encrypted-message");
 
 const library = {
 
@@ -117,4 +117,4 @@ if (typeof global !== "undefined"){
     global.cryptography = library;
 }
 
-export default library;
+module.exports = library;

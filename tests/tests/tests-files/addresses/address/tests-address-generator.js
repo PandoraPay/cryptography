@@ -1,6 +1,6 @@
-const {describe} = global.kernel.tests;
+const {describe} = require('kernel').tests;
 
-export default async function run () {
+module.exports = async function run () {
 
     describe("Addresses Generator", {
 

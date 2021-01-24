@@ -1,7 +1,7 @@
-const {describe} = global.kernel.tests;
-import PrivateKeyAddress from "src/addresses/address/private/private-key-address";
+const {describe} = require('kernel').tests;
+const PrivateKeyAddress = require("../../../../../src/addresses/address/private/private-key-address");
 
-export default async function run () {
+module.exports = async function run () {
 
     describe("Addresses Validator", {
 

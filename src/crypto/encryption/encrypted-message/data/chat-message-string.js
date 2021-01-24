@@ -1,7 +1,7 @@
-const {DBSchemaString} = global.kernel.marshal.db.samples;
-const {Helper, EnumHelper, Exception} = global.kernel.helpers;
+const {DBSchemaString} = require('kernel').marshal.db.samples;
+const {Helper, EnumHelper, Exception} = require('kernel').helpers;
 
-export default class ChatMessageString extends DBSchemaString{
+module.exports = class ChatMessageString extends DBSchemaString{
 
     constructor(scope, schema = {},  data, type, creationOptions) {
 

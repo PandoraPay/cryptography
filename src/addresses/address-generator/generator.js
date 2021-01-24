@@ -1,7 +1,7 @@
 const bip39 = require('bip39');
-import HDKeyChain from "./hd-key-chain";
+const HDKeyChain = require("./hd-key-chain");
 
-export default class Generator{
+module.exports = class Generator{
 
     constructor(scope){
 

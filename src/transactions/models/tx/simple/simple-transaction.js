@@ -1,16 +1,15 @@
+const {Helper} = require('kernel').helpers;
+const {Exception, StringHelper, BufferHelper} = require('kernel').helpers;
+const {CryptoHelper} = require('kernel').helpers.crypto;
 
-const {Helper} = global.kernel.helpers;
-const {Exception, StringHelper, BufferHelper} = global.kernel.helpers;
-const {CryptoHelper} = global.kernel.helpers.crypto;
+const TransactionTypeEnum = require( "../base/transaction-type-enum");
+const TransactionScriptTypeEnum = require( "../base/transaction-script-type-enum");
 
-import TransactionTypeEnum from "src/transactions/models/tx/base/transaction-type-enum";
-import TransactionScriptTypeEnum from "src/transactions/models/tx/base/transaction-script-type-enum";
+const BaseTransaction = require( "./../base/base-transaction");
+const Vin = require("./parts/vin");
+const Vout = require("./parts/vout");
 
-import BaseTransaction from "./../base/base-transaction";
-import Vin from "./parts/vin";
-import Vout from "./parts/vout";
-
-export default class SimpleTransaction extends BaseTransaction {
+module.exports = class SimpleTransaction extends BaseTransaction {
 
     constructor(scope, schema={}, data, type, creationOptions) {
 

@@ -1,9 +1,9 @@
-const {Helper} = global.kernel.helpers;
+const {Helper} = require('kernel').helpers;
 
-import ArgvCrypto from "./modules/crypto/argv-crypto"
-import ArgvTransactions from "./modules/transactions/argv-transactions"
-import ArgvEncryptedMessage from "./modules/encrypted-message/argv-encrypted-message"
-import ArgvBlockchain from "./modules/blockchain/argv-blockchain"
+const ArgvCrypto  = require("./modules/crypto/argv-crypto")
+const ArgvTransactions  = require( "./modules/transactions/argv-transactions")
+const ArgvEncryptedMessage  = require("./modules/encrypted-message/argv-encrypted-message")
+const ArgvBlockchain  = require("./modules/blockchain/argv-blockchain")
 
 /**
  *
@@ -12,7 +12,7 @@ import ArgvBlockchain from "./modules/blockchain/argv-blockchain"
  */
 
 
-export default (argv) => Helper.merge( argv, {
+module.exports = (argv) => Helper.merge( argv, {
 
     crypto: ArgvCrypto,
     transactions: ArgvTransactions,

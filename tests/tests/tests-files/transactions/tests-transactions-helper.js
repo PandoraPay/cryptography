@@ -1,6 +1,6 @@
-const {Exception, StringHelper, BufferHelper} = global.kernel.helpers;
+const {Exception, StringHelper, BufferHelper} = require('kernel').helpers;
 
-export default class TestsTransactionsHelper{
+module.exports = class TestsTransactionsHelper{
 
     constructor(scope){
         this._scope = scope;

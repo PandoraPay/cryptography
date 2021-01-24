@@ -1,13 +1,13 @@
-const {Helper} = global.kernel.helpers;
-const {DBSchema} = global.kernel.marshal.db;
-const {CryptoHelper} = global.kernel.helpers.crypto;
-const {Exception, Base58, StringHelper, BufferReader} = global.kernel.helpers;
+const {Helper} = require('kernel').helpers;
+const {DBSchema} = require('kernel').marshal.db;
+const {CryptoHelper} = require('kernel').helpers.crypto;
+const {Exception, Base58, StringHelper, BufferReader} = require('kernel').helpers;
 
 /**
  * This is used to store the private key
  */
 
-export default class PrivateKeyAddress extends DBSchema {
+module.exports = class PrivateKeyAddress extends DBSchema {
 
     constructor(scope, schema={}, data, type, creationOptions) {
 

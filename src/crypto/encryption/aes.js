@@ -1,10 +1,10 @@
 const crypto = process.env.browser ? require('crypto-browserify') : require('crypto');
 
-const {Exception} = global.kernel.helpers;
+const {Exception} = require('kernel').helpers;
 
 const IV_LENGTH = 16;
 
-export default class AES{
+module.exports = class AES{
 
     encrypt(input, password){
 

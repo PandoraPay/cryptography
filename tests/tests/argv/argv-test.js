@@ -1,6 +1,6 @@
-const {Helper} = global.kernel.helpers;
+const {Helper} = require('kernel').helpers;
 
-export default (argv) => Helper.merge( argv, {
+module.exports = (argv) => Helper.merge( argv, {
 
     transactions:{
         ring:{

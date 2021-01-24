@@ -1,20 +1,20 @@
-const Protocol = global.kernel;
+const kernel = require('kernel');
 
-import Argv from "bin/argv/argv"
-import Tests from "tests/tests/tests-index"
+const Argv = require("../bin/argv/argv")
+const Tests = require("../tests/tests/tests-index")
 
-import CryptoSignature from "src/crypto/signatures/crypto-signature"
-import AddressValidator from "src/addresses/address-validator/address-validator";
-import AddressGenerator from "src/addresses/address-generator/address-generator"
-import EncryptedMessage from "src/crypto/encryption/encrypted-message/encrypted-message"
-import ChatMessage from "src/crypto/encryption/encrypted-message/chat-message"
-import EncryptedMessageCreator from "src/crypto/encryption/encrypted-message/creator/encrypted-message-creator"
-import EncryptedMessageValidator from "src/crypto/encryption/encrypted-message/validator/encrypted-message-validator"
-import ChatMessageValidator from "src/crypto/encryption/encrypted-message/validator/chat-message-validator"
+const CryptoSignature = require( "./crypto/signatures/crypto-signature")
+const AddressValidator = require("./addresses/address-validator/address-validator");
+const AddressGenerator = require("./addresses/address-generator/address-generator")
+const EncryptedMessage = require("./crypto/encryption/encrypted-message/encrypted-message")
+const ChatMessage = require("./crypto/encryption/encrypted-message/chat-message")
+const EncryptedMessageCreator = require( "./crypto/encryption/encrypted-message/creator/encrypted-message-creator")
+const EncryptedMessageValidator = require( "./crypto/encryption/encrypted-message/validator/encrypted-message-validator")
+const ChatMessageValidator = require("./crypto/encryption/encrypted-message/validator/chat-message-validator")
 
-import AES from "src/crypto/encryption/aes"
+const AES = require("./crypto/encryption/aes")
 
-export default class App extends Protocol.utils.App {
+module.exports = class App extends kernel.utils.App {
 
     setAdditionalEvents(){
 

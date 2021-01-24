@@ -5,7 +5,7 @@
 const HDKey = require('hdkey');
 const bip39 = require('bip39');
 
-export default class HDKeyChain{
+module.exports = class HDKeyChain{
 
     constructor(){
     }

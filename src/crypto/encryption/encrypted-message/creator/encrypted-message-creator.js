@@ -1,9 +1,9 @@
-import EncryptedMessage from "../encrypted-message";
-import ChatMessage from "../chat-message"
+const EncryptedMessage = require( "../encrypted-message");
+const ChatMessage = require("../chat-message")
 
-const {Exception} = global.kernel.helpers;
+const {Exception} = require('kernel').helpers;
 
-export default class EncryptedMessageCreator {
+module.exports = class EncryptedMessageCreator {
 
     constructor(scope){
         this._scope = scope;

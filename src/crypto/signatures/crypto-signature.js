@@ -1,11 +1,11 @@
-const {Exception, StringHelper, BufferHelper} = global.kernel.helpers;
-const {CryptoHelper} = global.kernel.helpers.crypto;
+const {Exception, StringHelper, BufferHelper} = require('kernel').helpers;
+const {CryptoHelper} = require('kernel').helpers.crypto;
 
-import EthCrypto from 'eth-crypto';
-const {BN} = global.kernel.utils;
+const EthCrypto = require( 'eth-crypto' );
+const {BN} = require('kernel').utils;
 const ecies = require("eth-ecies");
 
-export default class CryptoSignature {
+module.exports = class CryptoSignature {
 
     constructor(scope){
         this._scope = scope;

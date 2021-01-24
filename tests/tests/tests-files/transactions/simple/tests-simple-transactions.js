@@ -1,11 +1,11 @@
-const {BufferHelper} = global.kernel.helpers;
+const {BufferHelper} = require('kernel').helpers;
 
-const {describe} = global.kernel.tests;
+const {describe} = require('kernel').tests;
 
-import SimpleTransaction from "src/transactions/models/tx/simple/simple-transaction"
-import TransactionTokenCurrencyTypeEnum from "src/transactions/models/tx/base/tokens/transaction-token-currency-type-enum";
+const SimpleTransaction = require( "../../../../../src/transactions/models/tx/simple/simple-transaction")
+const TransactionTokenCurrencyTypeEnum = require( "../../../../../src/transactions/models/tx/base/tokens/transaction-token-currency-type-enum");
 
-export default async function run () {
+module.exports = async function run () {
 
 
     describe("Simple transactions", {

@@ -1,13 +1,13 @@
-const {Helper} = global.kernel.helpers;
-const {CryptoHelper} = global.kernel.helpers.crypto;
-const {DBSchema} = global.kernel.marshal.db;
-const {Exception, StringHelper, BufferHelper, EnumHelper} = global.kernel.helpers;
+const {Helper} = require('kernel').helpers;
+const {CryptoHelper} = require('kernel').helpers.crypto;
+const {DBSchema} = require('kernel').marshal.db;
+const {Exception, StringHelper, BufferHelper, EnumHelper} = require('kernel').helpers;
 
-import TransactionScriptTypeEnum from "./transaction-script-type-enum"
-import TransactionTokenCurrencyTypeEnum from "./tokens/transaction-token-currency-type-enum"
-import TransactionTypeEnum from "./transaction-type-enum"
+const TransactionScriptTypeEnum = require("./transaction-script-type-enum")
+const TransactionTokenCurrencyTypeEnum = require( "./tokens/transaction-token-currency-type-enum")
+const TransactionTypeEnum = require( "./transaction-type-enum")
 
-export default class BaseTransaction extends DBSchema {
+module.exports = class BaseTransaction extends DBSchema {
 
     constructor(scope, schema={}, data, type, creationOptions) {
 

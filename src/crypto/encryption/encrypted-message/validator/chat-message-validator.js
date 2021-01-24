@@ -1,7 +1,7 @@
-const {Exception, EnumHelper, StringHelper, BufferHelper} = global.kernel.helpers;
-import ChatMessage from "./../chat-message"
+const {Exception, EnumHelper, StringHelper, BufferHelper} = require('kernel').helpers;
+const ChatMessage = require( "./../chat-message")
 
-export default class ChatMessageValidator {
+module.exports = class ChatMessageValidator {
 
     constructor(scope){
         this._scope = scope;

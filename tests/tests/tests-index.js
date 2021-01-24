@@ -1,14 +1,14 @@
-import ArgvTest from "./argv/argv-test"
+const ArgvTest = require( "./argv/argv-test")
 
-import TestsAddresses from "./tests-files/addresses/tests-addresses"
-import TestsTransactions from "./tests-files/transactions/tests-transactions"
-import TestsCrypto from "./tests-files/crypto/tests-crypto"
+const TestsAddresses = require( "./tests-files/addresses/tests-addresses")
+const TestsTransactions = require("./tests-files/transactions/tests-transactions")
+const TestsCrypto = require("./tests-files/crypto/tests-crypto")
 
-import TestsTransactionsHelper from "./tests-files/transactions/tests-transactions-helper"
+const TestsTransactionsHelper = require( "./tests-files/transactions/tests-transactions-helper")
 
-import SimpleChain from "src/chain/simple-chain"
+const SimpleChain = require( "../../src/chain/simple-chain")
 
-export default {
+module.exports = {
 
     argvTests: ArgvTest,
     tests: async scope => {

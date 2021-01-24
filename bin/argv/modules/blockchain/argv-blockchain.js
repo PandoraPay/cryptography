@@ -1,5 +1,5 @@
-import ArgvGenesis from "./genesis/argv-genesis"
+const ArgvGenesis = require( "./genesis/argv-genesis" )
 
-export default {
+module.exports = {
     genesis: ArgvGenesis,
 }

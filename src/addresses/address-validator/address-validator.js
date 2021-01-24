@@ -1,10 +1,9 @@
-import Address from "src/addresses/address/public/address";
-import PrivateKeyAddress from "src/addresses/address/private/private-key-address";
+const Address = require("../address/public/address");
+const PrivateKeyAddress = require("../address/private/private-key-address");
 
-const {Exception, Base58, StringHelper, BufferReader} = global.kernel.helpers;
-import EthCrypto from 'eth-crypto';
+const {Exception, Base58, StringHelper, BufferReader} = require('kernel').helpers;
 
-export default class AddressValidator {
+module.exports = class AddressValidator {
 
     constructor(scope){
         this._scope = scope;

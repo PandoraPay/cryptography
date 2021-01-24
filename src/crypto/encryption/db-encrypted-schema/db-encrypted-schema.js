@@ -1,10 +1,10 @@
-import DBSchemaEncryptionTypeEnum from "./db-schema-encryption-type-enum"
+const DBSchemaEncryptionTypeEnum = require("./db-schema-encryption-type-enum")
 
-const {DBSchema} = global.kernel.marshal.db;
-const {Helper, EnumHelper, Exception} = global.kernel.helpers;
-const {CryptoHelper} = global.kernel.helpers.crypto;
+const {DBSchema} = require('kernel').marshal.db;
+const {Helper, EnumHelper, Exception} = require('kernel').helpers;
+const {CryptoHelper} = require('kernel').helpers.crypto;
 
-export default class DBEncryptedSchema extends DBSchema {
+module.exports = class DBEncryptedSchema extends DBSchema {
 
     constructor(scope, schema = { }, data, type , creationOptions){
 

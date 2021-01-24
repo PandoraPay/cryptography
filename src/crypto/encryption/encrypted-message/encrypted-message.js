@@ -1,13 +1,13 @@
-const {Helper, Exception} = global.kernel.helpers;
-const {MarshalData} = global.kernel.marshal;
-const {DBSchema} = global.kernel.marshal.db;
-const {CryptoHelper} = global.kernel.helpers.crypto;
+const {Helper, Exception} = require('kernel').helpers;
+const {MarshalData} = require('kernel').marshal;
+const {DBSchema} = require('kernel').marshal.db;
+const {CryptoHelper} = require('kernel').helpers.crypto;
 
 /**
  * It is used in Encrypted Chat Server and Wallet
  */
 
-export default class EncryptedMessage extends DBSchema {
+module.exports = class EncryptedMessage extends DBSchema {
 
     constructor(scope, schema = {}, data, type, creationOptions) {
 

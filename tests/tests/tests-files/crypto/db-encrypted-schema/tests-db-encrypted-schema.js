@@ -1,10 +1,10 @@
-const {BufferHelper} = global.kernel.helpers;
+const {BufferHelper} = require('kernel').helpers;
 
-const {describe} = global.kernel.tests;
+const {describe} = require('kernel').tests;
 
-import DBEncryptedSchema from "src/crypto/encryption/db-encrypted-schema/db-encrypted-schema"
+const DBEncryptedSchema = require( "../../../../../src/crypto/encryption/db-encrypted-schema/db-encrypted-schema")
 
-export default async function run () {
+module.exports = async function run () {
 
     describe("Encrypted Schema", {
 

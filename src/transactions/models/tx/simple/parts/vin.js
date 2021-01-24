@@ -1,10 +1,10 @@
-import TransactionTokenCurrencyTypeEnum from "../../base/tokens/transaction-token-currency-type-enum";
+const TransactionTokenCurrencyTypeEnum = require( "../../base/tokens/transaction-token-currency-type-enum");
 
-const {Helper, Exception, StringHelper, BufferHelper} = global.kernel.helpers;
-const {DBSchema} = global.kernel.marshal.db;
-const {CryptoHelper} = global.kernel.helpers.crypto;
+const {Helper, Exception, StringHelper, BufferHelper} = require('kernel').helpers;
+const {DBSchema} = require('kernel').marshal.db;
+const {CryptoHelper} = require('kernel').helpers.crypto;
 
-export default class Vin extends DBSchema {
+module.exports = class Vin extends DBSchema {
 
     constructor(scope, schema={}, data, type, creationOptions) {
 
