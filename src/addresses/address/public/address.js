@@ -85,24 +85,20 @@ export default class Address extends DBSchema {
         return this._scope.argv.crypto.addresses.publicAddress.getAddressPrefix(this.networkByte);
     }
 
+    addressPrefixStr(){
+        return this._scope.argv.crypto.addresses.publicAddress.getAddressPrefixStr(this.networkByte);
+    }
+
     isAddress(){
         return this._scope.argv.crypto.addresses.publicAddress.isAddress(this.networkByte);
     }
 
-    get generateQR(){
-
-    }
-
-    get generateImage(){
-
-    }
-
     calculateAddress(){
-        return this._scope.argv.crypto.addresses.publicAddress.getAddressPrefixStr(this.networkByte) + this.toBase58();
+        return this.addressPrefixStr() + this.toBase58();
     }
 
     identiconCanvas(){
-        return Identicon.createIdenticon( this.toBuffer(undefined, {
+        return Identicon.createIdenticon( this.toHex(undefined, {
             onlyFields:{
                 networkByte: true,
                 publicKeyHash: true,
