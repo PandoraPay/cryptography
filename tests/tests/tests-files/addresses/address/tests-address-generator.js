@@ -6,7 +6,7 @@ module.exports = async function run () {
 
         "generate address": async function (){
 
-            for (const networkByte of [this._scope.argv.crypto.addresses.publicAddress.publicAddressNetworkByte_Main, this._scope.argv.crypto.addresses.publicAddress.publicAddressNetworkByte_Testnet]){
+            for (const networkByte of [this._scope.argv.crypto.addresses.publicAddress.networkByte]){
 
                 const address = this._scope.cryptography.addressGenerator.generateAddressFromMnemonic( );
 
@@ -29,7 +29,7 @@ module.exports = async function run () {
 
         "validateAddress check": async function (){
 
-            for (const networkByte of [this._scope.argv.crypto.addresses.publicAddress.publicAddressNetworkByte_Main, this._scope.argv.crypto.addresses.publicAddress.publicAddressNetworkByte_Testnet]){
+            for (const networkByte of [this._scope.argv.crypto.addresses.publicAddress.networkByte]){
 
                 const address = this._scope.cryptography.addressGenerator.generateAddressFromMnemonic( );
 

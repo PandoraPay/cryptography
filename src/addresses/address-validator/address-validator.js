@@ -49,9 +49,9 @@ module.exports = class AddressValidator {
         //an optimization
         if (typeof input === "string" ){
 
-            const prefix = input.substr(0, this._scope.argv.crypto.addresses.publicAddress.publicAddressPrefixLength);
+            const prefix = input.substr(0, this._scope.argv.crypto.addresses.publicAddress.networkPrefixLength);
 
-            input = input.substr(this._scope.argv.crypto.addresses.publicAddress.publicAddressPrefixLength)
+            input = input.substr(this._scope.argv.crypto.addresses.publicAddress.networkPrefixLength)
 
             if ( Base58.verify( input )) {
 
@@ -63,30 +63,31 @@ module.exports = class AddressValidator {
 
             netbyte = input[0];
 
-            if (prefix !== this._scope.argv.crypto.addresses.publicAddress.getAddressPrefixStr(netbyte))
+            if (prefix !== this._scope.argv.crypto.addresses.publicAddress.networkPrefix)
                 throw new Exception(this, "Input Prefix is not matching");
 
         }else {
 
-            const prefix = Buffer.alloc( this._scope.argv.crypto.addresses.publicAddress.publicAddressPrefixLength );
-            input.copy(prefix, 0, 0, this._scope.argv.crypto.addresses.publicAddress.publicAddressPrefixLength);
+            const prefix = Buffer.alloc( this._scope.argv.crypto.addresses.publicAddress.networkPrefixLength );
+            input.copy(prefix, 0, 0, this._scope.argv.crypto.addresses.publicAddress.networkPrefixLength);
 
             const remaining = Buffer.alloc(WIFLength);
-            input.copy(remaining, 0, this._scope.argv.crypto.addresses.publicAddress.publicAddressPrefixLength )
+            input.copy(remaining, 0, this._scope.argv.crypto.addresses.publicAddress.networkPrefixLength )
 
             input = remaining;
-            netbyte = input[0];
 
-            if (prefix !== this._scope.argv.crypto.addresses.publicAddress.getAddressPrefixStr(netbyte))
+            if (prefix !== this._scope.argv.crypto.addresses.publicAddress.networkPrefix)
                 throw new Exception(this, "Input Prefix is not matching");
         }
 
         if (Buffer.isBuffer(input)){
 
+            netbyte = input[0];
 
-            if ( this._scope.argv.crypto.addresses.publicAddress.isAddress(netbyte) ) return this._validateAddress( input );
+            if ( this._scope.argv.crypto.addresses.publicAddress.networkByte !== netbyte )
+                throw new Exception(this, "Invalid Address Network Byte: ", netbyte);
 
-            throw new Exception(this, "Invalid Address Network Byte: ", netbyte);
+            return this._validateAddress( input );
 
         }
 

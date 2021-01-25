@@ -15,6 +15,25 @@ module.exports = class BaseTransaction extends DBSchema {
 
             fields: {
 
+                networkByte: {
+
+                    type: "number",
+
+                    default() {
+                        return scope.argv.crypto.addresses.publicAddress.networkByte;
+                    },
+
+                    validation(networkByte){
+
+                        if ( this._scope.argv.crypto.addresses.publicAddress.networkByte !== networkByte )
+                            throw new Exception(this, "network byte is invalid");
+
+                        return true;
+                    },
+
+                    position: 100,
+                },
+
                 version: {
 
                     type: "number",
@@ -26,7 +45,7 @@ module.exports = class BaseTransaction extends DBSchema {
                         return value === TransactionTypeEnum.PUBLIC_TRANSACTION;
                     },
 
-                    position: 100,
+                    position: 101,
 
                 },
 
@@ -40,7 +59,7 @@ module.exports = class BaseTransaction extends DBSchema {
                         return value === TransactionScriptTypeEnum.TX_SCRIPT_SIMPLE_TRANSACTION;
                     },
 
-                    position: 101,
+                    position: 102,
                 },
 
                 unlockTime: {
@@ -49,7 +68,7 @@ module.exports = class BaseTransaction extends DBSchema {
 
                     default: 0,
 
-                    position: 102,
+                    position: 103,
                 },
 
             },

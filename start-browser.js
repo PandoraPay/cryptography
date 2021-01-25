@@ -5,8 +5,6 @@
 if ( typeof BROWSER !== "undefined" )
     global.BROWSER = true;
 
-require('kernel');
-
 const library  = require("./build/output/build-browser");
 
 library.app.start();

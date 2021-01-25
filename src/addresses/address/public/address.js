@@ -16,23 +16,20 @@ module.exports = class Address extends DBSchema {
                 networkByte: {
 
                     type: "number",
-                    fixedBytes: 1,
-
 
                     default() {
-                        return scope.argv.crypto.addresses.publicAddress.publicAddressNetworkByte_Main;
+                        return scope.argv.crypto.addresses.publicAddress.networkByte;
                     },
 
                     validation(networkByte){
 
-                        if ( !this._scope.argv.crypto.addresses.publicAddress.isAddress(networkByte) )
+                        if ( this._scope.argv.crypto.addresses.publicAddress.networkByte !== networkByte )
                             throw new Exception(this, "network byte is invalid");
 
                         return true;
                     },
 
                     position: 10,
-
                 },
 
                 publicKeyHash: {
@@ -82,15 +79,15 @@ module.exports = class Address extends DBSchema {
     }
 
     addressPrefix(){
-        return this._scope.argv.crypto.addresses.publicAddress.getAddressPrefix(this.networkByte);
+        return this._scope.argv.crypto.addresses.publicAddress.networkPrefixBuffer;
     }
 
     addressPrefixStr(){
-        return this._scope.argv.crypto.addresses.publicAddress.getAddressPrefixStr(this.networkByte);
+        return this._scope.argv.crypto.addresses.publicAddress.networkPrefix;
     }
 
     isAddress(){
-        return this._scope.argv.crypto.addresses.publicAddress.isAddress(this.networkByte);
+        return this._scope.argv.crypto.addresses.publicAddress.networkByte === this.networkByte;
     }
 
     calculateAddress(){
