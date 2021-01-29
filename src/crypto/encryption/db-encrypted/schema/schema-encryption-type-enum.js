@@ -4,6 +4,6 @@ module.exports = {
     PLAIN_TEXT: 1,
     ENCRYPTED: 2,
 
-    _name: "DBSchemaEncryptionTypeEnum",
+    _name: "SchemaEncryptionTypeEnum",
 
 }

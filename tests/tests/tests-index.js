@@ -8,6 +8,7 @@ const TestsTransactionsHelper = require( "./tests-files/transactions/tests-trans
 
 const SimpleChain = require( "../../src/chain/simple-chain")
 
+
 module.exports = {
 
     argvTests: ArgvTest,

@@ -22,8 +22,9 @@ const TransactionTokenCurrencyTypeEnum = require("./src/transactions/models/tx/b
 const ModelSimpleTransaction = require("./src/transactions/models/tx/simple/model-simple-transaction");
 
 const TestsFiles = require("./tests/tests/tests-index");
-const DBModelEncrypted = require("./src/crypto/encryption/db-encrypted/db-model-encrypted");
-const DBSchemaEncryptionTypeEnum = require("./src/crypto/encryption/db-encrypted/schema/db-schema-encryption-type-enum");
+const ModelEncrypted = require("./src/crypto/encryption/db-encrypted/model-encrypted");
+const SchemaEncryptionTypeEnum = require("./src/crypto/encryption/db-encrypted/schema/schema-encryption-type-enum");
+const SchemaBuildEncrypted = require("./src/crypto/encryption/db-encrypted/schema/schema-build-encrypted");
 
 const CreateIdenticon = require("./src/utils/identicons/create-identicon");
 const Identicon = require("./src/utils/identicons/identicon");
@@ -90,8 +91,12 @@ const library = Helper.merge( kernel, {
     },
 
     schema:{
-        DBModelEncrypted,
-        DBSchemaEncryptionTypeEnum,
+        ModelEncrypted,
+        SchemaBuildEncrypted,
+    },
+
+    enums:{
+        SchemaEncryptionTypeEnum,
     },
 
 }, false);

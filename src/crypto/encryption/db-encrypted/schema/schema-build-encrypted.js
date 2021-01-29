@@ -2,9 +2,9 @@ const {DBSchemaBuild} = require('kernel').db;
 const {Helper, EnumHelper} = require('kernel').helpers;
 const {CryptoHelper} = require('kernel').helpers.crypto;
 
-const DBSchemaEncryptionTypeEnum = require('./db-schema-encryption-type-enum')
+const SchemaEncryptionTypeEnum = require('./schema-encryption-type-enum')
 
-class DBSchemaBuildEncrypted extends DBSchemaBuild{
+class SchemaBuildEncrypted extends DBSchemaBuild{
 
     constructor(schema) {
 
@@ -37,9 +37,9 @@ class DBSchemaBuildEncrypted extends DBSchemaBuild{
                         type: "number",
                         fixedBytes: 1,
 
-                        default: DBSchemaEncryptionTypeEnum.NON_EXISTENT,
+                        default: SchemaEncryptionTypeEnum.NON_EXISTENT,
 
-                        validation: value => EnumHelper.validateEnum(value, DBSchemaEncryptionTypeEnum),
+                        validation: value => EnumHelper.validateEnum(value, SchemaEncryptionTypeEnum),
 
                         position: 101,
 
@@ -50,16 +50,16 @@ class DBSchemaBuildEncrypted extends DBSchemaBuild{
                         type: "buffer",
 
                         minSize(){
-                            if (this.encryption === DBSchemaEncryptionTypeEnum.NON_EXISTENT) return 0;
-                            if (this.encryption === DBSchemaEncryptionTypeEnum.ENCRYPTED) return 16;
-                            if (this.encryption === DBSchemaEncryptionTypeEnum.PLAIN_TEXT) return 1;
+                            if (this.encryption === SchemaEncryptionTypeEnum.NON_EXISTENT) return 0;
+                            if (this.encryption === SchemaEncryptionTypeEnum.ENCRYPTED) return 16;
+                            if (this.encryption === SchemaEncryptionTypeEnum.PLAIN_TEXT) return 1;
                             return 0;
                         },
 
                         maxSize(){
-                            if (this.encryption === DBSchemaEncryptionTypeEnum.NON_EXISTENT) return 0;
-                            if (this.encryption === DBSchemaEncryptionTypeEnum.ENCRYPTED) return 256;
-                            if (this.encryption === DBSchemaEncryptionTypeEnum.PLAIN_TEXT) return 256;
+                            if (this.encryption === SchemaEncryptionTypeEnum.NON_EXISTENT) return 0;
+                            if (this.encryption === SchemaEncryptionTypeEnum.ENCRYPTED) return 256;
+                            if (this.encryption === SchemaEncryptionTypeEnum.PLAIN_TEXT) return 256;
                             return 0;
                         },
 
@@ -87,6 +87,6 @@ class DBSchemaBuildEncrypted extends DBSchemaBuild{
 }
 
 module.exports = {
-    DBSchemaBuildEncrypted,
-    DBSchemaBuiltEncrypted: new DBSchemaBuildEncrypted(),
+    SchemaBuildEncrypted: SchemaBuildEncrypted,
+    SchemaBuiltEncrypted: new SchemaBuildEncrypted(),
 }

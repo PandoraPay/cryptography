@@ -1,22 +1,22 @@
-const DBSchemaEncryptionTypeEnum = require("./schema/db-schema-encryption-type-enum")
+const SchemaEncryptionTypeEnum = require("./schema/schema-encryption-type-enum")
 
-const {DBModel} = require('kernel').db;
+const {Model} = require('kernel').marshal;
 const {Exception} = require('kernel').helpers;
 
-const {DBSchemaBuiltEncrypted} = require('./schema/db-schema-build-encrypted')
+const {SchemaBuiltEncrypted} = require('./schema/schema-build-encrypted')
 
-module.exports = class DBModelEncrypted extends DBModel {
+module.exports = class ModelEncrypted extends Model {
 
-    constructor(scope, schema = DBSchemaBuiltEncrypted, data, type , creationOptions){
+    constructor(scope, schema = SchemaBuiltEncrypted, data, type , creationOptions){
 
         super(scope, schema, data, type, creationOptions);
-
         this._unlocked = undefined;
+
     }
 
     setPlainTextValue(value){
 
-        this.encryption = DBSchemaEncryptionTypeEnum.PLAIN_TEXT;
+        this.encryption = SchemaEncryptionTypeEnum.PLAIN_TEXT;
         this.value = value;
 
     }
@@ -27,12 +27,12 @@ module.exports = class DBModelEncrypted extends DBModel {
      */
     encryptKey( password ){
 
-        if (this.encryption === DBSchemaEncryptionTypeEnum.NON_EXISTENT) throw new Exception(this, `${this.id} data is not present`);
-        if (this.encryption === DBSchemaEncryptionTypeEnum.ENCRYPTED) throw new Exception(this, `${this.id} is already encrypted`);
+        if (this.encryption === SchemaEncryptionTypeEnum.NON_EXISTENT) throw new Exception(this, `${this.id} data is not present`);
+        if (this.encryption === SchemaEncryptionTypeEnum.ENCRYPTED) throw new Exception(this, `${this.id} is already encrypted`);
 
         const encryption = this._scope.cryptography.aes.encrypt( this.value, password );
 
-        this.encryption = DBSchemaEncryptionTypeEnum.ENCRYPTED;
+        this.encryption = SchemaEncryptionTypeEnum.ENCRYPTED;
         this.value = encryption;
 
         delete this._unlocked;
@@ -48,9 +48,9 @@ module.exports = class DBModelEncrypted extends DBModel {
      */
     decryptKey( password, askPassword = true ){
 
-        if (this.encryption === DBSchemaEncryptionTypeEnum.NON_EXISTENT) throw new Exception(this, `${this.id} data is not present`);
+        if (this.encryption === SchemaEncryptionTypeEnum.NON_EXISTENT) throw new Exception(this, `${this.id} data is not present`);
 
-        if (this.encryption === DBSchemaEncryptionTypeEnum.PLAIN_TEXT) return this.value;
+        if (this.encryption === SchemaEncryptionTypeEnum.PLAIN_TEXT) return this.value;
         if (this._unlocked) return this._unlocked;
 
         if ( !Buffer.isBuffer(password) || password.length !== 32){
@@ -85,12 +85,12 @@ module.exports = class DBModelEncrypted extends DBModel {
 
         if (!newPassword) throw new Exception(this, "New password was not specified");
 
-        if (this.encryption === DBSchemaEncryptionTypeEnum.NON_EXISTENT) throw new Exception(this, `${this.id} data is not present`);
+        if (this.encryption === SchemaEncryptionTypeEnum.NON_EXISTENT) throw new Exception(this, `${this.id} data is not present`);
 
-        if (this.encryption === DBSchemaEncryptionTypeEnum.ENCRYPTED) {
+        if (this.encryption === SchemaEncryptionTypeEnum.ENCRYPTED) {
 
             const decrypted = this.decryptKey(oldPassword);
-            this.encryption = DBSchemaEncryptionTypeEnum.PLAIN_TEXT;
+            this.encryption = SchemaEncryptionTypeEnum.PLAIN_TEXT;
             this.value = decrypted;
 
         }
@@ -104,12 +104,12 @@ module.exports = class DBModelEncrypted extends DBModel {
 
     removeEncryptionKey(oldPassword){
 
-        if (this.encryption === DBSchemaEncryptionTypeEnum.NON_EXISTENT) throw new Exception(this, `${this.id} data is not present`);
+        if (this.encryption === SchemaEncryptionTypeEnum.NON_EXISTENT) throw new Exception(this, `${this.id} data is not present`);
 
-        if (this.encryption === DBSchemaEncryptionTypeEnum.ENCRYPTED) {
+        if (this.encryption === SchemaEncryptionTypeEnum.ENCRYPTED) {
 
             const decrypted = this.decryptKey(oldPassword);
-            this.encryption = DBSchemaEncryptionTypeEnum.PLAIN_TEXT;
+            this.encryption = SchemaEncryptionTypeEnum.PLAIN_TEXT;
             this.value = decrypted;
 
         }
