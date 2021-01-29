@@ -1,5 +1,5 @@
-const EncryptedMessage = require( "../encrypted-message");
-const ChatMessage = require("../chat-message")
+const EncryptedMessage = require( "../db-model-encrypted-message");
+const ChatMessage = require("../schema/db-schema-build-chat-message")
 
 const {Exception} = require('kernel').helpers;
 

@@ -1,5 +1,5 @@
-const Address = require("../address/public/address");
-const PrivateKeyAddress = require("../address/private/private-key-address");
+const ModelAddress = require("../address/public/model-address");
+const ModelPrivateKeyAddress = require("../address/private/model-private-key-address");
 
 const {Exception, Base58, StringHelper, BufferReader} = require('kernel').helpers;
 
@@ -17,9 +17,9 @@ module.exports = class AddressValidator {
      */
     _validateAddress(input){
 
-        if (input instanceof Address && input.validate() ) return input;
+        if (input instanceof ModelAddress && input.validate() ) return input;
 
-        const address = new Address( this._scope, undefined, undefined, undefined, {emptyObject: true} );
+        const address = new ModelAddress( this._scope, undefined, undefined, undefined, {emptyObject: true} );
         address.fromType( input );
 
         return address;
@@ -36,8 +36,8 @@ module.exports = class AddressValidator {
     validateAddress(input){
 
         if (!input) throw new Exception(this, "Input is invalid");
-        if (input instanceof PrivateKeyAddress) return input.getAddress();
-        if (input instanceof Address && input.validate() ) return input;
+        if (input instanceof ModelPrivateKeyAddress) return input.getAddress();
+        if (input instanceof ModelAddress && input.validate() ) return input;
 
         /**
          * 25 = Address WIF ( 1 + 20 + 4)
@@ -88,12 +88,12 @@ module.exports = class AddressValidator {
 
         if (!input) throw new Exception(this, "invalid input");
 
-        if (input instanceof PrivateKeyAddress) {
+        if (input instanceof ModelPrivateKeyAddress) {
             if (!input.validatePublicKey()) throw new Exception(this, "public key is invalid 1");
             return input;
         }
 
-        const addr = new PrivateKeyAddress( this._scope, undefined, undefined, undefined, {emptyObject: true} );
+        const addr = new ModelPrivateKeyAddress( this._scope, undefined, undefined, undefined, {emptyObject: true} );
         addr.fromType( input );
 
         if (!addr.validatePublicKey()) throw new Exception(this, "public key is invalid 2");

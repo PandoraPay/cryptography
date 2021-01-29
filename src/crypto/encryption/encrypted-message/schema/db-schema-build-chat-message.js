@@ -1,20 +1,20 @@
 const {CryptoHelper} = require('kernel').helpers.crypto;
 const {Helper, Exception} = require('kernel').helpers;
 const {MarshalData} = require('kernel').marshal;
-const {DBSchema} = require('kernel').marshal.db;
+const {DBSchemaBuild} = require('kernel').db;
 
-const ChatMessageAttachment = require( "./data/chat-message-attachment")
-const ChatMessageString = require("./data/chat-message-string")
+const {SchemaBuiltChatMessageAttachment} = require( "./data/schema-build-chat-message-attachment")
+const {SchemaBuiltChatMessageString} = require("./data/schema-build-chat-message-string")
 
 /**
  * It is used in Encrypted Chat Server and Wallet
  */
 
-module.exports = class ChatMessage extends DBSchema {
+class DbSchemaBuildChatMessage extends DBSchemaBuild {
 
-    constructor(scope, schema = {}, data, type, creationOptions) {
+    constructor(schema) {
 
-        super(scope, Helper.merge({
+        super( Helper.merge({
 
                 fields: {
 
@@ -47,9 +47,9 @@ module.exports = class ChatMessage extends DBSchema {
                     data: {
 
                         type: "object",
-                        classObject() {
-                            if (this.script === 0) return ChatMessageString;
-                            if (this.script === 1) return ChatMessageAttachment;
+                        schemaBuiltClass() {
+                            if (this.script === 0) return SchemaBuiltChatMessageString;
+                            if (this.script === 1) return SchemaBuiltChatMessageAttachment;
                         },
 
                         position: 102,
@@ -70,10 +70,13 @@ module.exports = class ChatMessage extends DBSchema {
                 },
 
             },
-            schema, false), data, type, creationOptions);
+            schema, true ) );
 
     }
 
+}
 
-
+module.exports = {
+    SchemaBuildChatMessage: DbSchemaBuildChatMessage,
+    SchemaBuiltChatMessage: new DbSchemaBuildChatMessage(),
 }

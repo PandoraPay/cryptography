@@ -1,24 +1,18 @@
 const {CryptoHelper} = require('kernel').helpers.crypto;
 const {Helper, Exception} = require('kernel').helpers;
-const {MarshalData} = require('kernel').marshal;
-const {DBSchema} = require('kernel').marshal.db;
+const {SchemaBuild} = require('kernel').marshal;
 
 /**
  * It is used in Encrypted Chat Server and Wallet
  */
 
-module.exports = class ChatMessage extends DBSchema {
+class SchemaBuildChatMessageAttachment extends SchemaBuild {
 
-    constructor(scope, schema = {}, data, type, creationOptions) {
+    constructor( schema = {} ) {
 
-        super(scope, Helper.merge({
+        super( Helper.merge({
 
                 fields: {
-
-                    table: {
-                        default: "chatAtt",
-                        fixedBytes: 7,
-                    },
 
                     version: {
                         type: "number",
@@ -58,7 +52,9 @@ module.exports = class ChatMessage extends DBSchema {
                     data: {
                         type: "buffer",
                         minSize: 0,
-                        maxSize: scope.argv.encryptedMessage.maxSize,
+                        maxSize(){
+                            return this._scope.argv.encryptedMessage.maxSize
+                        },
 
                         position: 104,
                     },
@@ -78,10 +74,13 @@ module.exports = class ChatMessage extends DBSchema {
                 },
 
             },
-            schema, false), data, type, creationOptions);
+            schema, true ) );
 
     }
 
+}
 
-
+module.exports = {
+    SchemaBuildChatMessageAttachment,
+    SchemaBuiltChatMessageAttachment: new SchemaBuildChatMessageAttachment(),
 }

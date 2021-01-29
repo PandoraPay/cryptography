@@ -4,47 +4,47 @@ const CryptoSignature = require("./src/crypto/signatures/crypto-signature");
 const App = require('./src/app');
 const Base58 = require("./src/utils/base58/base58");
 
-const PrivateKeyAddress  = require("./src/addresses/address/private/private-key-address");
+const ModelPrivateKeyAddress  = require("./src/addresses/address/private/model-private-key-address");
 
-const Address = require("./src/addresses/address/public/address");
+const ModelAddress = require("./src/addresses/address/public/model-address");
 
 const AddressGenerator = require("./src/addresses/address-generator/address-generator");
 
 const AddressValidator = require("./src/addresses/address-validator/address-validator");
 
 const AES = require("./src/crypto/encryption/aes");
-const BaseTransaction = require("./src/transactions/models/tx/base/base-transaction");
+const ModelBaseTransaction = require("./src/transactions/models/tx/base/model-base-transaction");
 
-const TransactionTypeEnum = require("./src/transactions/models/tx/base/transaction-type-enum");
-const TransactionScriptTypeEnum = require("./src/transactions/models/tx/base/transaction-script-type-enum");
-const TransactionTokenCurrencyTypeEnum = require("./src/transactions/models/tx/base/tokens/transaction-token-currency-type-enum");
+const TransactionTypeEnum = require("./src/transactions/models/tx/base/schema/transaction-type-enum");
+const TransactionScriptTypeEnum = require("./src/transactions/models/tx/base/schema/transaction-script-type-enum");
+const TransactionTokenCurrencyTypeEnum = require("./src/transactions/models/tx/base/schema/tokens/transaction-token-currency-type-enum");
 
-const SimpleTransaction = require("./src/transactions/models/tx/simple/simple-transaction");
+const ModelSimpleTransaction = require("./src/transactions/models/tx/simple/model-simple-transaction");
 
 const TestsFiles = require("./tests/tests/tests-index");
-const DBEncryptedSchema = require("./src/crypto/encryption/db-encrypted-schema/db-encrypted-schema");
-const DBSchemaEncryptionTypeEnum = require("./src/crypto/encryption/db-encrypted-schema/db-schema-encryption-type-enum");
+const DBModelEncrypted = require("./src/crypto/encryption/db-encrypted/db-model-encrypted");
+const DBSchemaEncryptionTypeEnum = require("./src/crypto/encryption/db-encrypted/schema/db-schema-encryption-type-enum");
 
 const CreateIdenticon = require("./src/utils/identicons/create-identicon");
 const Identicon = require("./src/utils/identicons/identicon");
 
-const ChatMessage = require("./src/crypto/encryption/encrypted-message/chat-message");
-const EncryptedMessage = require("./src/crypto/encryption/encrypted-message/encrypted-message");
+const ChatMessage = require("./src/crypto/encryption/encrypted-message/schema/db-schema-build-chat-message");
+const EncryptedMessage = require("./src/crypto/encryption/encrypted-message/db-model-encrypted-message");
 
-const library = {
+const {Helper} = require('kernel').helpers;
 
-    ...kernel,
+const library = Helper.merge( kernel, {
 
     app: new App({}),
 
     transactions : {
 
         base:{
-            BaseTransaction,
+            ModelBaseTransaction,
         },
 
         simpleTransaction:{
-            SimpleTransaction,
+            ModelSimpleTransaction,
         },
 
         TransactionTypeEnum,
@@ -56,11 +56,11 @@ const library = {
     addresses: {
 
         private:{
-            PrivateKeyAddress,
+            ModelPrivateKeyAddress,
         },
 
         public:{
-            Address,
+            ModelAddress,
         },
 
         AddressValidator,
@@ -79,7 +79,6 @@ const library = {
     },
 
     utils: {
-        ...kernel.utils,
         App,
         Base58,
         CreateIdenticon,
@@ -87,23 +86,15 @@ const library = {
     },
 
     tests: {
-        ...kernel.tests,
         TestsFiles,
     },
 
-    marshal:{
-        ...kernel.marshal,
-        db:{
-            ...kernel.marshal.db,
-            samples:{
-                ...kernel.marshal.db.samples,
-                DBEncryptedSchema,
-                DBSchemaEncryptionTypeEnum,
-            }
-        }
+    schema:{
+        DBModelEncrypted,
+        DBSchemaEncryptionTypeEnum,
     },
 
-};
+}, false);
 
 if (typeof window !== "undefined") {
     window.library = library;

@@ -1,14 +1,13 @@
-const TransactionTokenCurrencyTypeEnum = require( "../../base/tokens/transaction-token-currency-type-enum");
+const {SchemaBuild} = require('kernel').marshal;
+const {Helper, Exception} = require('kernel').helpers;
 
-const {Helper, Exception, StringHelper, BufferHelper} = require('kernel').helpers;
-const {DBSchema} = require('kernel').marshal.db;
-const {CryptoHelper} = require('kernel').helpers.crypto;
+const TransactionTokenCurrencyTypeEnum = require( "../../../../base/schema/tokens/transaction-token-currency-type-enum");
 
-module.exports = class Vin extends DBSchema {
+class SchemaBuildVin extends SchemaBuild {
 
-    constructor(scope, schema={}, data, type, creationOptions) {
+    constructor(schema) {
 
-        super(scope, Helper.merge({
+        super(Helper.merge( {
 
             fields: {
 
@@ -72,27 +71,12 @@ module.exports = class Vin extends DBSchema {
                 },
             }
 
-        }, schema, false), data, type, creationOptions);
-
-
-    }
-
-    get publicKeyHash(){
-
-        if (!this._publicKeyHash)
-            this._publicKeyHash = this._scope.cryptography.addressGenerator.generatePublicKeyHash( this.publicKey );
-
-        return this._publicKeyHash;
-
-    }
-
-    get address(){
-
-        if (!this._address)
-            this._address = this._scope.cryptography.addressGenerator.generateAddressFromPublicKey( this.publicKey ).calculateAddress();
-
-        return this._address;
+        }, schema, true));
     }
 
 }
 
+module.exports = {
+    SchemaBuildVin,
+    SchemaBuiltVin: new SchemaBuildVin()
+}

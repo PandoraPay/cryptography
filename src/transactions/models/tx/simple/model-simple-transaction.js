@@ -2,104 +2,14 @@ const {Helper} = require('kernel').helpers;
 const {Exception, StringHelper, BufferHelper} = require('kernel').helpers;
 const {CryptoHelper} = require('kernel').helpers.crypto;
 
-const TransactionTypeEnum = require( "../base/transaction-type-enum");
-const TransactionScriptTypeEnum = require( "../base/transaction-script-type-enum");
+const ModelBaseTransaction = require( "../base/model-base-transaction");
 
-const BaseTransaction = require( "./../base/base-transaction");
-const Vin = require("./parts/vin");
-const Vout = require("./parts/vout");
+const {SchemaBuiltSimpleTransaction} = require('./schema/schema-build-simple-transaction')
 
-module.exports = class SimpleTransaction extends BaseTransaction {
+module.exports = class ModelSimpleTransaction extends ModelBaseTransaction {
 
-    constructor(scope, schema={}, data, type, creationOptions) {
-
-        super(scope, Helper.merge({
-
-            fields: {
-
-                version: {
-
-                    default: TransactionTypeEnum.PUBLIC_TRANSACTION,
-
-                    validation(version){
-                        return version === TransactionTypeEnum.PUBLIC_TRANSACTION;
-                    }
-
-                },
-
-                scriptVersion:{
-
-                    default: TransactionScriptTypeEnum.TX_SCRIPT_SIMPLE_TRANSACTION,
-
-                    validation(script){
-                        return script === TransactionScriptTypeEnum.TX_SCRIPT_SIMPLE_TRANSACTION;
-                    }
-
-                },
-
-                vin:{
-                    type: "array",
-                    classObject: Vin,
-
-                    minSize: 1,
-                    maxSize: 255,
-
-                    /**
-                     * Verify two conditions
-                     *  Every (input, tokenCurrency) is unique
-                     *  Every input contains maximum two tokenCurrencies
-                     * @param input
-                     * @returns {boolean}
-                     */
-                    validation(input){
-
-                        if ( this._validateSpecialAddresses(input) !== true) throw new Exception(this, "vin validation failed special addresses");
-                        if ( this._validateMapUniqueness(input) !== true) throw new Exception(this, "vin validation failed");
-
-                        return true;
-                    },
-
-                    position: 1001,
-
-                },
-
-                vout:{
-                    type: "array",
-
-                    classObject: Vout,
-
-                    minSize: 1,
-                    maxSize: 255,
-
-                    /**
-                     * Verify three conditions
-                     *  Every (output, tokenCurrency) is unique
-                     *  Every output contains maximum two tokenCurrencies
-                     *  Every (input, tokenCurrency) and (output, tokenCurrency) are unique
-                     * @param output
-                     * @returns {boolean}
-                     */
-                    validation(output){
-
-                        if ( this._validateMapUniqueness(output) !== true) throw new Exception(this, "vin validation failed");
-
-                        const sumIn = this.sumIn(this.vin), sumOut = this.sumOut(output);
-
-                        this.validateOuts(sumIn, sumOut);
-                        this.validateFee(sumIn, sumOut);
-
-                        return true;
-                    },
-
-                    position: 1003,
-
-                },
-
-
-            }
-
-        }, schema, false), data, type, creationOptions);
-
+    constructor(scope, schema= SchemaBuiltSimpleTransaction, data, type, creationOptions) {
+        super(scope, schema, data, type, creationOptions);
     }
 
     _validateSpecialAddresses(input){

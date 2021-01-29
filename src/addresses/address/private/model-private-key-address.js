@@ -1,65 +1,17 @@
 const {Helper} = require('kernel').helpers;
-const {DBSchema} = require('kernel').marshal.db;
+const {Model} = require('kernel').marshal;
 const {CryptoHelper} = require('kernel').helpers.crypto;
 const {Exception, Base58, StringHelper, BufferReader} = require('kernel').helpers;
 
 /**
  * This is used to store the private key
  */
+const {SchemaBuiltPrivateKeyAddress} = require('./schema-build-private-key-address')
 
-module.exports = class PrivateKeyAddress extends DBSchema {
+module.exports = class ModelPrivateKeyAddress extends Model {
 
-    constructor(scope, schema={}, data, type, creationOptions) {
-
-        super(scope, Helper.merge({
-
-            fields: {
-
-                privateKey:{
-                    type: "buffer",
-                    fixedBytes: 32,
-
-                    default(){
-                        return this._scope.cryptography.cryptoSignature.createPrivateKey();
-                    },
-
-                    preprocessor(privateKey){
-                        this.__data.publicKey = this._scope.cryptography.cryptoSignature.createPublicKey( privateKey );
-                        return privateKey;
-                    },
-
-                    position: 100,
-                },
-
-
-                /**
-                 * Public Keys are available
-                 */
-
-                publicKey:{
-
-                    type: "buffer",
-                    fixedBytes: 33,
-
-                    skipMarshal: true,
-                    skipSaving: true,
-
-                    default(){
-                        return this._scope.cryptography.cryptoSignature.createPublicKey( this.privateKey );
-                    },
-
-                    validation(value){
-                        const pubKey = this._scope.cryptography.cryptoSignature.createPublicKey( this.privateKey );
-                        return value.equals(pubKey);
-                    },
-
-                    position: 101,
-                },
-
-            }
-
-        }, schema, false), data, type, creationOptions);
-
+    constructor(scope, schema= SchemaBuiltPrivateKeyAddress, data, type, creationOptions) {
+        super(scope, schema, data, type, creationOptions);
     }
 
     /**
@@ -112,7 +64,7 @@ module.exports = class PrivateKeyAddress extends DBSchema {
 
         delegatePrivateKey = CryptoHelper.dsha256( concat2 );                                       //dsha256( STAKE + delegatePrivateKey + SECRET)
 
-        const delegatePrivateAddress = new PrivateKeyAddress( this._scope, undefined, {
+        const delegatePrivateAddress = new ModelPrivateKeyAddress( this._scope, undefined, {
             privateKey: delegatePrivateKey,
         } );
 
@@ -156,7 +108,7 @@ module.exports = class PrivateKeyAddress extends DBSchema {
 
         delegatePrivateKey = CryptoHelper.dsha256( concat2 );                                               //dsha256(DELEGATE + delegatePrivateKey + VALUE)
 
-        const delegatePrivateAddress = new PrivateKeyAddress( this._scope, undefined, {
+        const delegatePrivateAddress = new ModelPrivateKeyAddress( this._scope, undefined, {
             privateKey: delegatePrivateKey,
         } );
 

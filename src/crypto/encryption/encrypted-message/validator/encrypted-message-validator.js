@@ -1,5 +1,5 @@
 const {Exception, EnumHelper, StringHelper, BufferHelper} = require('kernel').helpers;
-const EncryptedMessage = require( "./../encrypted-message")
+const EncryptedMessage = require( "../db-model-encrypted-message")
 
 module.exports = class EncryptedMessageValidator {
 

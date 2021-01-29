@@ -1,14 +1,13 @@
-const TransactionTokenCurrencyTypeEnum = require( "../../base/tokens/transaction-token-currency-type-enum");
+const {SchemaBuild} = require('kernel').marshal;
+const {Helper, Exception} = require('kernel').helpers;
 
-const {Helper} = require('kernel').helpers;
-const {DBSchema} = require('kernel').marshal.db;
-const {Exception, StringHelper, BufferHelper} = require('kernel').helpers;
+const TransactionTokenCurrencyTypeEnum = require( "../../../../base/schema/tokens/transaction-token-currency-type-enum");
 
-module.exports = class Vout extends DBSchema {
+class SchemaBuildVout extends SchemaBuild {
 
-    constructor(scope, schema={}, data, type, creationOptions) {
+    constructor(schema) {
 
-        super(scope, Helper.merge({
+        super(Helper.merge({
 
             fields: {
 
@@ -62,17 +61,12 @@ module.exports = class Vout extends DBSchema {
                 },
             }
 
-        }, schema, false), data, type, creationOptions);
-
-
-    }
-
-    get address(){
-        if (this._address)
-            this._address = this._scope.cryptography.addressGenerator.generateAddressFromPublicKeyHash( this.publicKeyHash ).calculateAddress();
-
-        return this._address;
+        }, schema, true ));
     }
 
 }
 
+module.exports = {
+    SchemaBuildVout,
+    SchemaBuiltVout: new SchemaBuildVout(),
+}

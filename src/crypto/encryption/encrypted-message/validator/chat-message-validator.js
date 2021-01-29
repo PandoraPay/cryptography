@@ -1,5 +1,5 @@
 const {Exception, EnumHelper, StringHelper, BufferHelper} = require('kernel').helpers;
-const ChatMessage = require( "./../chat-message")
+const ChatMessage = require( "../schema/db-schema-build-chat-message")
 
 module.exports = class ChatMessageValidator {
 

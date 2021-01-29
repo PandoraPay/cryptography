@@ -1,5 +1,5 @@
 const {describe} = require('kernel').tests;
-const PrivateKeyAddress = require("../../../../../src/addresses/address/private/private-key-address");
+const ModelPrivateKeyAddress = require("../../../../../src/addresses/address/private/model-private-key-address");
 
 module.exports = async function run () {
 
@@ -11,13 +11,13 @@ module.exports = async function run () {
 
             this.expect( privateAddress.validatePublicKey(), true);
 
-            this.expect( this._scope.cryptography.addressValidator.validatePrivateAddress( privateAddress ) instanceof PrivateKeyAddress, true);
+            this.expect( this._scope.cryptography.addressValidator.validatePrivateAddress( privateAddress ) instanceof ModelPrivateKeyAddress, true);
 
             const privateAddress2 = this._scope.cryptography.addressValidator.validatePrivateAddress( privateAddress );
 
             this.expect( privateAddress2.validatePublicKey(), true);
 
-            this.expect( this._scope.cryptography.addressValidator.validatePrivateAddress( privateAddress2 ) instanceof PrivateKeyAddress, true);
+            this.expect( this._scope.cryptography.addressValidator.validatePrivateAddress( privateAddress2 ) instanceof ModelPrivateKeyAddress, true);
 
             const json = privateAddress2.toJSON();
 
@@ -25,7 +25,7 @@ module.exports = async function run () {
 
             this.expect( privateAddress3.validatePublicKey(), true);
 
-            this.expect( this._scope.cryptography.addressValidator.validatePrivateAddress( privateAddress3 ) instanceof PrivateKeyAddress, true);
+            this.expect( this._scope.cryptography.addressValidator.validatePrivateAddress( privateAddress3 ) instanceof ModelPrivateKeyAddress, true);
 
         },
 
