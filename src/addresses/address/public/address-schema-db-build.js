@@ -1,7 +1,7 @@
 const {SchemaBuild} = require('kernel').marshal;
 const {Exception, Helper} = require('kernel').helpers;
 
-class AddressSchemaBuild extends SchemaBuild{
+class AddressSchemaDBBuild extends SchemaBuild{
 
     constructor(schema) {
         super(Helper.merge( {
@@ -59,6 +59,6 @@ class AddressSchemaBuild extends SchemaBuild{
 }
 
 module.exports = {
-    AddressSchemaBuild,
-    AddressSchemaBuilt: new AddressSchemaBuild(),
+    AddressSchemaDBBuild,
+    AddressSchemaDBBuilt: new AddressSchemaDBBuild(),
 }

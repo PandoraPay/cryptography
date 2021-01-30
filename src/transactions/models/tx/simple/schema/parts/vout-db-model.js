@@ -1,9 +1,9 @@
 const {Model} = require('kernel').marshal;
-const {VoutSchemaBuilt} = require('./schema/vout-schema-build')
+const {VoutDBSchemaBuilt} = require('./schema/vout-db-schema-build')
 
-module.exports = class VoutModel extends Model {
+module.exports = class VoutDBModel extends Model {
 
-    constructor(scope, schema= VoutSchemaBuilt, data, type, creationOptions) {
+    constructor(scope, schema= VoutDBSchemaBuilt, data, type, creationOptions) {
         super(scope, schema, data, type, creationOptions);
     }
 

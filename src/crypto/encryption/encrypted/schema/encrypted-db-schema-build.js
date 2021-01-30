@@ -4,7 +4,7 @@ const {CryptoHelper} = require('kernel').helpers.crypto;
 
 const SchemaEncryptionTypeEnum = require('./schema-encryption-type-enum')
 
-class EncryptedSchemaBuild extends SchemaBuild {
+class EncryptedDBSchemaBuild extends SchemaBuild {
 
     constructor(schema) {
 
@@ -82,6 +82,6 @@ class EncryptedSchemaBuild extends SchemaBuild {
 }
 
 module.exports = {
-    EncryptedSchemaBuild,
-    EncryptedSchemaBuilt: new EncryptedSchemaBuild(),
+    EncryptedDBSchemaBuild,
+    EncryptedDBSchemaBuilt: new EncryptedDBSchemaBuild(),
 }

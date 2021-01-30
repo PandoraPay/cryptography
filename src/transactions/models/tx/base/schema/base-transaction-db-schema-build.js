@@ -1,4 +1,4 @@
-const {SchemaBuild} = require('kernel').marshal;
+const {DBSchemaBuild} = require('kernel').db;
 const {Helper, Exception} = require('kernel').helpers;
 const {CryptoHelper} = require('kernel').helpers.crypto;
 
@@ -6,7 +6,7 @@ const TransactionScriptTypeEnum = require("./transaction-script-type-enum")
 const TransactionTokenCurrencyTypeEnum = require( "./tokens/transaction-token-currency-type-enum")
 const TransactionTypeEnum = require( "./transaction-type-enum")
 
-class BaseTransactionSchemaBuild extends SchemaBuild {
+class BaseTransactionSchemaDBBuild extends DBSchemaBuild {
 
     constructor(schema) {
 
@@ -86,6 +86,6 @@ class BaseTransactionSchemaBuild extends SchemaBuild {
 }
 
 module.exports = {
-    BaseTransactionSchemaBuild,
-    BaseTransactionSchemaBuilt : new BaseTransactionSchemaBuild(),
+    BaseTransactionSchemaDBBuild,
+    BaseTransactionSchemaDBBuilt : new BaseTransactionSchemaDBBuild(),
 }

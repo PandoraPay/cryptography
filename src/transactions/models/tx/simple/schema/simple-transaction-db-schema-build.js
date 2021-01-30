@@ -1,17 +1,17 @@
 const {Helper, Exception} = require('kernel').helpers;
 
-const {BaseTransactionSchemaBuild} = require('../../base/schema/base-transaction-schema-build')
+const {BaseTransactionSchemaDBBuild} = require('../../base/schema/base-transaction-db-schema-build')
 
 const TransactionTypeEnum = require( "../../base/schema/transaction-type-enum");
 const TransactionScriptTypeEnum = require( "../../base/schema/transaction-script-type-enum");
 
-const VinModel = require('./parts/vin-model')
-const VoutModel = require('./parts/vout-model')
+const VinDBModel = require('./parts/vin-db-model')
+const VoutDBModel = require('./parts/vout-db-model')
 
-const {VoutSchemaBuilt} = require('./parts/schema/vout-schema-build')
-const {VinSchemaBuilt} = require('./parts/schema/vin-schema-build')
+const {VoutDBSchemaBuilt} = require('./parts/schema/vout-db-schema-build')
+const {VinDBSchemaBuilt} = require('./parts/schema/vin-db-schema-build')
 
-class SimpleTransactionSchemaBuild extends BaseTransactionSchemaBuild {
+class SimpleTransactionDBSchemaBuild extends BaseTransactionSchemaDBBuild {
 
     constructor(schema) {
 
@@ -41,8 +41,8 @@ class SimpleTransactionSchemaBuild extends BaseTransactionSchemaBuild {
 
                 vin:{
                     type: "array",
-                    schemaBuiltClass: VinSchemaBuilt,
-                    modelClass: VinModel,
+                    schemaBuiltClass: VinDBSchemaBuilt,
+                    modelClass: VinDBModel,
 
                     minSize: 1,
                     maxSize: 255,
@@ -69,8 +69,8 @@ class SimpleTransactionSchemaBuild extends BaseTransactionSchemaBuild {
                 vout:{
                     type: "array",
 
-                    schemaBuiltClass: VoutSchemaBuilt,
-                    modelClass: VoutModel,
+                    schemaBuiltClass: VoutDBSchemaBuilt,
+                    modelClass: VoutDBModel,
 
                     minSize: 1,
                     maxSize: 255,
@@ -108,6 +108,6 @@ class SimpleTransactionSchemaBuild extends BaseTransactionSchemaBuild {
 }
 
 module.exports = {
-    SimpleTransactionSchemaBuild,
-    SimpleTransactionSchemaBuilt: new SimpleTransactionSchemaBuild()
+    SimpleTransactionDBSchemaBuild,
+    SimpleTransactionDBSchemaBuilt: new SimpleTransactionDBSchemaBuild()
 }

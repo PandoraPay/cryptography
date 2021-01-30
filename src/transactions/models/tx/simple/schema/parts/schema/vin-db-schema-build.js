@@ -3,21 +3,22 @@ const {Helper, Exception} = require('kernel').helpers;
 
 const TransactionTokenCurrencyTypeEnum = require( "../../../../base/schema/tokens/transaction-token-currency-type-enum");
 
-class VoutSchemaBuild extends SchemaBuild {
+class VinDBSchemaBuild extends SchemaBuild {
 
     constructor(schema) {
 
-        super(Helper.merge({
+        super(Helper.merge( {
 
             fields: {
 
-                publicKeyHash: {
+                publicKey: {
 
                     type: "buffer",
 
-                    fixedBytes: 20,
+                    fixedBytes: 33,
 
                     preprocessor(publicKey){
+                        this._publicKeyHash = undefined;
                         this._address = undefined;
                         return publicKey;
                     },
@@ -30,6 +31,7 @@ class VoutSchemaBuild extends SchemaBuild {
                     type: "number",
 
                     minSize: 1,
+
                     position: 101,
                 },
 
@@ -49,9 +51,17 @@ class VoutSchemaBuild extends SchemaBuild {
                 },
 
 
+                signature: {
+
+                    type: "buffer",
+                    fixedBytes: 65,
+
+                    removeLeadingZeros: true, //it used useful when two inputs have the same publicKeyHash as the 2nd signature will be filled with zeros
+
+                    position: 103,
+                }
 
             },
-
 
             options: {
                 hashing: {
@@ -61,12 +71,12 @@ class VoutSchemaBuild extends SchemaBuild {
                 },
             }
 
-        }, schema, true ));
+        }, schema, true));
     }
 
 }
 
 module.exports = {
-    VoutSchemaBuild,
-    VoutSchemaBuilt: new VoutSchemaBuild(),
+    VinDBSchemaBuild,
+    VinDBSchemaBuilt: new VinDBSchemaBuild()
 }
