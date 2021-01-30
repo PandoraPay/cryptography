@@ -1,21 +1,16 @@
-const {DBSchemaBuild} = require('kernel').db;
+const {SchemaBuild} = require('kernel').marshal;
 const {Helper, EnumHelper} = require('kernel').helpers;
 const {CryptoHelper} = require('kernel').helpers.crypto;
 
 const SchemaEncryptionTypeEnum = require('./schema-encryption-type-enum')
 
-class SchemaBuildEncrypted extends DBSchemaBuild{
+class EncryptedSchemaBuild extends SchemaBuild {
 
     constructor(schema) {
 
         super(Helper.merge( {
 
                 fields:{
-
-                    table: {
-                        default: "crypt",
-                        fixedBytes: 5,
-                    },
 
                     version: {
 
@@ -87,6 +82,6 @@ class SchemaBuildEncrypted extends DBSchemaBuild{
 }
 
 module.exports = {
-    SchemaBuildEncrypted: SchemaBuildEncrypted,
-    SchemaBuiltEncrypted: new SchemaBuildEncrypted(),
+    EncryptedSchemaBuild,
+    EncryptedSchemaBuilt: new EncryptedSchemaBuild(),
 }

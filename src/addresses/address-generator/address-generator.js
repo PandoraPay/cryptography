@@ -2,8 +2,8 @@ const {Exception, StringHelper, ArrayHelper, BufferHelper, BufferReader, Base58}
 const {CryptoHelper} = require('kernel').helpers.crypto;
 const {Logger} = require('kernel');
 
-const ModelPrivateKeyAddress = require("../address/private/model-private-key-address");
-const ModelAddress = require("../address/public/model-address");
+const PrivateKeyAddressModel = require("../address/private/private-key-address-model");
+const AddressModel = require("../address/public/address-model");
 const Generator = require("./generator")
 
 const bip39 = require('bip39');
@@ -37,7 +37,7 @@ module.exports = class AddressGenerator extends Generator {
 
         const publicKeyHash = this.generatePublicKeyHash(publicKey);
 
-        return new ModelAddress(this._scope, undefined, {
+        return new AddressModel(this._scope, undefined, {
             networkByte,
             publicKeyHash,
         })
@@ -49,7 +49,7 @@ module.exports = class AddressGenerator extends Generator {
         if (typeof publicKeyHash === "string" && StringHelper.isHex(publicKeyHash)) publicKeyHash = Buffer.from(publicKeyHash, "hex");
         if (!Buffer.isBuffer(publicKeyHash) || publicKeyHash.length !== 20 ) throw new Exception(this, "PublicKeyHash is invalid");
 
-        return new ModelAddress(this._scope, undefined, {
+        return new AddressModel(this._scope, undefined, {
             networkByte,
             publicKeyHash,
         })
@@ -58,7 +58,7 @@ module.exports = class AddressGenerator extends Generator {
 
     generatePrivateAddressFromPrivateKey( privateKey ){
 
-        return new ModelPrivateKeyAddress( this._scope, undefined, {
+        return new PrivateKeyAddressModel( this._scope, undefined, {
             privateKey,
         } );
 

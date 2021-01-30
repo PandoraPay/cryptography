@@ -6,11 +6,11 @@ const {Exception, Base58, StringHelper, BufferReader} = require('kernel').helper
 /**
  * This is used to store the private key
  */
-const {SchemaBuiltPrivateKeyAddress} = require('./schema-build-private-key-address')
+const {PrivateKeyAddressSchemaBuilt} = require('./private-key-address-schema-build')
 
-module.exports = class ModelPrivateKeyAddress extends Model {
+module.exports = class PrivateKeyAddressModel extends Model {
 
-    constructor(scope, schema= SchemaBuiltPrivateKeyAddress, data, type, creationOptions) {
+    constructor(scope, schema= PrivateKeyAddressSchemaBuilt, data, type, creationOptions) {
         super(scope, schema, data, type, creationOptions);
     }
 
@@ -64,7 +64,7 @@ module.exports = class ModelPrivateKeyAddress extends Model {
 
         delegatePrivateKey = CryptoHelper.dsha256( concat2 );                                       //dsha256( STAKE + delegatePrivateKey + SECRET)
 
-        const delegatePrivateAddress = new ModelPrivateKeyAddress( this._scope, undefined, {
+        const delegatePrivateAddress = new PrivateKeyAddressModel( this._scope, undefined, {
             privateKey: delegatePrivateKey,
         } );
 
@@ -108,7 +108,7 @@ module.exports = class ModelPrivateKeyAddress extends Model {
 
         delegatePrivateKey = CryptoHelper.dsha256( concat2 );                                               //dsha256(DELEGATE + delegatePrivateKey + VALUE)
 
-        const delegatePrivateAddress = new ModelPrivateKeyAddress( this._scope, undefined, {
+        const delegatePrivateAddress = new PrivateKeyAddressModel( this._scope, undefined, {
             privateKey: delegatePrivateKey,
         } );
 

@@ -2,7 +2,7 @@ const {BufferHelper} = require('kernel').helpers;
 
 const {describe} = require('kernel').tests;
 
-const ModelEncrypted = require( "../../../../../src/crypto/encryption/db-encrypted/model-encrypted")
+const EncryptedModel = require( "../../../../../src/crypto/encryption/encrypted/encrypted-model")
 
 module.exports = async function run () {
 
@@ -10,7 +10,7 @@ module.exports = async function run () {
 
         "encrypted schema password": async function () {
 
-            const obj1 = new ModelEncrypted(this._scope);
+            const obj1 = new EncryptedModel(this._scope);
 
             const secret = BufferHelper.generateRandomBuffer(32 );
             const password = BufferHelper.generateRandomBuffer(32 );
@@ -27,7 +27,7 @@ module.exports = async function run () {
 
             this.expect( secret, obj1.decryptKey( ));
 
-            const obj2 = new ModelEncrypted(this._scope);
+            const obj2 = new EncryptedModel(this._scope);
             obj2.fromHex( obj1.toHex() );
 
             this.expectError( () => obj2.decryptKey("Test"), secret );

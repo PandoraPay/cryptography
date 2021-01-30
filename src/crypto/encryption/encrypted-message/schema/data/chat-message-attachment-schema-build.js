@@ -6,7 +6,7 @@ const {SchemaBuild} = require('kernel').marshal;
  * It is used in Encrypted Chat Server and Wallet
  */
 
-class SchemaBuildChatMessageAttachment extends SchemaBuild {
+class ChatMessageAttachmentSchemaBuild extends SchemaBuild {
 
     constructor( schema = {} ) {
 
@@ -81,6 +81,6 @@ class SchemaBuildChatMessageAttachment extends SchemaBuild {
 }
 
 module.exports = {
-    SchemaBuildChatMessageAttachment,
-    SchemaBuiltChatMessageAttachment: new SchemaBuildChatMessageAttachment(),
+    ChatMessageAttachmentSchemaBuild,
+    ChatMessageAttachmentSchemaBuilt: new ChatMessageAttachmentSchemaBuild(),
 }

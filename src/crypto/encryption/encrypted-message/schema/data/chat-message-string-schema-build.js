@@ -1,7 +1,7 @@
-const {SchemaBuildString} = require('kernel').schema.SchemaBuildString;
+const {SchemaBuildString} = require('kernel').schemas.SchemaBuildString;
 const {Helper, EnumHelper, Exception} = require('kernel').helpers;
 
-class SchemaBuildChatMessageString extends SchemaBuildString {
+class ChatMessageStringSchemaBuild extends SchemaBuildString {
 
     constructor( schema = {}) {
 
@@ -21,6 +21,6 @@ class SchemaBuildChatMessageString extends SchemaBuildString {
 }
 
 module.exports = {
-    SchemaBuildChatMessageString,
-    SchemaBuiltChatMessageString: new SchemaBuildChatMessageString(),
+    ChatMessageStringSchemaBuild,
+    ChatMessageStringSchemaBuilt: new ChatMessageStringSchemaBuild(),
 }

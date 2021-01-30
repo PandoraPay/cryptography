@@ -1,7 +1,7 @@
 const {SchemaBuild} = require('kernel').marshal;
 const {Exception, Helper} = require('kernel').helpers;
 
-class SchemaBuildPrivateKeyAddress extends SchemaBuild{
+class PrivateKeyAddressSchemaBuild extends SchemaBuild{
 
     constructor(schema) {
 
@@ -58,6 +58,6 @@ class SchemaBuildPrivateKeyAddress extends SchemaBuild{
 }
 
 module.exports = {
-    SchemaBuildPrivateKeyAddress: SchemaBuildPrivateKeyAddress,
-    SchemaBuiltPrivateKeyAddress: new SchemaBuildPrivateKeyAddress(),
+    PrivateKeyAddressSchemaBuild,
+    PrivateKeyAddressSchemaBuilt: new PrivateKeyAddressSchemaBuild(),
 }

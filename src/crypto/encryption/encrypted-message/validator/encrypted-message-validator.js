@@ -1,5 +1,5 @@
 const {Exception, EnumHelper, StringHelper, BufferHelper} = require('kernel').helpers;
-const EncryptedMessage = require( "../db-model-encrypted-message")
+const EncryptedMessageDBModel = require( "../encrypted-message-db-model")
 
 module.exports = class EncryptedMessageValidator {
 
@@ -26,10 +26,10 @@ module.exports = class EncryptedMessageValidator {
         let version;
 
         if (Buffer.isBuffer(input )) version = input[0];
-        else if ( input instanceof EncryptedMessage) version = input.version;
+        else if ( input instanceof EncryptedMessageDBModel) version = input.version;
         else if ( typeof input === "object" ) version = input.version;
 
-        if (this._validateEncryptedMessageVersion(version) ) return EncryptedMessage;
+        if (this._validateEncryptedMessageVersion(version) ) return EncryptedMessageDBModel;
 
         throw new Exception(this, "EncryptedMessage couldn't be identified by version", {version, input});
 

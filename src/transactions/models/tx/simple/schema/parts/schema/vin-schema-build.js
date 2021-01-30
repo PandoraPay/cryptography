@@ -3,7 +3,7 @@ const {Helper, Exception} = require('kernel').helpers;
 
 const TransactionTokenCurrencyTypeEnum = require( "../../../../base/schema/tokens/transaction-token-currency-type-enum");
 
-class SchemaBuildVin extends SchemaBuild {
+class VinSchemaBuild extends SchemaBuild {
 
     constructor(schema) {
 
@@ -77,6 +77,6 @@ class SchemaBuildVin extends SchemaBuild {
 }
 
 module.exports = {
-    SchemaBuildVin,
-    SchemaBuiltVin: new SchemaBuildVin()
+    VinSchemaBuild,
+    VinSchemaBuilt: new VinSchemaBuild()
 }

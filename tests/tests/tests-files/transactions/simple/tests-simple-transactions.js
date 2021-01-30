@@ -2,7 +2,7 @@ const {BufferHelper} = require('kernel').helpers;
 
 const {describe} = require('kernel').tests;
 
-const ModelSimpleTransaction = require( "../../../../../src/transactions/models/tx/simple/model-simple-transaction")
+const SimpleTransactionModel = require( "../../../../../src/transactions/models/tx/simple/simple-transaction-model")
 const TransactionTokenCurrencyTypeEnum = require( "../../../../../src/transactions/models/tx/base/schema/tokens/transaction-token-currency-type-enum");
 
 module.exports = async function run () {
@@ -23,7 +23,7 @@ module.exports = async function run () {
 
             for (const fee of [0, 200]){
 
-                const tx = new ModelSimpleTransaction(this._scope, undefined, {
+                const tx = new SimpleTransactionModel(this._scope, undefined, {
 
                     vin: [ {
                             amount: 1000,
@@ -63,7 +63,7 @@ module.exports = async function run () {
                 this.expect( verification, true );
 
                 const buffer = tx.toBuffer();
-                const tx2 = new ModelSimpleTransaction(this._scope, undefined, {
+                const tx2 = new SimpleTransactionModel(this._scope, undefined, {
 
                     vin: [ {
                         amount: 50,
@@ -96,7 +96,7 @@ module.exports = async function run () {
             const privateAddress3 = this._scope.cryptography.addressGenerator.generateAddressFromMnemonic( ).privateAddress;
             const address3 = privateAddress3.getAddress();
 
-            const tx = new ModelSimpleTransaction(this._scope, undefined, {
+            const tx = new SimpleTransactionModel(this._scope, undefined, {
 
                 vin: [ {
                         amount: 1500,
@@ -148,7 +148,7 @@ module.exports = async function run () {
             const vin = this._scope.cryptography.testsTransactionsHelper.distributeAmountVout( amount + fee, Math.random()*10+5, );
             const vout = this._scope.cryptography.testsTransactionsHelper.distributeAmountVout( amount, Math.random()*10+5, );
 
-            const tx = new ModelSimpleTransaction(this._scope, undefined, {
+            const tx = new SimpleTransactionModel(this._scope, undefined, {
 
                 vin: vin.vout.map( (it, index) => ({
                     amount: it.amount,

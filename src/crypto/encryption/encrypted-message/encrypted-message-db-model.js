@@ -7,11 +7,11 @@ const {CryptoHelper} = require('kernel').helpers.crypto;
  * It is used in Encrypted Chat Server and Wallet
  */
 
-const {DBSchemaBuiltEncryptedMessage} = require('../db-encrypted/model-encrypted')
+const {EncryptedMessageDBSchemaBuilt} = require('../encrypted/encrypted-model')
 
-module.exports = class EncryptedMessage extends DBModel {
+module.exports = class EncryptedMessageDBModel extends DBModel {
 
-    constructor(scope, schema = DBSchemaBuiltEncryptedMessage, data, type, creationOptions) {
+    constructor(scope, schema = EncryptedMessageDBSchemaBuilt, data, type, creationOptions) {
         super(scope, schema, data, type, creationOptions);
     }
 

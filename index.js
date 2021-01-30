@@ -4,33 +4,35 @@ const CryptoSignature = require("./src/crypto/signatures/crypto-signature");
 const App = require('./src/app');
 const Base58 = require("./src/utils/base58/base58");
 
-const ModelPrivateKeyAddress  = require("./src/addresses/address/private/model-private-key-address");
+const PrivateKeyAddressModel  = require("./src/addresses/address/private/private-key-address-model");
+const PrivateKeyAddressSchemaBuild  = require("./src/addresses/address/private/private-key-address-schema-build");
 
-const ModelAddress = require("./src/addresses/address/public/model-address");
+const AddressModel = require("./src/addresses/address/public/address-model");
+const AddressSchemaBuild = require("./src/addresses/address/public/address-schema-build");
 
 const AddressGenerator = require("./src/addresses/address-generator/address-generator");
 
 const AddressValidator = require("./src/addresses/address-validator/address-validator");
 
 const AES = require("./src/crypto/encryption/aes");
-const ModelBaseTransaction = require("./src/transactions/models/tx/base/model-base-transaction");
+const BaseTransactionModel = require("./src/transactions/models/tx/base/base-transaction-model");
 
 const TransactionTypeEnum = require("./src/transactions/models/tx/base/schema/transaction-type-enum");
 const TransactionScriptTypeEnum = require("./src/transactions/models/tx/base/schema/transaction-script-type-enum");
 const TransactionTokenCurrencyTypeEnum = require("./src/transactions/models/tx/base/schema/tokens/transaction-token-currency-type-enum");
 
-const ModelSimpleTransaction = require("./src/transactions/models/tx/simple/model-simple-transaction");
+const SimpleTransactionModel = require("./src/transactions/models/tx/simple/simple-transaction-model");
 
 const TestsFiles = require("./tests/tests/tests-index");
-const ModelEncrypted = require("./src/crypto/encryption/db-encrypted/model-encrypted");
-const SchemaEncryptionTypeEnum = require("./src/crypto/encryption/db-encrypted/schema/schema-encryption-type-enum");
-const SchemaBuildEncrypted = require("./src/crypto/encryption/db-encrypted/schema/schema-build-encrypted");
+const EncryptedModel = require("./src/crypto/encryption/encrypted/encrypted-model");
+const SchemaEncryptionTypeEnum = require("./src/crypto/encryption/encrypted/schema/schema-encryption-type-enum");
+const SchemaBuildEncrypted = require("./src/crypto/encryption/encrypted/schema/encrypted-schema-build");
 
 const CreateIdenticon = require("./src/utils/identicons/create-identicon");
 const Identicon = require("./src/utils/identicons/identicon");
 
-const ChatMessage = require("./src/crypto/encryption/encrypted-message/schema/db-schema-build-chat-message");
-const EncryptedMessage = require("./src/crypto/encryption/encrypted-message/db-model-encrypted-message");
+const ChatMessage = require("./src/crypto/encryption/encrypted-message/schema/chat-message-db-schema-build");
+const EncryptedMessageDBModel = require("./src/crypto/encryption/encrypted-message/encrypted-message-db-model");
 
 const {Helper} = require('kernel').helpers;
 
@@ -41,11 +43,11 @@ const library = Helper.merge( kernel, {
     transactions : {
 
         base:{
-            ModelBaseTransaction,
+            BaseTransactionModel,
         },
 
         simpleTransaction:{
-            ModelSimpleTransaction,
+            SimpleTransactionModel,
         },
 
         TransactionTypeEnum,
@@ -57,11 +59,11 @@ const library = Helper.merge( kernel, {
     addresses: {
 
         private:{
-            ModelPrivateKeyAddress,
+            PrivateKeyAddressModel,
         },
 
         public:{
-            ModelAddress,
+            AddressModel,
         },
 
         AddressValidator,
@@ -72,7 +74,7 @@ const library = Helper.merge( kernel, {
     encryption:{
         AES,
         ChatMessage,
-        EncryptedMessage,
+        EncryptedMessageDBModel,
     },
 
     signatures: {
@@ -90,9 +92,14 @@ const library = Helper.merge( kernel, {
         TestsFiles,
     },
 
-    schema:{
-        ModelEncrypted,
+    schemas:{
         SchemaBuildEncrypted,
+        AddressSchemaBuild,
+        PrivateKeyAddressSchemaBuild,
+    },
+
+    models: {
+        EncryptedModel,
     },
 
     enums:{

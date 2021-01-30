@@ -2,7 +2,7 @@ const {CryptoHelper} = require('kernel').helpers.crypto;
 const {Helper, EnumHelper} = require('kernel').helpers;
 const {DBSchemaBuild} = require('kernel').db;
 
-class DBSchemaBuildEncryptedMessage extends DBSchemaBuild {
+class EncryptedMessageDBSchemaBuild extends DBSchemaBuild {
 
     constructor(schema) {
 
@@ -75,7 +75,9 @@ class DBSchemaBuildEncryptedMessage extends DBSchemaBuild {
                     senderEncryptedData:{
                         type: "buffer",
                         minSize: 1,
-                        maxSize: scope.argv.encryptedMessage.maxSize, //2 MB
+                        maxSize(){
+                            return this._scope.argv.encryptedMessage.maxSize //2 MB
+                        },
 
                         position: 105,
                     },
@@ -83,7 +85,9 @@ class DBSchemaBuildEncryptedMessage extends DBSchemaBuild {
                     receiverEncryptedData:{
                         type: "buffer",
                         minSize: 1,
-                        maxSize: scope.argv.encryptedMessage.maxSize, //2 MB
+                        maxSize(){
+                            return this._scope.argv.encryptedMessage.maxSize; //2 MB
+                        },
 
                         position: 106,
                     },
@@ -115,6 +119,6 @@ class DBSchemaBuildEncryptedMessage extends DBSchemaBuild {
 }
 
 module.exports = {
-    DBSchemaBuildEncryptedMessage,
-    DBSchemaBuiltEncryptedMessage: new DBSchemaBuildEncryptedMessage(),
+    EncryptedMessageDBSchemaBuild,
+    EncryptedMessageDBSchemaBuilt: new EncryptedMessageDBSchemaBuild(),
 }

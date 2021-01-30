@@ -6,8 +6,8 @@ const Tests = require("../tests/tests/tests-index")
 const CryptoSignature = require( "./crypto/signatures/crypto-signature")
 const AddressValidator = require("./addresses/address-validator/address-validator");
 const AddressGenerator = require("./addresses/address-generator/address-generator")
-const EncryptedMessage = require("./crypto/encryption/encrypted-message/db-model-encrypted-message")
-const ChatMessage = require("./crypto/encryption/encrypted-message/schema/db-schema-build-chat-message")
+const EncryptedMessageDBModel = require("./crypto/encryption/encrypted-message/encrypted-message-db-model")
+const ChatMessage = require("./crypto/encryption/encrypted-message/schema/chat-message-db-schema-build")
 const EncryptedMessageCreator = require( "./crypto/encryption/encrypted-message/creator/encrypted-message-creator")
 const EncryptedMessageValidator = require( "./crypto/encryption/encrypted-message/validator/encrypted-message-validator")
 const ChatMessageValidator = require("./crypto/encryption/encrypted-message/validator/chat-message-validator")
@@ -27,7 +27,7 @@ module.exports = class App extends kernel.utils.App {
                 AddressValidator,
                 AddressGenerator,
                 AES,
-                EncryptedMessage,
+                EncryptedMessageDBModel,
                 ChatMessage,
                 EncryptedMessageCreator,
                 EncryptedMessageValidator,

@@ -1,17 +1,17 @@
 const {Helper, Exception} = require('kernel').helpers;
 
-const {SchemaBuildBaseTransaction} = require('./../../base/schema/schema-build-base-transaction')
+const {BaseTransactionSchemaBuild} = require('../../base/schema/base-transaction-schema-build')
 
 const TransactionTypeEnum = require( "../../base/schema/transaction-type-enum");
 const TransactionScriptTypeEnum = require( "../../base/schema/transaction-script-type-enum");
 
-const ModelVin = require('./parts/model-vin')
-const ModelVout = require('./parts/model-vout')
+const VinModel = require('./parts/vin-model')
+const VoutModel = require('./parts/vout-model')
 
-const {SchemaBuiltVout} = require('./parts/schema/schema-build-vout')
-const {SchemaBuiltVin} = require('./parts/schema/schema-build-vin')
+const {VoutSchemaBuilt} = require('./parts/schema/vout-schema-build')
+const {VinSchemaBuilt} = require('./parts/schema/vin-schema-build')
 
-class SchemaBuildSimpleTransaction extends SchemaBuildBaseTransaction {
+class SimpleTransactionSchemaBuild extends BaseTransactionSchemaBuild {
 
     constructor(schema) {
 
@@ -41,8 +41,8 @@ class SchemaBuildSimpleTransaction extends SchemaBuildBaseTransaction {
 
                 vin:{
                     type: "array",
-                    schemaBuiltClass: SchemaBuiltVin,
-                    modelClass: ModelVin,
+                    schemaBuiltClass: VinSchemaBuilt,
+                    modelClass: VinModel,
 
                     minSize: 1,
                     maxSize: 255,
@@ -69,8 +69,8 @@ class SchemaBuildSimpleTransaction extends SchemaBuildBaseTransaction {
                 vout:{
                     type: "array",
 
-                    schemaBuiltClass: SchemaBuiltVout,
-                    modelClass: ModelVout,
+                    schemaBuiltClass: VoutSchemaBuilt,
+                    modelClass: VoutModel,
 
                     minSize: 1,
                     maxSize: 255,
@@ -108,6 +108,6 @@ class SchemaBuildSimpleTransaction extends SchemaBuildBaseTransaction {
 }
 
 module.exports = {
-    SchemaBuildSimpleTransaction,
-    SchemaBuiltSimpleTransaction: new SchemaBuildSimpleTransaction()
+    SimpleTransactionSchemaBuild,
+    SimpleTransactionSchemaBuilt: new SimpleTransactionSchemaBuild()
 }

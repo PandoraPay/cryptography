@@ -6,7 +6,7 @@ const TransactionScriptTypeEnum = require("./transaction-script-type-enum")
 const TransactionTokenCurrencyTypeEnum = require( "./tokens/transaction-token-currency-type-enum")
 const TransactionTypeEnum = require( "./transaction-type-enum")
 
-class SchemaBuildBaseTransaction extends SchemaBuild {
+class BaseTransactionSchemaBuild extends SchemaBuild {
 
     constructor(schema) {
 
@@ -86,6 +86,6 @@ class SchemaBuildBaseTransaction extends SchemaBuild {
 }
 
 module.exports = {
-    SchemaBuildBaseTransaction,
-    SchemaBuiltBaseTransaction : new SchemaBuildBaseTransaction(),
+    BaseTransactionSchemaBuild,
+    BaseTransactionSchemaBuilt : new BaseTransactionSchemaBuild(),
 }

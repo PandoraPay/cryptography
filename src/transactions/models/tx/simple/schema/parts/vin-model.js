@@ -1,9 +1,9 @@
 const {Model} = require('kernel').marshal;
-const {SchemaBuiltVin} = require('./schema/schema-build-vin')
+const {VinSchemaBuilt} = require('./schema/vin-schema-build')
 
-module.exports = class ModelVin extends Model {
+module.exports = class VinModel extends Model {
 
-    constructor(scope, schema= SchemaBuiltVin, data, type, creationOptions) {
+    constructor(scope, schema= VinSchemaBuilt, data, type, creationOptions) {
         super(scope, schema, data, type, creationOptions);
     }
 

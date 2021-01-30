@@ -1,11 +1,11 @@
 const {DBModel} = require('kernel').db;
 const {Exception} = require('kernel').helpers;
 
-const {SchemaBuiltBaseTransaction} = require('./schema/schema-build-base-transaction')
+const {BaseTransactionSchemaBuilt} = require('./schema/base-transaction-schema-build')
 
-module.exports = class ModelBaseTransaction extends DBModel {
+module.exports = class BaseTransactionModel extends DBModel {
 
-    constructor(scope, schema= SchemaBuiltBaseTransaction, data, type, creationOptions) {
+    constructor(scope, schema= BaseTransactionSchemaBuilt, data, type, creationOptions) {
         super(scope, schema, data, type, creationOptions);
     }
 
