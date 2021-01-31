@@ -1,4 +1,4 @@
-const SchemaEncryptionTypeEnum = require("./schema/schema-encryption-type-enum")
+const EncryptedTypeEnum = require("./schema/encrypted-type-enum")
 
 const {Model} = require('kernel').marshal;
 const {Exception} = require('kernel').helpers;
@@ -16,7 +16,7 @@ module.exports = class EncryptedDBModel extends Model {
 
     setPlainTextValue(value){
 
-        this.encryption = SchemaEncryptionTypeEnum.PLAIN_TEXT;
+        this.encryption = EncryptedTypeEnum.PLAIN_TEXT;
         this.value = value;
 
     }
@@ -27,12 +27,12 @@ module.exports = class EncryptedDBModel extends Model {
      */
     encryptKey( password ){
 
-        if (this.encryption === SchemaEncryptionTypeEnum.NON_EXISTENT) throw new Exception(this, `${this.id} data is not present`);
-        if (this.encryption === SchemaEncryptionTypeEnum.ENCRYPTED) throw new Exception(this, `${this.id} is already encrypted`);
+        if (this.encryption === EncryptedTypeEnum.NON_EXISTENT) throw new Exception(this, `${this.id} data is not present`);
+        if (this.encryption === EncryptedTypeEnum.ENCRYPTED) throw new Exception(this, `${this.id} is already encrypted`);
 
         const encryption = this._scope.cryptography.aes.encrypt( this.value, password );
 
-        this.encryption = SchemaEncryptionTypeEnum.ENCRYPTED;
+        this.encryption = EncryptedTypeEnum.ENCRYPTED;
         this.value = encryption;
 
         delete this._unlocked;
@@ -48,9 +48,9 @@ module.exports = class EncryptedDBModel extends Model {
      */
     decryptKey( password, askPassword = true ){
 
-        if (this.encryption === SchemaEncryptionTypeEnum.NON_EXISTENT) throw new Exception(this, `${this.id} data is not present`);
+        if (this.encryption === EncryptedTypeEnum.NON_EXISTENT) throw new Exception(this, `${this.id} data is not present`);
 
-        if (this.encryption === SchemaEncryptionTypeEnum.PLAIN_TEXT) return this.value;
+        if (this.encryption === EncryptedTypeEnum.PLAIN_TEXT) return this.value;
         if (this._unlocked) return this._unlocked;
 
         if ( !Buffer.isBuffer(password) || password.length !== 32){
@@ -85,12 +85,12 @@ module.exports = class EncryptedDBModel extends Model {
 
         if (!newPassword) throw new Exception(this, "New password was not specified");
 
-        if (this.encryption === SchemaEncryptionTypeEnum.NON_EXISTENT) throw new Exception(this, `${this.id} data is not present`);
+        if (this.encryption === EncryptedTypeEnum.NON_EXISTENT) throw new Exception(this, `${this.id} data is not present`);
 
-        if (this.encryption === SchemaEncryptionTypeEnum.ENCRYPTED) {
+        if (this.encryption === EncryptedTypeEnum.ENCRYPTED) {
 
             const decrypted = this.decryptKey(oldPassword);
-            this.encryption = SchemaEncryptionTypeEnum.PLAIN_TEXT;
+            this.encryption = EncryptedTypeEnum.PLAIN_TEXT;
             this.value = decrypted;
 
         }
@@ -104,12 +104,12 @@ module.exports = class EncryptedDBModel extends Model {
 
     removeEncryptionKey(oldPassword){
 
-        if (this.encryption === SchemaEncryptionTypeEnum.NON_EXISTENT) throw new Exception(this, `${this.id} data is not present`);
+        if (this.encryption === EncryptedTypeEnum.NON_EXISTENT) throw new Exception(this, `${this.id} data is not present`);
 
-        if (this.encryption === SchemaEncryptionTypeEnum.ENCRYPTED) {
+        if (this.encryption === EncryptedTypeEnum.ENCRYPTED) {
 
             const decrypted = this.decryptKey(oldPassword);
-            this.encryption = SchemaEncryptionTypeEnum.PLAIN_TEXT;
+            this.encryption = EncryptedTypeEnum.PLAIN_TEXT;
             this.value = decrypted;
 
         }
