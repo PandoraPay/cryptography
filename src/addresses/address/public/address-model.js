@@ -1,11 +1,11 @@
 const {MarshalData} = require('kernel').marshal;
 const {CryptoHelper} = require('kernel').helpers.crypto;
-const {Model} = require('kernel').marshal;
+const {DBModel} = require('kernel').db;
 const Identicon = require("../../../utils/identicons/identicon");
 
 const {AddressSchemaDBBuilt} = require('./address-schema-db-build')
 
-module.exports = class AddressDBModel extends Model {
+module.exports = class AddressDBModel extends DBModel {
 
     constructor(scope, schema = AddressSchemaDBBuilt,  data, type, creationOptions){
         super (scope, schema, data, type, creationOptions);

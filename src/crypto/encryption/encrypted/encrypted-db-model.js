@@ -1,11 +1,11 @@
 const EncryptedTypeEnum = require("./schema/encrypted-type-enum")
 
-const {Model} = require('kernel').marshal;
+const {DBModel} = require('kernel').db;
 const {Exception} = require('kernel').helpers;
 
 const {EncryptedDBSchemaBuilt} = require('./schema/encrypted-db-schema-build')
 
-module.exports = class EncryptedDBModel extends Model {
+module.exports = class EncryptedDBModel extends DBModel {
 
     constructor(scope, schema = EncryptedDBSchemaBuilt, data, type , creationOptions){
 
