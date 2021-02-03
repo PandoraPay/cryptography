@@ -2,11 +2,11 @@ const {DBSchemaBuild} = require('kernel').db;
 const {Helper, Exception} = require('kernel').helpers;
 const {CryptoHelper} = require('kernel').helpers.crypto;
 
-const TransactionScriptTypeEnum = require("./transaction-script-type-enum")
-const TransactionTokenCurrencyTypeEnum = require( "./tokens/transaction-token-currency-type-enum")
-const TransactionTypeEnum = require( "./transaction-type-enum")
+const TxScriptTypeEnum = require("./tx-script-type-enum")
+const TxTokenCurrencyTypeEnum = require( "./tokens/tx-token-currency-type-enum")
+const TxTypeEnum = require( "./tx-type-enum")
 
-class BaseTransactionSchemaDBBuild extends DBSchemaBuild {
+class BaseTxSchemaBuild extends DBSchemaBuild {
 
     constructor(schema) {
 
@@ -19,10 +19,10 @@ class BaseTransactionSchemaDBBuild extends DBSchemaBuild {
                     type: "number",
                     fixedBytes: 1,
 
-                    default: TransactionTypeEnum.PUBLIC_TRANSACTION,
+                    default: TxTypeEnum.PUBLIC_TRANSACTION,
 
                     validation(value){
-                        return value === TransactionTypeEnum.PUBLIC_TRANSACTION;
+                        return value === TxTypeEnum.PUBLIC_TRANSACTION;
                     },
 
                     position: 100,
@@ -33,10 +33,10 @@ class BaseTransactionSchemaDBBuild extends DBSchemaBuild {
                     type: "number",
                     fixedBytes:  1,
 
-                    default: TransactionScriptTypeEnum.TX_SCRIPT_SIMPLE_TRANSACTION,
+                    default: TxScriptTypeEnum.TX_SCRIPT_SIMPLE_TRANSACTION,
 
                     validation(value){
-                        return value === TransactionScriptTypeEnum.TX_SCRIPT_SIMPLE_TRANSACTION;
+                        return value === TxScriptTypeEnum.TX_SCRIPT_SIMPLE_TRANSACTION;
                     },
 
                     position: 101,
@@ -86,6 +86,6 @@ class BaseTransactionSchemaDBBuild extends DBSchemaBuild {
 }
 
 module.exports = {
-    BaseTransactionSchemaDBBuild,
-    BaseTransactionSchemaDBBuilt : new BaseTransactionSchemaDBBuild(),
+    BaseTxSchemaBuild,
+    BaseTxSchemaBuilt : new BaseTxSchemaBuild(),
 }

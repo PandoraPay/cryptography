@@ -3,14 +3,14 @@ const {Helper, Exception} = require('kernel').helpers;
 const {MarshalData} = require('kernel').marshal;
 const {DBSchemaBuild} = require('kernel').db;
 
-const {ChatMessageAttachmentDBSchemaBuilt} = require( "./data/chat-message-attachment-db-schema-build")
-const {ChatMessageStringDBSchemaBuilt} = require("./data/chat-message-string-db-schema-build")
+const {ChatMessageAttachmentSchemaBuilt} = require( "./data/chat-message-attachment-schema-build")
+const {ChatMessageStringSchemaBuilt} = require("./data/chat-message-string-schema-build")
 
 /**
  * It is used in Encrypted Chat Server and Wallet
  */
 
-class ChatMessageDBSchemaBuild extends DBSchemaBuild {
+class ChatMessageSchemaBuild extends DBSchemaBuild {
 
     constructor(schema) {
 
@@ -48,8 +48,8 @@ class ChatMessageDBSchemaBuild extends DBSchemaBuild {
 
                         type: "object",
                         schemaBuiltClass() {
-                            if (this.script === 0) return ChatMessageStringDBSchemaBuilt;
-                            if (this.script === 1) return ChatMessageAttachmentDBSchemaBuilt;
+                            if (this.script === 0) return ChatMessageStringSchemaBuilt;
+                            if (this.script === 1) return ChatMessageAttachmentSchemaBuilt;
                         },
 
                         position: 102,
@@ -77,6 +77,6 @@ class ChatMessageDBSchemaBuild extends DBSchemaBuild {
 }
 
 module.exports = {
-    ChatMessageDBSchemaBuild,
-    ChatMessageDBSchemaBuilt: new ChatMessageDBSchemaBuild(),
+    ChatMessageSchemaBuild,
+    ChatMessageSchemaBuilt: new ChatMessageSchemaBuild(),
 }

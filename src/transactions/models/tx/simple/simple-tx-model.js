@@ -2,13 +2,13 @@ const {Helper} = require('kernel').helpers;
 const {Exception, StringHelper, BufferHelper} = require('kernel').helpers;
 const {CryptoHelper} = require('kernel').helpers.crypto;
 
-const BaseTransactionDBModel = require( "../base/base-transaction-db-model");
+const BaseTxModel = require( "../base/base-tx-model");
 
-const {SimpleTransactionDBSchemaBuilt} = require('./schema/simple-transaction-db-schema-build')
+const {SimpleTxSchemaBuilt} = require('./schema/simple-tx-schema-build')
 
-module.exports = class SimpleTransactionDBModel extends BaseTransactionDBModel {
+module.exports = class SimpleTxModel extends BaseTxModel {
 
-    constructor(scope, schema= SimpleTransactionDBSchemaBuilt, data, type, creationOptions) {
+    constructor(scope, schema= SimpleTxSchemaBuilt, data, type, creationOptions) {
         super(scope, schema, data, type, creationOptions);
     }
 

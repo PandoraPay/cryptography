@@ -12,7 +12,7 @@ module.exports = {
 
     },
 
-    _name: "TransactionTokenCurrencyTypeEnum",
+    _name: "TxTokenCurrencyTypeEnum",
 
 
 }

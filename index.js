@@ -4,37 +4,37 @@ const CryptoSignature = require("./src/crypto/signatures/crypto-signature");
 const App = require('./src/app');
 const Base58 = require("./src/utils/base58/base58");
 
-const PrivateKeyAddressDBModel  = require("./src/addresses/address/private/private-key-address-db-model");
-const PrivateKeyAddressDBSchemaBuild  = require("./src/addresses/address/private/private-key-address-db-schema-build");
+const PrivateKeyAddressModel  = require("./src/addresses/address/private/private-key-address-model");
+const PrivateKeyAddressSchemaBuild  = require("./src/addresses/address/private/private-key-address-schema-build");
 
-const AddressDBModel = require("./src/addresses/address/public/address-model");
-const AddressSchemaDBBuilt = require("./src/addresses/address/public/address-schema-db-build");
+const AddressModel = require("./src/addresses/address/public/address-model");
+const AddressSchemaBuilt = require("./src/addresses/address/public/address-schema-build");
 
 const AddressGenerator = require("./src/addresses/address-generator/address-generator");
 
 const AddressValidator = require("./src/addresses/address-validator/address-validator");
 
 const AES = require("./src/crypto/encryption/aes");
-const BaseTransactionDBModel = require("./src/transactions/models/tx/base/base-transaction-db-model");
-const BaseTransactionSchemaDBBuild = require("./src/transactions/models/tx/base/schema/base-transaction-db-schema-build");
+const BaseTxModel = require("./src/transactions/models/tx/base/base-tx-model");
+const BaseTxSchemaBuild = require("./src/transactions/models/tx/base/schema/base-tx-schema-build");
 
-const TransactionTypeEnum = require("./src/transactions/models/tx/base/schema/transaction-type-enum");
-const TransactionScriptTypeEnum = require("./src/transactions/models/tx/base/schema/transaction-script-type-enum");
-const TransactionTokenCurrencyTypeEnum = require("./src/transactions/models/tx/base/schema/tokens/transaction-token-currency-type-enum");
+const TxTypeEnum = require("./src/transactions/models/tx/base/schema/tx-type-enum");
+const TxScriptTypeEnum = require("./src/transactions/models/tx/base/schema/tx-script-type-enum");
+const TxTokenCurrencyTypeEnum = require("./src/transactions/models/tx/base/schema/tokens/tx-token-currency-type-enum");
 
-const SimpleTransactionDBModel = require("./src/transactions/models/tx/simple/simple-transaction-db-model");
-const SimpleTransactionDBSchemaBuild = require("./src/transactions/models/tx/simple/schema/simple-transaction-db-schema-build");
+const SimpleTxModel = require("./src/transactions/models/tx/simple/simple-tx-model");
+const SimpleTxSchemaBuild = require("./src/transactions/models/tx/simple/schema/simple-tx-schema-build");
 
 const TestsFiles = require("./tests/tests/tests-index");
-const EncryptedDBModel = require("./src/crypto/encryption/encrypted/encrypted-db-model");
+const EncryptedModel = require("./src/crypto/encryption/encrypted/encrypted-model");
 const EncryptedTypeEnum = require("./src/crypto/encryption/encrypted/schema/encrypted-type-enum");
-const EncryptedDBSchemaBuild = require("./src/crypto/encryption/encrypted/schema/encrypted-db-schema-build");
+const EncryptedSchemaBuild = require("./src/crypto/encryption/encrypted/schema/encrypted-schema-build");
 
 const CreateIdenticon = require("./src/utils/identicons/create-identicon");
 const Identicon = require("./src/utils/identicons/identicon");
 
-const ChatMessage = require("./src/crypto/encryption/encrypted-message/schema/chat-message-db-schema-build");
-const EncryptedMessageDBModel = require("./src/crypto/encryption/encrypted-message/encrypted-message-db-model");
+const ChatMessage = require("./src/crypto/encryption/encrypted-message/schema/chat-message-schema-build");
+const EncryptedMessageModel = require("./src/crypto/encryption/encrypted-message/encrypted-message-model");
 
 const {Helper} = require('kernel').helpers;
 
@@ -45,31 +45,31 @@ const library = Helper.merge( kernel, {
     transactions : {
 
         base:{
-            BaseTransactionDBModel,
-            BaseTransactionSchemaDBBuild,
+            BaseTxModel,
+            BaseTxSchemaBuild,
         },
 
         simpleTransaction:{
-            SimpleTransactionDBModel,
-            SimpleTransactionDBSchemaBuild,
+            SimpleTxModel,
+            SimpleTxSchemaBuild,
         },
 
-        TransactionTypeEnum,
-        TransactionScriptTypeEnum,
-        TransactionTokenCurrencyTypeEnum,
+        TxTypeEnum,
+        TxScriptTypeEnum,
+        TxTokenCurrencyTypeEnum,
 
     },
 
     addresses: {
 
         private:{
-            PrivateKeyAddressDBSchemaBuild,
-            PrivateKeyAddressDBModel,
+            PrivateKeyAddressSchemaBuild,
+            PrivateKeyAddressModel,
         },
 
         public:{
-            AddressSchemaDBBuilt,
-            AddressDBModel,
+            AddressSchemaBuilt,
+            AddressModel,
         },
 
         AddressValidator,
@@ -80,7 +80,7 @@ const library = Helper.merge( kernel, {
     encryption:{
         AES,
         ChatMessage,
-        EncryptedMessageDBModel,
+        EncryptedMessageModel,
     },
 
     signatures: {
@@ -99,11 +99,11 @@ const library = Helper.merge( kernel, {
     },
 
     schemas:{
-        EncryptedDBSchemaBuild,
+        EncryptedSchemaBuild,
     },
 
     models: {
-        EncryptedDBModel,
+        EncryptedModel,
     },
 
     enums:{

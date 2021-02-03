@@ -12,6 +12,6 @@ module.exports = {
 
     RING_CONFIDENTIAL_TRANSACTION: 1,
 
-    _name: "TransactionTypeEnum",
+    _name: "TxTypeEnum",
 
 }

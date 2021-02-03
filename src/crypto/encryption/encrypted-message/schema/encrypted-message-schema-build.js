@@ -2,7 +2,7 @@ const {CryptoHelper} = require('kernel').helpers.crypto;
 const {Helper, EnumHelper} = require('kernel').helpers;
 const {DBSchemaBuild} = require('kernel').db;
 
-class EncryptedMessageDBSchemaBuild extends DBSchemaBuild {
+class EncryptedMessageSchemaBuild extends DBSchemaBuild {
 
     constructor(schema) {
 
@@ -119,6 +119,6 @@ class EncryptedMessageDBSchemaBuild extends DBSchemaBuild {
 }
 
 module.exports = {
-    EncryptedMessageDBSchemaBuild,
-    EncryptedMessageDBSchemaBuilt: new EncryptedMessageDBSchemaBuild(),
+    EncryptedMessageSchemaBuild,
+    EncryptedMessageSchemaBuilt: new EncryptedMessageSchemaBuild(),
 }

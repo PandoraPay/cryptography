@@ -1,5 +1,5 @@
-const AddressDBModel = require("../address/public/address-model");
-const PrivateKeyAddressDBModel = require("../address/private/private-key-address-db-model");
+const AddressModel = require("../address/public/address-model");
+const PrivateKeyAddressModel = require("../address/private/private-key-address-model");
 
 const {Exception, Base58, StringHelper, BufferReader} = require('kernel').helpers;
 
@@ -17,9 +17,9 @@ module.exports = class AddressValidator {
      */
     _validateAddress(input){
 
-        if (input instanceof AddressDBModel && input.validate() ) return input;
+        if (input instanceof AddressModel && input.validate() ) return input;
 
-        const address = new AddressDBModel( this._scope, undefined, undefined, undefined, {emptyObject: true} );
+        const address = new AddressModel( this._scope, undefined, undefined, undefined, {emptyObject: true} );
         address.fromType( input );
 
         return address;
@@ -36,8 +36,8 @@ module.exports = class AddressValidator {
     validateAddress(input){
 
         if (!input) throw new Exception(this, "Input is invalid");
-        if (input instanceof PrivateKeyAddressDBModel) return input.getAddress();
-        if (input instanceof AddressDBModel && input.validate() ) return input;
+        if (input instanceof PrivateKeyAddressModel) return input.getAddress();
+        if (input instanceof AddressModel && input.validate() ) return input;
 
         /**
          * 25 = Address WIF ( 1 + 20 + 4)
@@ -88,12 +88,12 @@ module.exports = class AddressValidator {
 
         if (!input) throw new Exception(this, "invalid input");
 
-        if (input instanceof PrivateKeyAddressDBModel) {
+        if (input instanceof PrivateKeyAddressModel) {
             if (!input.validatePublicKey()) throw new Exception(this, "public key is invalid 1");
             return input;
         }
 
-        const addr = new PrivateKeyAddressDBModel( this._scope, undefined, undefined, undefined, {emptyObject: true} );
+        const addr = new PrivateKeyAddressModel( this._scope, undefined, undefined, undefined, {emptyObject: true} );
         addr.fromType( input );
 
         if (!addr.validatePublicKey()) throw new Exception(this, "public key is invalid 2");

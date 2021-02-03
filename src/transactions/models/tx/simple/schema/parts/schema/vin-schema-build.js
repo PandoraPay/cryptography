@@ -1,23 +1,24 @@
 const {SchemaBuild} = require('kernel').marshal;
 const {Helper, Exception} = require('kernel').helpers;
 
-const TransactionTokenCurrencyTypeEnum = require( "../../../../base/schema/tokens/transaction-token-currency-type-enum");
+const TxTokenCurrencyTypeEnum = require( "../../../../base/schema/tokens/tx-token-currency-type-enum");
 
-class VoutDBSchemaBuild extends SchemaBuild {
+class VinSchemaBuild extends SchemaBuild {
 
     constructor(schema) {
 
-        super(Helper.merge({
+        super(Helper.merge( {
 
             fields: {
 
-                publicKeyHash: {
+                publicKey: {
 
                     type: "buffer",
 
-                    fixedBytes: 20,
+                    fixedBytes: 33,
 
                     preprocessor(publicKey){
+                        this._publicKeyHash = undefined;
                         this._address = undefined;
                         return publicKey;
                     },
@@ -30,6 +31,7 @@ class VoutDBSchemaBuild extends SchemaBuild {
                     type: "number",
 
                     minSize: 1,
+
                     position: 101,
                 },
 
@@ -39,19 +41,27 @@ class VoutDBSchemaBuild extends SchemaBuild {
                     maxSize: 20,
                     minSize: 1,
 
-                    default: TransactionTokenCurrencyTypeEnum.TX_TOKEN_CURRENCY_NATIVE_TYPE.idBuffer,
+                    default: TxTokenCurrencyTypeEnum.TX_TOKEN_CURRENCY_NATIVE_TYPE.idBuffer,
 
                     validation(value) {
-                        return value.equals( TransactionTokenCurrencyTypeEnum.TX_TOKEN_CURRENCY_NATIVE_TYPE.idBuffer ) || (value.length === 20);
+                        return value.equals( TxTokenCurrencyTypeEnum.TX_TOKEN_CURRENCY_NATIVE_TYPE.idBuffer ) || (value.length === 20);
                     },
 
                     position : 102,
                 },
 
 
+                signature: {
+
+                    type: "buffer",
+                    fixedBytes: 65,
+
+                    removeLeadingZeros: true, //it used useful when two inputs have the same publicKeyHash as the 2nd signature will be filled with zeros
+
+                    position: 103,
+                }
 
             },
-
 
             options: {
                 hashing: {
@@ -61,12 +71,12 @@ class VoutDBSchemaBuild extends SchemaBuild {
                 },
             }
 
-        }, schema, true ));
+        }, schema, true));
     }
 
 }
 
 module.exports = {
-    VoutDBSchemaBuild,
-    VoutDBSchemaBuilt: new VoutDBSchemaBuild(),
+    VinSchemaBuild,
+    VinSchemaBuilt: new VinSchemaBuild()
 }

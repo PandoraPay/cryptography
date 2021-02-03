@@ -3,11 +3,11 @@ const {CryptoHelper} = require('kernel').helpers.crypto;
 const {DBModel} = require('kernel').db;
 const Identicon = require("../../../utils/identicons/identicon");
 
-const {AddressSchemaDBBuilt} = require('./address-schema-db-build')
+const {AddressSchemaBuilt} = require('./address-schema-build')
 
-module.exports = class AddressDBModel extends DBModel {
+module.exports = class AddressModel extends DBModel {
 
-    constructor(scope, schema = AddressSchemaDBBuilt,  data, type, creationOptions){
+    constructor(scope, schema = AddressSchemaBuilt,  data, type, creationOptions){
         super (scope, schema, data, type, creationOptions);
     }
 

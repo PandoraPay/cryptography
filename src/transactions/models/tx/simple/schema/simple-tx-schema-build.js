@@ -1,17 +1,17 @@
 const {Helper, Exception} = require('kernel').helpers;
 
-const {BaseTransactionSchemaDBBuild} = require('../../base/schema/base-transaction-db-schema-build')
+const {BaseTxSchemaBuild} = require('../../base/schema/base-tx-schema-build')
 
-const TransactionTypeEnum = require( "../../base/schema/transaction-type-enum");
-const TransactionScriptTypeEnum = require( "../../base/schema/transaction-script-type-enum");
+const TxTypeEnum = require( "../../base/schema/tx-type-enum");
+const TxScriptTypeEnum = require( "../../base/schema/tx-script-type-enum");
 
-const VinDBModel = require('./parts/vin-db-model')
-const VoutDBModel = require('./parts/vout-db-model')
+const VinModel = require('./parts/vin-model')
+const VoutModel = require('./parts/vout-model')
 
-const {VoutDBSchemaBuilt} = require('./parts/schema/vout-db-schema-build')
-const {VinDBSchemaBuilt} = require('./parts/schema/vin-db-schema-build')
+const {VoutSchemaBuilt} = require('./parts/schema/vout-schema-build')
+const {VinSchemaBuilt} = require('./parts/schema/vin-schema-build')
 
-class SimpleTransactionDBSchemaBuild extends BaseTransactionSchemaDBBuild {
+class SimpleTxSchemaBuild extends BaseTxSchemaBuild {
 
     constructor(schema) {
 
@@ -21,28 +21,28 @@ class SimpleTransactionDBSchemaBuild extends BaseTransactionSchemaDBBuild {
 
                 version: {
 
-                    default: TransactionTypeEnum.PUBLIC_TRANSACTION,
+                    default: TxTypeEnum.PUBLIC_TRANSACTION,
 
                     validation(version){
-                        return version === TransactionTypeEnum.PUBLIC_TRANSACTION;
+                        return version === TxTypeEnum.PUBLIC_TRANSACTION;
                     }
 
                 },
 
                 scriptVersion:{
 
-                    default: TransactionScriptTypeEnum.TX_SCRIPT_SIMPLE_TRANSACTION,
+                    default: TxScriptTypeEnum.TX_SCRIPT_SIMPLE_TRANSACTION,
 
                     validation(script){
-                        return script === TransactionScriptTypeEnum.TX_SCRIPT_SIMPLE_TRANSACTION;
+                        return script === TxScriptTypeEnum.TX_SCRIPT_SIMPLE_TRANSACTION;
                     }
 
                 },
 
                 vin:{
                     type: "array",
-                    schemaBuiltClass: VinDBSchemaBuilt,
-                    modelClass: VinDBModel,
+                    schemaBuiltClass: VinSchemaBuilt,
+                    modelClass: VinModel,
 
                     minSize: 1,
                     maxSize: 255,
@@ -69,8 +69,8 @@ class SimpleTransactionDBSchemaBuild extends BaseTransactionSchemaDBBuild {
                 vout:{
                     type: "array",
 
-                    schemaBuiltClass: VoutDBSchemaBuilt,
-                    modelClass: VoutDBModel,
+                    schemaBuiltClass: VoutSchemaBuilt,
+                    modelClass: VoutModel,
 
                     minSize: 1,
                     maxSize: 255,
@@ -108,6 +108,6 @@ class SimpleTransactionDBSchemaBuild extends BaseTransactionSchemaDBBuild {
 }
 
 module.exports = {
-    SimpleTransactionDBSchemaBuild,
-    SimpleTransactionDBSchemaBuilt: new SimpleTransactionDBSchemaBuild()
+    SimpleTxSchemaBuild,
+    SimpleTxSchemaBuilt: new SimpleTxSchemaBuild()
 }

@@ -14,6 +14,6 @@ module.exports = {
     // TX_SCRIPT_SIDECHAIN_UPDATE_TRANSACTION: 5,
     // TX_SCRIPT_SIDECHAIN_PUBLISH_TRANSACTION: 6,
 
-    _name: "TransactionScriptTypeEnum",
+    _name: "TxScriptTypeEnum",
 
 }
