@@ -15,7 +15,6 @@ class EncryptedSchemaBuild extends DBSchemaBuild {
                 version: {
 
                     type: "number",
-                    fixedBytes: 1,
 
                     default: 0,
 
@@ -30,7 +29,6 @@ class EncryptedSchemaBuild extends DBSchemaBuild {
                 encryption: {
 
                     type: "number",
-                    fixedBytes: 1,
 
                     default: EncryptedTypeEnum.NON_EXISTENT,
 

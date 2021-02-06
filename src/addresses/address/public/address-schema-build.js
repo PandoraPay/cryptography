@@ -29,7 +29,8 @@ class AddressSchemaBuild extends SchemaBuild{
 
                 publicKeyHash: {
                     type: "buffer",
-                    fixedBytes: 20,
+                    minSize: 20,
+                    maxSize: 20,
 
                     position: 11,
                 },
@@ -37,8 +38,8 @@ class AddressSchemaBuild extends SchemaBuild{
                 checkSum:{
 
                     type: "buffer",
-                    fixedBytes: 4,
-
+                    minSize: 4,
+                    maxSize: 4,
 
                     default(){
                         return this.calculateCheckSum(this);

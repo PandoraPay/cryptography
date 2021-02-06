@@ -17,7 +17,6 @@ class BaseTxSchemaBuild extends DBSchemaBuild {
                 version: {
 
                     type: "number",
-                    fixedBytes: 1,
 
                     default: TxTypeEnum.PUBLIC_TRANSACTION,
 
@@ -31,7 +30,6 @@ class BaseTxSchemaBuild extends DBSchemaBuild {
 
                 scriptVersion:{
                     type: "number",
-                    fixedBytes:  1,
 
                     default: TxScriptTypeEnum.TX_SCRIPT_SIMPLE_TRANSACTION,
 

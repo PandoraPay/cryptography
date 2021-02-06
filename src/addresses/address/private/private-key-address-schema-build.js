@@ -11,7 +11,8 @@ class PrivateKeyAddressSchemaBuild extends SchemaBuild{
 
                 privateKey:{
                     type: "buffer",
-                    fixedBytes: 32,
+                    minSize: 32,
+                    maxSize: 32,
 
                     default(){
                         return this._scope.cryptography.cryptoSignature.createPrivateKey();
@@ -33,7 +34,8 @@ class PrivateKeyAddressSchemaBuild extends SchemaBuild{
                 publicKey:{
 
                     type: "buffer",
-                    fixedBytes: 33,
+                    minSize: 33,
+                    maxSize: 33,
 
                     skipMarshal: true,
                     skipSaving: true,

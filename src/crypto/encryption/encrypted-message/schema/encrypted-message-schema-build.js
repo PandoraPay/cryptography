@@ -12,11 +12,13 @@ class EncryptedMessageSchemaBuild extends DBSchemaBuild {
 
                     table: {
                         default: "encryptMsg",
-                        fixedBytes: 10,
+                        minSize: 10,
+                        maxSize: 10,
                     },
 
                     id:{
-                        fixedBytes: 64,
+                        minSize: 64,
+                        maxSize: 64,
                     },
 
                     version: {
@@ -49,7 +51,8 @@ class EncryptedMessageSchemaBuild extends DBSchemaBuild {
 
                     senderPublicKey: {
                         type: "buffer",
-                        fixedBytes: 33,
+                        minSize: 33,
+                        maxSize: 33,
 
                         preprocessor(publicKey){
                             this._senderAddress = undefined;
@@ -62,7 +65,8 @@ class EncryptedMessageSchemaBuild extends DBSchemaBuild {
                     receiverPublicKey: {
 
                         type: "buffer",
-                        fixedBytes: 33,
+                        minSize: 33,
+                        maxSize: 33,
 
                         preprocessor(publicKey){
                             this._receiverAddress = undefined;
@@ -94,7 +98,8 @@ class EncryptedMessageSchemaBuild extends DBSchemaBuild {
 
                     senderSignature:{
                         type: "buffer",
-                        fixedBytes: 65,
+                        minSize: 65,
+                        maxSize: 65,
 
                         position: 108,
                     },

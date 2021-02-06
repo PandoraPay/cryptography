@@ -15,7 +15,8 @@ class VinSchemaBuild extends SchemaBuild {
 
                     type: "buffer",
 
-                    fixedBytes: 33,
+                    minSize: 33,
+                    maxSize: 33,
 
                     preprocessor(publicKey){
                         this._publicKeyHash = undefined;
@@ -55,7 +56,8 @@ class VinSchemaBuild extends SchemaBuild {
                 signature: {
 
                     type: "buffer",
-                    fixedBytes: 65,
+                    minSize: 65,
+                    maxSize: 65,
 
                     removeLeadingZeros: true, //it used useful when two inputs have the same publicKeyHash as the 2nd signature will be filled with zeros
 

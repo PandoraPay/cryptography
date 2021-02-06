@@ -20,7 +20,8 @@ class ChatMessageSchemaBuild extends DBSchemaBuild {
 
                     table: {
                         default: "chatMsg",
-                        fixedBytes: 7,
+                        minSize: 7,
+                        maxSize: 7,
                     },
 
                     version: {
