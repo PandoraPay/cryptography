@@ -44,7 +44,7 @@ const library = Helper.merge( kernel, {
 
     transactions : {
 
-        base:{
+        baseTransaction: {
             BaseTxModel,
             BaseTxSchemaBuild,
         },

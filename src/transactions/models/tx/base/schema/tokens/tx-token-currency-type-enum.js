@@ -7,8 +7,8 @@ module.exports = {
      */
     TX_TOKEN_CURRENCY_NATIVE_TYPE: {
 
-        id: "00",
-        idBuffer: Buffer.from('00', 'hex'),
+        id: "",
+        idBuffer: Buffer.alloc(0),
 
     },
 

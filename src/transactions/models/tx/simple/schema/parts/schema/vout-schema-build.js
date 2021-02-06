@@ -37,7 +37,8 @@ class VoutSchemaBuild extends SchemaBuild {
 
                     type: "buffer",
                     maxSize: 20,
-                    minSize: 1,
+                    minSize: 0,
+                    specifyLength: true,
 
                     default: TxTokenCurrencyTypeEnum.TX_TOKEN_CURRENCY_NATIVE_TYPE.idBuffer,
 

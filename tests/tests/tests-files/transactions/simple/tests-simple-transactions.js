@@ -96,6 +96,9 @@ module.exports = async function run () {
             const privateAddress3 = this._scope.cryptography.addressGenerator.generateAddressFromMnemonic( ).privateAddress;
             const address3 = privateAddress3.getAddress();
 
+            const privateAddress4 = this._scope.cryptography.addressGenerator.generateAddressFromMnemonic( ).privateAddress;
+            const address4 = privateAddress4.getAddress();
+
             const tx = new SimpleTxModel(this._scope, undefined, {
 
                 vin: [ {
@@ -103,7 +106,7 @@ module.exports = async function run () {
                         publicKey: privateAddress.publicKey,
                     }, {
                         amount: 666,
-                        publicKey: privateAddress.publicKey,
+                        publicKey: privateAddress2.publicKey,
                         tokenCurrency: Buffer.alloc(20),
                     }
                 ],
@@ -116,7 +119,7 @@ module.exports = async function run () {
                         publicKeyHash: address3.publicKeyHash,
                     }, {
                         amount: 333,
-                        publicKeyHash: address3.publicKeyHash,
+                        publicKeyHash: address4.publicKeyHash,
                         tokenCurrency: Buffer.alloc(20),
                     }
                 ],
@@ -129,7 +132,7 @@ module.exports = async function run () {
             this.expect( feeOut.amount, 333);
 
 
-            const out = await tx.signTransaction([ privateAddress, privateAddress ]);
+            const out = await tx.signTransaction([ privateAddress, privateAddress2 ]);
 
             this.expect( typeof out === "object", true);
             this.expect( out[0].length, 65 );
@@ -137,6 +140,14 @@ module.exports = async function run () {
             const verification = tx.verifyTransactionSignatures( );
 
             this.expect( verification, true );
+
+            const out2 = await tx.signTransaction([ privateAddress, privateAddress3 ]);
+
+            this.expect( typeof out2 === "object", true);
+            this.expect( out2[0].length, 65 );
+
+            this.expectError( () => tx.verifyTransactionSignatures( ))
+
 
         },
 
