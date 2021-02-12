@@ -1,8 +1,9 @@
 const {Exception, StringHelper, BufferHelper, BufferReader} = require('kernel').helpers;
-const {CryptoHelper} = require('kernel').helpers.crypto;
 const EthCrypto = require( 'eth-crypto' );
 const {BN} = require('kernel').utils;
 const eccrypto = require( 'eccrypto' ); //eth-crypto uses  eccrypto
+const { ecdsaRecover, publicKeyConvert } = require('secp256k1');
+const Buffer04 = Buffer.from("04", 'hex');
 
 module.exports = class CryptoSignature {
 
@@ -23,7 +24,7 @@ module.exports = class CryptoSignature {
 
         let x;
         if (secret){
-            if (typeof secret === "string") secret = Buffer.from(secret, "hex");
+            if (!Buffer.isBuffer(secret)) throw "secret is not a buffer";
             if (secret.length !== 32) throw "secret is not length 32";
 
             x = secret;
@@ -35,11 +36,10 @@ module.exports = class CryptoSignature {
 
     createPublicKey(privateKey){
 
-        if ( Buffer.isBuffer(privateKey)  ) privateKey = privateKey.toString("hex");
+        if (!Buffer.isBuffer(privateKey)) throw "secret is not a buffer";
+        if (privateKey.length !== 32) throw "secret is not a buffer";
 
-        if (typeof privateKey !== "string" || privateKey.length !== 64) throw new Exception(this, "Invalid Private Key to sign the transaction");
-
-        const publicKey = EthCrypto.publicKeyByPrivateKey( privateKey );
+        const publicKey = EthCrypto.publicKeyByPrivateKey( privateKey.toString('hex') );
 
         const compressed = EthCrypto.publicKey.compress(publicKey);
 
@@ -48,17 +48,14 @@ module.exports = class CryptoSignature {
 
     sign( message, privateKey){
 
-        if (Buffer.isBuffer(message)) message = message.toString("hex");
-        if (Buffer.isBuffer(privateKey)) privateKey = privateKey.toString("hex");
-
-        if ( typeof message !== "string" || message.length === 0) throw new Exception(this, "Invalid Message to sign the transaction");
-        if ( typeof privateKey !== "string" || privateKey.length !== 64 ) throw new Exception(this, "Invalid Private Key to sign the transaction");
-
-        if (message.length !== 64) message = CryptoHelper.keccak256(message).toString("hex");
+        if (!Buffer.isBuffer(message)) throw "message is not a buffer";
+        if (!Buffer.isBuffer(privateKey)) throw "privateKey is not a buffer";
+        if (privateKey.length !== 32) throw "privateKey is invalid";
+        if (message.length !== 32) throw "Invalid Message to sign the transaction";
 
         const signature = EthCrypto.sign(
-            privateKey,
-            message,
+            privateKey.toString("hex"),
+            message.toString("hex"),
         );
 
         return Buffer.from(signature.substr(2), "hex");
@@ -84,22 +81,27 @@ module.exports = class CryptoSignature {
 
     verify( message, signature, publicKey ){
 
-        if (Buffer.isBuffer(signature)) signature = signature.toString("hex");
-        if (Buffer.isBuffer(publicKey)) publicKey = publicKey.toString("hex");
-        if (Buffer.isBuffer(message)) message = message.toString("hex");
-
         try{
 
-            if (message.length !== 64) message = CryptoHelper.keccak256(message).toString("hex");
+            if (!Buffer.isBuffer(message)) throw "message is not a buffer";
+            if (!Buffer.isBuffer(signature)) throw "signature is not a buffer";
+            if (!Buffer.isBuffer(publicKey)) throw "publicKey is not a buffer";
+            if (message.length !== 32) throw "Invalid Message to verify the transaction";
 
-            const signer = EthCrypto.recoverPublicKey(
-                signature,
+            const sigOnly = Buffer.alloc(signature.length-1);
+            signature.copy( sigOnly,   0, 0,        signature.length-1 );
+
+            const signer = ecdsaRecover(
+                sigOnly,
+                signature[signature.length-1] === 0x1c ? 1 : 0,
                 message,
-            );
+                false
+            )
 
-            const signerCompressed = EthCrypto.publicKey.compress(signer);
+            const signerCompressed = publicKeyConvert( signer.length === 32 ? Buffer.concat([ Buffer04, signer] ) : signer );
 
-            if (publicKey === signerCompressed) return true;
+            if (publicKey.equals( signerCompressed) )
+                return true;
 
         }catch(err){
             //console.error(err);
@@ -109,11 +111,6 @@ module.exports = class CryptoSignature {
     }
 
     async encrypt(message, publicKey){
-
-        if ( Buffer.isBuffer(publicKey) ) publicKey = publicKey.toString("hex");
-
-        if ( typeof publicKey === "string" && StringHelper.isHex( publicKey )) publicKey = Buffer.from(publicKey, "hex");
-        if ( typeof message === "string" ) message = Buffer.from(message, "ascii");
 
         try{
             const encryptedMsg = await eccrypto.encrypt( publicKey, message );
@@ -126,16 +123,19 @@ module.exports = class CryptoSignature {
 
     async decrypt(encrypted, privateKey){
 
-        if ( typeof encrypted === "string" && StringHelper.isHex( encrypted )) encrypted = Buffer.from(encrypted, "hex");
-        if ( typeof privateKey === "string" && StringHelper.isHex( privateKey )) privateKey = Buffer.from(privateKey, "hex");
-
         try{
 
-            encrypted = BufferReader.create(encrypted);
-            const iv = encrypted.read(16);
-            const ephemPublicKey = encrypted.read(65);
-            const mac = encrypted.read(32);
-            const ciphertext = encrypted.readRemaining();
+            const iv = Buffer.alloc(16);
+            encrypted.copy( iv,   0, 0,        16 );
+
+            const ephemPublicKey = Buffer.alloc(65);
+            encrypted.copy( ephemPublicKey,   0, 16,        16+65 );
+
+            const mac = Buffer.alloc(32);
+            encrypted.copy( mac,   0, 16+65,        16+65+32 );
+
+            const ciphertext = Buffer.alloc(encrypted.length - 16 - 65 - 32);
+            encrypted.copy( ciphertext,   0, 16+65+32 );
 
             const decrypted = await eccrypto.decrypt( privateKey, {
                 iv,

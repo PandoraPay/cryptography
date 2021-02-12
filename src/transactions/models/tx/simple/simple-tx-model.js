@@ -61,7 +61,7 @@ module.exports = class SimpleTxModel extends BaseTxModel {
                 continue;
             }
 
-            const out = this._scope.cryptography.cryptoSignature.sign( buffer, privateKeys[i].privateKey );
+            const out = this._scope.cryptography.cryptoSignature.sign( CryptoHelper.keccak256( buffer ), privateKeys[i].privateKey );
             if (!out) throw new Exception(this, "Signature invalid", vin.toJSON() );
 
             signatures[i] = out;
@@ -85,7 +85,7 @@ module.exports = class SimpleTxModel extends BaseTxModel {
             const publicKeyHash = vin.publicKeyHash.toString('hex');
             if (alreadySigned[publicKeyHash]) continue;
 
-            const out = this._scope.cryptography.cryptoSignature.verify( buffer, vin.signature, vin.publicKey );
+            const out = this._scope.cryptography.cryptoSignature.verify( CryptoHelper.keccak256(buffer), vin.signature, vin.publicKey );
             if (!out) throw new Exception(this, "Signature invalid", vin.toJSON() );
 
             alreadySigned[publicKeyHash] = true;
