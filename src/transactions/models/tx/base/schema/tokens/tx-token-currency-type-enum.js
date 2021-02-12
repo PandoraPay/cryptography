@@ -10,6 +10,10 @@ module.exports = {
         id: "",
         idBuffer: Buffer.alloc(0),
 
+        name: "PANDORA",
+        ticker: "PBOX", //must be uppercase
+        description: "Native token",
+
     },
 
     _name: "TxTokenCurrencyTypeEnum",

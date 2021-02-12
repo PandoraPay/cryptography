@@ -64,8 +64,6 @@ class EncryptedSchemaBuild extends DBSchemaBuild {
 
             options: {
                 hashing: {
-                    enabled: true,
-                    parentHashingPropagation: true,
                     fct: a => a,
                 }
             },

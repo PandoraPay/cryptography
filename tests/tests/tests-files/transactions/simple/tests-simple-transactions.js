@@ -25,6 +25,8 @@ module.exports = async function run () {
 
                 const tx = new SimpleTxModel(this._scope, undefined, {
 
+                    extra: BufferHelper.generateRandomBuffer( Math.floor(Math.random()* 255) ),
+
                     vin: [ {
                             amount: 1000,
                             publicKey: privateAddress.publicKey,
@@ -65,6 +67,8 @@ module.exports = async function run () {
                 const buffer = tx.toBuffer();
                 const tx2 = new SimpleTxModel(this._scope, undefined, {
 
+                    extra: BufferHelper.generateRandomBuffer( Math.floor(Math.random()* 255) ),
+
                     vin: [ {
                         amount: 50,
                         publicKey: privateAddress.publicKey,
@@ -100,6 +104,8 @@ module.exports = async function run () {
             const address4 = privateAddress4.getAddress();
 
             const tx = new SimpleTxModel(this._scope, undefined, {
+
+                extra: BufferHelper.generateRandomBuffer( Math.floor(Math.random()* 255) ),
 
                 vin: [ {
                         amount: 1500,
@@ -160,6 +166,8 @@ module.exports = async function run () {
             const vout = this._scope.cryptography.testsTransactionsHelper.distributeAmountVout( amount, Math.random()*10+5, );
 
             const tx = new SimpleTxModel(this._scope, undefined, {
+
+                extra: BufferHelper.generateRandomBuffer( Math.floor(Math.random()* 255) ),
 
                 vin: vin.vout.map( (it, index) => ({
                     amount: it.amount,

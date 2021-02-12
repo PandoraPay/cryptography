@@ -106,14 +106,6 @@ class EncryptedMessageSchemaBuild extends DBSchemaBuild {
 
                 },
 
-                options: {
-                    hashing: {
-                        enabled: true,
-                        parentHashingPropagation: true,
-                        fct: CryptoHelper.dkeccak256,
-                    },
-                },
-
                 saving:{
                     indexableById: true,
                 },

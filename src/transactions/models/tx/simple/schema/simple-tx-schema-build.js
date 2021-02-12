@@ -62,7 +62,7 @@ class SimpleTxSchemaBuild extends BaseTxSchemaBuild {
                         return true;
                     },
 
-                    position: 1001,
+                    position: 1000,
 
                 },
 
@@ -95,7 +95,7 @@ class SimpleTxSchemaBuild extends BaseTxSchemaBuild {
                         return true;
                     },
 
-                    position: 1003,
+                    position: 1001,
 
                 },
 

@@ -3,7 +3,6 @@ const {Helper, Exception} = require('kernel').helpers;
 const {CryptoHelper} = require('kernel').helpers.crypto;
 
 const TxScriptTypeEnum = require("./tx-script-type-enum")
-const TxTokenCurrencyTypeEnum = require( "./tokens/tx-token-currency-type-enum")
 const TxTypeEnum = require( "./tx-type-enum")
 
 class BaseTxSchemaBuild extends DBSchemaBuild {
@@ -68,15 +67,15 @@ class BaseTxSchemaBuild extends DBSchemaBuild {
                     position: 103,
                 },
 
-            },
+                extra: {
+                    type: "buffer",
+                    minSize:0,
+                    maxSize: 255,
 
-            options: {
-                hashing: {
-                    enabled: true,
-                    parentHashingPropagation: true,
-                    fct: CryptoHelper.dkeccak256,
+                    position: 104,
                 },
-            }
+
+            },
 
         }, schema, true));
     }

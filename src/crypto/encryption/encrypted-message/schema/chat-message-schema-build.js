@@ -58,14 +58,6 @@ class ChatMessageSchemaBuild extends DBSchemaBuild {
 
                 },
 
-                options: {
-                    hashing: {
-                        enabled: true,
-                        parentHashingPropagation: true,
-                        fct: CryptoHelper.dkeccak256,
-                    },
-                },
-
                 saving:{
                     storeDataNotId: true,
                 },

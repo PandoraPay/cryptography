@@ -68,11 +68,13 @@ class VinSchemaBuild extends SchemaBuild {
 
             options: {
                 hashing: {
-                    enabled: true,
-                    parentHashingPropagation: true,
-                    fct: (b)=>b,
+                    fct: b => b,
                 },
-            }
+            },
+
+            saving:{
+                storeDataNotId: true,
+            },
 
         }, schema, true));
     }
