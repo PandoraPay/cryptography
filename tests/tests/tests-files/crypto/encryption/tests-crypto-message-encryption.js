@@ -32,7 +32,6 @@ module.exports = async function run () {
         "decrypt": async function (){
 
             const secret = BufferHelper.generateRandomBuffer(32);
-
             const key1 = this._scope.cryptography.cryptoSignature.createKeyPairs(secret);
 
             const message = BufferHelper.generateRandomBuffer(1024);
@@ -58,6 +57,26 @@ module.exports = async function run () {
             this.expect( await this._scope.cryptography.cryptoSignature.decrypt( encryption, privateKey2 ), undefined);
             this.expect( await this._scope.cryptography.cryptoSignature.decrypt( encryption2, privateKey2), undefined );
 
+
+        },
+
+        "encrypt & decrypt different sizes": async function (){
+
+            for (const size of [0, 1, 2, 3, 8, 20, 30, 32, 60, 64, 128, 256, 512, 1024, 2048]){
+
+                const secret = BufferHelper.generateRandomBuffer(32);
+                const key1 = this._scope.cryptography.cryptoSignature.createKeyPairs(secret);
+
+                const message = BufferHelper.generateRandomBuffer(size);
+
+                const encryption = await this._scope.cryptography.cryptoSignature.encrypt(message, key1.publicKey);
+                this.expect( await this._scope.cryptography.cryptoSignature.decrypt( encryption, key1.privateKey), message );
+
+                const secret2 = BufferHelper.generateRandomBuffer(32);
+                const key2 = this._scope.cryptography.cryptoSignature.createKeyPairs(secret2);
+
+                this.expect( await this._scope.cryptography.cryptoSignature.decrypt( encryption, key2.privateKey), undefined );
+            }
 
         }
 

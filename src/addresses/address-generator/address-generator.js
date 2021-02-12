@@ -6,9 +6,6 @@ const PrivateKeyAddressModel = require("../address/private/private-key-address-m
 const AddressModel = require("../address/public/address-model");
 const Generator = require("./generator")
 
-const bip39 = require('bip39');
-const HDKeyChain = require("./hd-key-chain");
-
 /**
  * Enables Hierarchical Deterministic Wallets
  */

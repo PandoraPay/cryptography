@@ -1,9 +1,8 @@
-const {Exception, StringHelper, BufferHelper} = require('kernel').helpers;
+const {Exception, StringHelper, BufferHelper, BufferReader} = require('kernel').helpers;
 const {CryptoHelper} = require('kernel').helpers.crypto;
-
 const EthCrypto = require( 'eth-crypto' );
 const {BN} = require('kernel').utils;
-const ecies = require("eth-ecies");
+const eccrypto = require( 'eccrypto' ); //eth-crypto uses  eccrypto
 
 module.exports = class CryptoSignature {
 
@@ -112,14 +111,13 @@ module.exports = class CryptoSignature {
     async encrypt(message, publicKey){
 
         if ( Buffer.isBuffer(publicKey) ) publicKey = publicKey.toString("hex");
-        publicKey = EthCrypto.publicKey.decompress( publicKey);
 
         if ( typeof publicKey === "string" && StringHelper.isHex( publicKey )) publicKey = Buffer.from(publicKey, "hex");
         if ( typeof message === "string" ) message = Buffer.from(message, "ascii");
 
         try{
-            const encryptedMsg = ecies.encrypt( publicKey, message );
-            return encryptedMsg;
+            const encryptedMsg = await eccrypto.encrypt( publicKey, message );
+            return Buffer.concat([encryptedMsg.iv, encryptedMsg.ephemPublicKey, encryptedMsg.mac, encryptedMsg.ciphertext ]);
         }catch(err){
             //console.error(err);
         }
@@ -133,8 +131,20 @@ module.exports = class CryptoSignature {
 
         try{
 
-            const plaintext = ecies.decrypt( privateKey, encrypted );
-            return plaintext;
+            encrypted = BufferReader.create(encrypted);
+            const iv = encrypted.read(16);
+            const ephemPublicKey = encrypted.read(65);
+            const mac = encrypted.read(32);
+            const ciphertext = encrypted.readRemaining();
+
+            const decrypted = await eccrypto.decrypt( privateKey, {
+                iv,
+                ephemPublicKey,
+                mac,
+                ciphertext,
+            } );
+
+            return decrypted;
 
         }catch(err){
             //console.error(err);
