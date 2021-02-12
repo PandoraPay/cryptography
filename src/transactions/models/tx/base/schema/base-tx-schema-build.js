@@ -70,7 +70,7 @@ class BaseTxSchemaBuild extends DBSchemaBuild {
                 extra: {
                     type: "buffer",
                     minSize:0,
-                    maxSize: 255,
+                    maxSize: 512,
 
                     position: 104,
                 },

@@ -1,5 +1,5 @@
 const EncryptedMessageModel = require( "../encrypted-message-model");
-const ChatMessage = require("../schema/chat-message-schema-build")
+const ChatMessageModel = require("../schema/chat-message-model")
 
 const {Exception} = require('kernel').helpers;
 
@@ -11,7 +11,7 @@ module.exports = class EncryptedMessageCreator {
 
     async createEncryptedMessage( { senderPublicKey, receiverPublicKey, data  } ){
 
-        const chatMessage = new ChatMessage( this._scope, undefined, data );
+        const chatMessage = new ChatMessageModel( this._scope, undefined, data );
 
         const roundTime = 5*60; //5 minutes
 
@@ -25,7 +25,7 @@ module.exports = class EncryptedMessageCreator {
             receiverEncryptedData: Buffer.alloc(1),
         };
 
-        const encryptedMessage = new EncryptedMessage( this._scope, undefined, data2 );
+        const encryptedMessage = new EncryptedMessageModel( this._scope, undefined, data2 );
 
         const senderEncryptedData = await encryptedMessage.encryptData( chatMessage.toBuffer(), encryptedMessage.senderPublicKey );
         encryptedMessage.senderEncryptedData = senderEncryptedData;

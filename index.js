@@ -33,7 +33,7 @@ const EncryptedSchemaBuild = require("./src/crypto/encryption/encrypted/schema/e
 const CreateIdenticon = require("./src/utils/identicons/create-identicon");
 const Identicon = require("./src/utils/identicons/identicon");
 
-const ChatMessage = require("./src/crypto/encryption/encrypted-message/schema/chat-message-schema-build");
+const ChatMessageModel = require("./src/crypto/encryption/encrypted-message/schema/chat-message-schema-build");
 const EncryptedMessageModel = require("./src/crypto/encryption/encrypted-message/encrypted-message-model");
 
 const {Helper} = require('kernel').helpers;
@@ -79,7 +79,7 @@ const library = Helper.merge( kernel, {
 
     encryption:{
         AES,
-        ChatMessage,
+        ChatMessageModel,
         EncryptedMessageModel,
     },
 

@@ -10,6 +10,9 @@ module.exports = {
         id: "",
         idBuffer: Buffer.alloc(0),
 
+        idLong: Buffer.alloc(20).toString('hex'),
+        idBufferLong: Buffer.alloc(20),
+
         name: "PANDORA",
         ticker: "PBOX", //must be uppercase
         description: "Native token",
