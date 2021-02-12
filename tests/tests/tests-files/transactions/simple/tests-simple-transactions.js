@@ -23,9 +23,11 @@ module.exports = async function run () {
 
             for (const fee of [0, 200]){
 
+                const extra = BufferHelper.generateRandomBuffer( Math.floor(Math.random()* 255) );
+
                 const tx = new SimpleTxModel(this._scope, undefined, {
 
-                    extra: BufferHelper.generateRandomBuffer( Math.floor(Math.random()* 255) ),
+                    extra,
 
                     vin: [ {
                             amount: 1000,
@@ -47,13 +49,15 @@ module.exports = async function run () {
                 const feeOut = tx.fee();
                 if (fee){
 
-                    this.expect( typeof feeOut , "object");
                     this.expect( feeOut.tokenCurrency, TxTokenCurrencyTypeEnum.TX_TOKEN_CURRENCY_NATIVE_TYPE.id );
+                    this.expect( feeOut.amount, fee);
                     this.expect( feeOut.amount, fee);
 
                 } else {
                     this.expect( feeOut , undefined);
                 }
+
+                this.expect( tx.extra , extra);
 
                 const out = await tx.signTransaction([ privateAddress ]);
 
@@ -67,7 +71,7 @@ module.exports = async function run () {
                 const buffer = tx.toBuffer();
                 const tx2 = new SimpleTxModel(this._scope, undefined, {
 
-                    extra: BufferHelper.generateRandomBuffer( Math.floor(Math.random()* 255) ),
+                    extra,
 
                     vin: [ {
                         amount: 50,
@@ -84,6 +88,7 @@ module.exports = async function run () {
 
                 tx2.fromBuffer(buffer);
                 this.expect( tx2.toHex(), tx.toHex() );
+                this.expect( tx2.hash(), tx.hash() );
 
             }
 
@@ -103,9 +108,11 @@ module.exports = async function run () {
             const privateAddress4 = this._scope.cryptography.addressGenerator.generateAddressFromMnemonic( ).privateAddress;
             const address4 = privateAddress4.getAddress();
 
+            const extra = BufferHelper.generateRandomBuffer( Math.floor(Math.random()* 255) );
+
             const tx = new SimpleTxModel(this._scope, undefined, {
 
-                extra: BufferHelper.generateRandomBuffer( Math.floor(Math.random()* 255) ),
+                extra,
 
                 vin: [ {
                         amount: 1500,
@@ -137,6 +144,8 @@ module.exports = async function run () {
             this.expect( feeOut.tokenCurrency, Buffer.alloc(20).toString('hex') );
             this.expect( feeOut.amount, 333);
 
+            this.expect( tx.extra, extra );
+
 
             const out = await tx.signTransaction([ privateAddress, privateAddress2 ]);
 
@@ -165,9 +174,11 @@ module.exports = async function run () {
             const vin = this._scope.cryptography.testsTransactionsHelper.distributeAmountVout( amount + fee, Math.random()*10+5, );
             const vout = this._scope.cryptography.testsTransactionsHelper.distributeAmountVout( amount, Math.random()*10+5, );
 
+            const extra = BufferHelper.generateRandomBuffer( Math.floor(Math.random()* 255) );
+
             const tx = new SimpleTxModel(this._scope, undefined, {
 
-                extra: BufferHelper.generateRandomBuffer( Math.floor(Math.random()* 255) ),
+                extra,
 
                 vin: vin.vout.map( (it, index) => ({
                     amount: it.amount,
@@ -185,6 +196,8 @@ module.exports = async function run () {
             this.expect( typeof feeOut , "object");
             this.expect( feeOut.tokenCurrency, TxTokenCurrencyTypeEnum.TX_TOKEN_CURRENCY_NATIVE_TYPE.id );
             this.expect( feeOut.amount, fee);
+
+            this.expect( tx.extra, extra );
 
             const out = await tx.signTransaction( vin.outsPrivateKeys );
 
