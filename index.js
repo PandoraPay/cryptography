@@ -4,11 +4,11 @@ const CryptoSignature = require("./src/crypto/signatures/crypto-signature");
 const App = require('./src/app');
 const Base58 = require("./src/utils/base58/base58");
 
-const PrivateKeyAddressModel  = require("./src/addresses/address/private/private-key-address-model");
-const PrivateKeyAddressSchemaBuild  = require("./src/addresses/address/private/private-key-address-schema-build");
+const PrivateKeyModel  = require("./src/addresses/address/private-key/private-key-model");
+const PrivateKeySchemaBuild  = require("./src/addresses/address/private-key/private-key-schema-build");
 
-const AddressModel = require("./src/addresses/address/public/address-model");
-const AddressSchemaBuilt = require("./src/addresses/address/public/address-schema-build");
+const AddressModel = require("./src/addresses/address/address/address-model");
+const AddressSchemaBuilt = require("./src/addresses/address/address/address-schema-build");
 
 const AddressGenerator = require("./src/addresses/address-generator/address-generator");
 
@@ -63,8 +63,8 @@ const library = Helper.merge( kernel, {
     addresses: {
 
         private:{
-            PrivateKeyAddressSchemaBuild,
-            PrivateKeyAddressModel,
+            PrivateKeySchemaBuild,
+            PrivateKeyModel,
         },
 
         public:{

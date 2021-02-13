@@ -11,15 +11,17 @@ module.exports = class AddressModel extends DBModel {
         super (scope, schema, data, type, creationOptions);
     }
 
-    calculateCheckSum(){
-
-        const preAddr = Buffer.concat([
+    _calculateCheckSumPrefix(){
+        return Buffer.concat([
             this.addressPrefix(),
             MarshalData.marshalOneByte(this.networkByte),
             this.publicKeyHash
         ]);
+    }
 
-        const hash = CryptoHelper.keccak256( preAddr );
+    calculateCheckSum(){
+
+        const hash = CryptoHelper.keccak256( this._calculateCheckSumPrefix() );
         const buffer = Buffer.alloc( 4 );
         hash.copy(buffer, 0, 0, 4);
         return buffer;

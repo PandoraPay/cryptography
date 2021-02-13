@@ -12,14 +12,14 @@ module.exports = async function run () {
 
         "one input and one output": async function () {
 
-            const privateAddress = this._scope.cryptography.addressGenerator.generateAddressFromMnemonic( ).privateAddress;
-            const address = privateAddress.getAddress();
+            const privateKey = this._scope.cryptography.addressGenerator.generatePrivateKeyFromMnemonic( ).privateKey;
+            const address = privateKey.getAddress();
 
-            const privateAddress2 = this._scope.cryptography.addressGenerator.generateAddressFromMnemonic( ).privateAddress;
-            const address2 = privateAddress2.getAddress();
+            const privateKey2 = this._scope.cryptography.addressGenerator.generatePrivateKeyFromMnemonic( ).privateKey;
+            const address2 = privateKey2.getAddress();
 
-            const privateAddress3 = this._scope.cryptography.addressGenerator.generateAddressFromMnemonic( ).privateAddress;
-            const address3 = privateAddress3.getAddress();
+            const privateKey3 = this._scope.cryptography.addressGenerator.generatePrivateKeyFromMnemonic( ).privateKey;
+            const address3 = privateKey3.getAddress();
 
             for (const fee of [0, 200]){
 
@@ -31,7 +31,7 @@ module.exports = async function run () {
 
                     vin: [ {
                             amount: 1000,
-                            publicKey: privateAddress.publicKey,
+                            publicKey: privateKey.publicKey,
                         }
                     ],
 
@@ -59,7 +59,7 @@ module.exports = async function run () {
 
                 this.expect( tx.extra , extra);
 
-                const out = await tx.signTransaction([ privateAddress ]);
+                const out = await tx.signTransaction([ privateKey ]);
 
                 this.expect( typeof out === "object", true);
                 this.expect( out[0].length, 65 );
@@ -75,7 +75,7 @@ module.exports = async function run () {
 
                     vin: [ {
                         amount: 50,
-                        publicKey: privateAddress.publicKey,
+                        publicKey: privateKey.publicKey,
                     }],
 
                     vout: [ {
@@ -96,17 +96,17 @@ module.exports = async function run () {
 
         "special fee": async function (){
 
-            const privateAddress = this._scope.cryptography.addressGenerator.generateAddressFromMnemonic( ).privateAddress;
-            const address = privateAddress.getAddress();
+            const privateKey = this._scope.cryptography.addressGenerator.generatePrivateKeyFromMnemonic( ).privateKey;
+            const address = privateKey.getAddress();
 
-            const privateAddress2 = this._scope.cryptography.addressGenerator.generateAddressFromMnemonic( ).privateAddress;
-            const address2 = privateAddress2.getAddress();
+            const privateKey2 = this._scope.cryptography.addressGenerator.generatePrivateKeyFromMnemonic( ).privateKey;
+            const address2 = privateKey2.getAddress();
 
-            const privateAddress3 = this._scope.cryptography.addressGenerator.generateAddressFromMnemonic( ).privateAddress;
-            const address3 = privateAddress3.getAddress();
+            const privateKey3 = this._scope.cryptography.addressGenerator.generatePrivateKeyFromMnemonic( ).privateKey;
+            const address3 = privateKey3.getAddress();
 
-            const privateAddress4 = this._scope.cryptography.addressGenerator.generateAddressFromMnemonic( ).privateAddress;
-            const address4 = privateAddress4.getAddress();
+            const privateKey4 = this._scope.cryptography.addressGenerator.generatePrivateKeyFromMnemonic( ).privateKey;
+            const address4 = privateKey4.getAddress();
 
             const extra = BufferHelper.generateRandomBuffer( Math.floor(Math.random()* 255) );
 
@@ -116,10 +116,10 @@ module.exports = async function run () {
 
                 vin: [ {
                         amount: 1500,
-                        publicKey: privateAddress.publicKey,
+                        publicKey: privateKey.publicKey,
                     }, {
                         amount: 666,
-                        publicKey: privateAddress2.publicKey,
+                        publicKey: privateKey2.publicKey,
                         tokenCurrency: Buffer.alloc(20),
                     }
                 ],
@@ -147,7 +147,7 @@ module.exports = async function run () {
             this.expect( tx.extra, extra );
 
 
-            const out = await tx.signTransaction([ privateAddress, privateAddress2 ]);
+            const out = await tx.signTransaction([ privateKey, privateKey2 ]);
 
             this.expect( typeof out === "object", true);
             this.expect( out[0].length, 65 );
@@ -156,7 +156,7 @@ module.exports = async function run () {
 
             this.expect( verification, true );
 
-            const out2 = await tx.signTransaction([ privateAddress, privateAddress3 ]);
+            const out2 = await tx.signTransaction([ privateKey, privateKey3 ]);
 
             this.expect( typeof out2 === "object", true);
             this.expect( out2[0].length, 65 );

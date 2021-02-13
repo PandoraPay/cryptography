@@ -1,7 +1,9 @@
-const AddressModel = require("../address/public/address-model");
-const PrivateKeyAddressModel = require("../address/private/private-key-address-model");
+const AddressModel = require("../address/address/address-model");
+const AddressPublicKeyModel = require("../address/address-public-key/address-public-key-model");
 
-const {Exception, Base58, StringHelper, BufferReader} = require('kernel').helpers;
+const PrivateKeyModel = require("../address/private-key/private-key-model");
+
+const {Exception, Base58} = require('kernel').helpers;
 
 module.exports = class AddressValidator {
 
@@ -19,13 +21,16 @@ module.exports = class AddressValidator {
 
         if (input instanceof AddressModel && input.validate() ) return input;
 
-        const address = new AddressModel( this._scope, undefined, undefined, undefined, {emptyObject: true} );
-        address.fromType( input );
-
+        const address = new AddressModel( this._scope, undefined, input);
         return address;
-
     }
 
+    _validateAddressPublicKey(input){
+        if (input instanceof AddressPublicKeyModel && input.validate() ) return input;
+
+        const addressPublicKey = new AddressPublicKeyModel(this._scope, undefined, input);
+        return addressPublicKey;
+    }
 
     /**
      * Validates if it is an Valid Address
@@ -36,7 +41,7 @@ module.exports = class AddressValidator {
     validateAddress(input){
 
         if (!input) throw new Exception(this, "Input is invalid");
-        if (input instanceof PrivateKeyAddressModel) return input.getAddress();
+        if (input instanceof PrivateKeyModel) return input.getAddress();
         if (input instanceof AddressModel && input.validate() ) return input;
 
         /**
@@ -76,25 +81,24 @@ module.exports = class AddressValidator {
                 throw new Exception(this, "Input Prefix is not matching", {prefix});
         }
 
-        if (Buffer.isBuffer(input))
+        if (Buffer.isBuffer(input) && input.length === 25)
             return this._validateAddress( input );
 
         return undefined;
     }
 
+    validateAddressPublicKey
 
-    validatePrivateAddress( input ){
-
+    validatePrivateKeyAddress( input ){
 
         if (!input) throw new Exception(this, "invalid input");
 
-        if (input instanceof PrivateKeyAddressModel) {
+        if (input instanceof PrivateKeyModel) {
             if (!input.validatePublicKey()) throw new Exception(this, "public key is invalid 1");
             return input;
         }
 
-        const addr = new PrivateKeyAddressModel( this._scope, undefined, undefined, undefined, {emptyObject: true} );
-        addr.fromType( input );
+        const addr = new PrivateKeyModel( this._scope, undefined, input );
 
         if (!addr.validatePublicKey()) throw new Exception(this, "public key is invalid 2");
 
@@ -104,7 +108,6 @@ module.exports = class AddressValidator {
 
     validatePrivateKey( privateKeyInput ){
 
-         if (typeof privateKeyInput === "string") privateKeyInput = Buffer.from(privateKeyInput, "hex");
          if (!Buffer.isBuffer(privateKeyInput)) throw new Exception(this, "private key must be a buffer");
 
          if (privateKeyInput.length !== 32 || privateKeyInput.equals(Buffer.alloc(32))) throw new Exception(this, "private key length must be 32");

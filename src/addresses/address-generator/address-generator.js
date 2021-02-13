@@ -2,8 +2,9 @@ const {Exception, StringHelper, ArrayHelper, BufferHelper, BufferReader, Base58}
 const {CryptoHelper} = require('kernel').helpers.crypto;
 const {Logger} = require('kernel');
 
-const PrivateKeyAddressModel = require("../address/private/private-key-address-model");
-const AddressModel = require("../address/public/address-model");
+const PrivateKeyModel = require("../address/private-key/private-key-model");
+const AddressModel = require("../address/address/address-model");
+const AddressPublicKeyModel = require("../address/address-public-key/address-public-key-model");
 const Generator = require("./generator")
 
 /**
@@ -15,7 +16,6 @@ module.exports = class AddressGenerator extends Generator {
 
     generatePublicKeyHash(publicKey){
 
-        if (typeof publicKey === "string" && StringHelper.isHex(publicKey)) publicKey = Buffer.from(publicKey, "hex");
         if (!Buffer.isBuffer(publicKey) || publicKey.length !== 33 ) throw new Exception(this, "PublicKey is invalid");
 
         const publicKeyHash = CryptoHelper.dkeccak256( publicKey );
@@ -29,7 +29,6 @@ module.exports = class AddressGenerator extends Generator {
 
     generateAddressFromPublicKey(publicKey, networkByte = this._scope.argv.crypto.addresses.publicAddress.networkByte){
 
-        if (typeof publicKey === "string" && StringHelper.isHex(publicKey)) publicKey = Buffer.from(publicKey, "hex");
         if (!Buffer.isBuffer(publicKey) || publicKey.length !== 33 ) throw new Exception(this, "PublicKey is invalid");
 
         const publicKeyHash = this.generatePublicKeyHash(publicKey);
@@ -41,9 +40,19 @@ module.exports = class AddressGenerator extends Generator {
 
     }
 
+    generateAddressPublicKeyFromPublicKey(publicKey, networkByte = this._scope.argv.crypto.addresses.publicAddress.networkByte){
+
+        if (!Buffer.isBuffer(publicKey) || publicKey.length !== 33 ) throw new Exception(this, "PublicKey is invalid");
+
+        return new AddressPublicKeyModel(this._scope, undefined, {
+            networkByte,
+            publicKey,
+        })
+
+    }
+
     generateAddressFromPublicKeyHash(publicKeyHash, networkByte = this._scope.argv.crypto.addresses.publicAddress.networkByte){
 
-        if (typeof publicKeyHash === "string" && StringHelper.isHex(publicKeyHash)) publicKeyHash = Buffer.from(publicKeyHash, "hex");
         if (!Buffer.isBuffer(publicKeyHash) || publicKeyHash.length !== 20 ) throw new Exception(this, "PublicKeyHash is invalid");
 
         return new AddressModel(this._scope, undefined, {
@@ -53,9 +62,9 @@ module.exports = class AddressGenerator extends Generator {
 
     }
 
-    generatePrivateAddressFromPrivateKey( privateKey ){
+    generatePrivateKeyModelFromPrivateKey( privateKey ){
 
-        return new PrivateKeyAddressModel( this._scope, undefined, {
+        return new PrivateKeyModel( this._scope, undefined, {
             privateKey,
         } );
 
@@ -63,9 +72,7 @@ module.exports = class AddressGenerator extends Generator {
 
     generateContractPublicKeyHashFromAccountPublicKeyHash( publicKeyHash, nonce ){
 
-        if (typeof publicKeyHash === "string" && StringHelper.isHex(publicKeyHash)) publicKeyHash = Buffer.from(publicKeyHash, "hex");
         if (!Buffer.isBuffer(publicKeyHash) || publicKeyHash.length !== 20 ) throw new Exception(this, "PublicKeyHash is invalid");
-
         if (typeof nonce !== "number") throw new Exception(this, "Nonce is missing");
 
         let nonceHex = nonce.toString(16);
@@ -75,7 +82,6 @@ module.exports = class AddressGenerator extends Generator {
             publicKeyHash,
             Buffer.from(nonceHex, 'hex'),
         ]);
-
 
         const contractPublicKeyHash = CryptoHelper.dsha256( concat );
 

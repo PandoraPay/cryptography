@@ -28,7 +28,7 @@ module.exports = class Generator{
 
     }
 
-    generateAddressFromMnemonic( words = [], sequence = 0 ){
+    generatePrivateKeyFromMnemonic( words = [], sequence = 0 ){
 
         if (!Array.isArray(words)) throw new Exception(this, "Seed for Address generation is not an array");
 
@@ -47,20 +47,20 @@ module.exports = class Generator{
         return {
             mnemonic: words,
             sequence,
-            privateAddress: this.generatePrivateAddressFromPrivateKey( privateKey ),
+            privateKey: this.generatePrivateKeyModelFromPrivateKey( privateKey ),
         };
 
     }
 
     generateNewAddress(sequence){
-        return this.generateAddressFromMnemonic([], sequence);
+        return this.generatePrivateKeyFromMnemonic([], sequence);
     }
 
     _deriveKey(hdwallet, sequence){
         throw "not defined";
     }
 
-    generatePrivateAddressFromPrivateKey(privateKey){
+    generatePrivateKeyModelFromPrivateKey(privateKey){
         throw "not defined";
     }
 

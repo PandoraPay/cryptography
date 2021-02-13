@@ -1,4 +1,4 @@
-const {Exception, StringHelper, BufferHelper, BufferReader} = require('kernel').helpers;
+const {Exception,  BufferHelper} = require('kernel').helpers;
 const EthCrypto = require( 'eth-crypto' );
 const {BN} = require('kernel').utils;
 const eccrypto = require( 'eccrypto' ); //eth-crypto uses  eccrypto
@@ -100,7 +100,7 @@ module.exports = class CryptoSignature {
 
             const signerCompressed = publicKeyConvert( signer.length === 32 ? Buffer.concat([ Buffer04, signer] ) : signer );
 
-            if (publicKey.equals( signerCompressed) )
+            if (publicKey.equals( Buffer.from(signerCompressed) ) )
                 return true;
 
         }catch(err){
@@ -112,13 +112,11 @@ module.exports = class CryptoSignature {
 
     async encrypt(message, publicKey){
 
-        try{
-            const encryptedMsg = await eccrypto.encrypt( publicKey, message );
-            return Buffer.concat([encryptedMsg.iv, encryptedMsg.ephemPublicKey, encryptedMsg.mac, encryptedMsg.ciphertext ]);
-        }catch(err){
-            //console.error(err);
-        }
+        if (!Buffer.isBuffer(message)) throw "message is not a buffer";
+        if (!Buffer.isBuffer(publicKey)) throw "publicKey is not a buffer";
 
+        const encryptedMsg = await eccrypto.encrypt( publicKey, message );
+        return Buffer.concat([encryptedMsg.iv, encryptedMsg.ephemPublicKey, encryptedMsg.mac, encryptedMsg.ciphertext ]);
     }
 
     async decrypt(encrypted, privateKey){
@@ -144,7 +142,7 @@ module.exports = class CryptoSignature {
                 ciphertext,
             } );
 
-            return decrypted;
+            return Buffer.from(decrypted);
 
         }catch(err){
             //console.error(err);

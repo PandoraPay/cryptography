@@ -6,25 +6,29 @@ const {Exception, Base58, StringHelper, BufferReader} = require('kernel').helper
 /**
  * This is used to store the private key
  */
-const {PrivateKeyAddressSchemaBuilt} = require('./private-key-address-schema-build')
+const {PrivateKeySchemaBuilt} = require('./private-key-schema-build')
 
-module.exports = class PrivateKeyAddressModel extends DBModel {
+module.exports = class PrivateKeyModel extends DBModel {
 
-    constructor(scope, schema= PrivateKeyAddressSchemaBuilt, data, type, creationOptions) {
+    constructor(scope, schema= PrivateKeySchemaBuilt, data, type, creationOptions) {
         super(scope, schema, data, type, creationOptions);
     }
 
     /**
-     * returns a publicAddress
+     * returns an address
      */
     getAddress(networkByte ){
-
         return this._scope.cryptography.addressGenerator.generateAddressFromPublicKey( this.publicKey, networkByte);
+    }
 
+    /**
+     * returns a addressPublicKey
+     */
+    getAddressPublicKey(networkByte ){
+        return this._scope.cryptography.addressGenerator.generateAddressPublicKeyFromPublicKey( this.publicKey, networkByte);
     }
 
     validatePublicKey(value){
-
         const pubKey = this._scope.cryptography.cryptoSignature.createPublicKey( this.privateKey );
         return this.publicKey.equals(pubKey);
     }
@@ -64,11 +68,11 @@ module.exports = class PrivateKeyAddressModel extends DBModel {
 
         delegatePrivateKey = CryptoHelper.dsha256( concat2 );                                       //dsha256( STAKE + delegatePrivateKey + SECRET)
 
-        const delegatePrivateAddress = new PrivateKeyAddressModel( this._scope, undefined, {
+        const delegatePrivateKeyModel = new PrivateKeyModel( this._scope, undefined, {
             privateKey: delegatePrivateKey,
         } );
 
-        return delegatePrivateAddress;
+        return delegatePrivateKeyModel;
     }
 
     /**
@@ -108,11 +112,11 @@ module.exports = class PrivateKeyAddressModel extends DBModel {
 
         delegatePrivateKey = CryptoHelper.dsha256( concat2 );                                               //dsha256(DELEGATE + delegatePrivateKey + VALUE)
 
-        const delegatePrivateAddress = new PrivateKeyAddressModel( this._scope, undefined, {
+        const delegatePrivateKeyModel = new PrivateKeyModel( this._scope, undefined, {
             privateKey: delegatePrivateKey,
         } );
 
-        return delegatePrivateAddress;
+        return delegatePrivateKeyModel;
     }
 
 }
