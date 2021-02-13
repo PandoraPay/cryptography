@@ -84,7 +84,7 @@ module.exports = class AddressValidator {
         /**
          * 25 = Address WIF ( 1 + 20 + 4)
          */
-        input = this._preprocessAddress(input, 25);
+        input = this._preprocessAddress(input, 24 + this._scope.argv.crypto.addresses.publicAddress.networkByteLength);
         if (input) return this._validateAddress( input );
 
     }
@@ -96,7 +96,7 @@ module.exports = class AddressValidator {
         /**
          * 38 = Address WIF ( 1 + 33 + 4)
          */
-        input = this._preprocessAddress(input,38 )
+        input = this._preprocessAddress(input,37 + this._scope.argv.crypto.addresses.publicAddress.networkByteLength )
         if (input) return this._validateAddressPublicKey( input );
 
     }

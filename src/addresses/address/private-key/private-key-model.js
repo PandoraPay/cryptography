@@ -2,7 +2,7 @@ const {Helper} = require('kernel').helpers;
 const {DBModel} = require('kernel').db;
 const {CryptoHelper} = require('kernel').helpers.crypto;
 const {Exception, Base58, StringHelper, BufferReader} = require('kernel').helpers;
-const HDKeyChain = require("./hd-key-chain");
+const HDKeyChain = require("./../../address-generator/hd-key-chain");
 
 /**
  * This is used to store the private key
@@ -46,7 +46,7 @@ module.exports = class PrivateKeyModel extends DBModel {
 
         const hdwallet = new HDKeyChain();
         const privateKey = CryptoHelper.dsha256( CryptoHelper.dkeccak256(this.privateKey) );
-        hdwallet.fromSeed(this._getDelegateStakePrivateKey());
+        hdwallet.fromSeed( privateKey );
         const delegatePrivateKey = hdwallet.deriveKey(0,0, delegateNonce);
 
         return new PrivateKeyModel( this._scope, undefined, {
