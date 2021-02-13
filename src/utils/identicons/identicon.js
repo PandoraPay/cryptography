@@ -1,6 +1,6 @@
 const CreateIdenticon = require( "./create-identicon")
 
-const BUFFER_SIZE = 200; //saving last identicons
+const BUFFER_SIZE = 500; //saving last identicons
 
 class Identicon {
 
@@ -23,9 +23,7 @@ class Identicon {
         } else {
 
             identicon = this._lastIdenticons[address];
-
             const position = this._lastIdenticonsArray.indexOf(identicon);
-
             this._lastIdenticonsArray.splice(position, 1);
 
         }

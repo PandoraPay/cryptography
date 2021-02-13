@@ -44,6 +44,7 @@ module.exports = class AddressModel extends DBModel {
         return this.addressPrefixStr() + this.toBase58();
     }
 
+
     identiconCanvas(){
         return Identicon.createIdenticon( this.toHex(undefined, {
             onlyFields:{

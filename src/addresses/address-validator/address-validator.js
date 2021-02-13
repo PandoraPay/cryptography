@@ -32,22 +32,7 @@ module.exports = class AddressValidator {
         return addressPublicKey;
     }
 
-    /**
-     * Validates if it is an Valid Address
-     * @param scope
-     * @param input
-     * @return {*}
-     */
-    validateAddress(input){
-
-        if (!input) throw new Exception(this, "Input is invalid");
-        if (input instanceof PrivateKeyModel) return input.getAddress();
-        if (input instanceof AddressModel && input.validate() ) return input;
-
-        /**
-         * 25 = Address WIF ( 1 + 20 + 4)
-         */
-        let WIFLength = 25;
+    _preprocessAddress(input, WIFLength){
 
         //an optimization
         if (typeof input === "string" ){
@@ -81,13 +66,44 @@ module.exports = class AddressValidator {
                 throw new Exception(this, "Input Prefix is not matching", {prefix});
         }
 
-        if (Buffer.isBuffer(input) && input.length === 25)
-            return this._validateAddress( input );
-
-        return undefined;
+        if ( Buffer.isBuffer(input) && input.length === WIFLength)
+            return input;
     }
 
-    validateAddressPublicKey
+    /**
+     * Validates if it is an Valid Address
+     * @param scope
+     * @param input
+     * @return {*}
+     */
+    validateAddress(input){
+
+        if (!input) throw new Exception(this, "Input is invalid");
+        if (input instanceof AddressModel && input.validate() ) return input;
+
+        /**
+         * 25 = Address WIF ( 1 + 20 + 4)
+         */
+        input = this._preprocessAddress(input, 25);
+        if (input) return this._validateAddress( input );
+
+    }
+
+    validateAddressPublicKey(input){
+        if (!input) throw new Exception(this, "Input is invalid");
+        if (input instanceof AddressModel && input.validate() ) return input;
+
+        /**
+         * 38 = Address WIF ( 1 + 33 + 4)
+         */
+        input = this._preprocessAddress(input,38 )
+        if (input) return this._validateAddressPublicKey( input );
+
+    }
+
+    validateAnyAddress(input){
+        return this.validateAddress(input) || this.validateAddressPublicKey(input);
+    }
 
     validatePrivateKeyAddress( input ){
 

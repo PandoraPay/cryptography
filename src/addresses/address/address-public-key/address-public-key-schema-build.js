@@ -16,6 +16,11 @@ class AddressPublicKeySchemaBuild extends AddressSchemaBuild {
                     minSize: 33,
                     maxSize: 33,
 
+                    preprocessor(publicKey){
+                        this.publicKeyHash = this._scope.cryptography.addressGenerator.generatePublicKeyHash( publicKey );
+                        return publicKey;
+                    },
+
                     position: 11,
                 },
 

@@ -19,12 +19,13 @@ module.exports = class AddressPublicKeyModel extends AddressModel {
     }
 
     identiconCanvas(){
-        return Identicon.createIdenticon( this.toHex(undefined, {
+        const buffer = this.toBuffer( undefined, {
             onlyFields:{
                 networkByte: true,
-                publicKey: true,
             }
-        }) );
+        });
+
+        return Identicon.createIdenticon( Buffer.concat([ buffer, this.publicKeyHash ]).toString('hex') );
     }
 
 }

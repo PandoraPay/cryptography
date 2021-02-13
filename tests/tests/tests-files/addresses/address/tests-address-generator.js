@@ -45,15 +45,33 @@ module.exports = async function run () {
 
             for (const networkByte of [this._scope.argv.crypto.addresses.publicAddress.networkByte]){
 
-                const out = this._scope.cryptography.addressGenerator.generatePrivateKeyFromMnemonic( );
+                const {privateKey} = this._scope.cryptography.addressGenerator.generatePrivateKeyFromMnemonic( );
 
-                const publicAddress = out.privateKey.getAddress(networkByte);
+                const publicAddress = privateKey.getAddress(networkByte);
                 const publicAddressString = publicAddress.calculateAddress();
 
                 const publicAddress2 = this._scope.cryptography.addressValidator.validateAddress( publicAddressString );
 
                 this.expect(publicAddress.publicKeyHash, publicAddress2.publicKeyHash );
                 this.expect(publicAddress.calculateAddress( ), publicAddress2.calculateAddress( ) );
+
+            }
+
+        },
+
+        "validateAddressPublicKey check": async function (){
+
+            for (const networkByte of [this._scope.argv.crypto.addresses.publicAddress.networkByte]){
+
+                const {privateKey} = this._scope.cryptography.addressGenerator.generatePrivateKeyFromMnemonic( );
+
+                const publicAddressPublicKey = privateKey.getAddressPublicKey(networkByte);
+                const publicAddressPublicKeyString = publicAddressPublicKey.calculateAddress();
+
+                const publicAddressPublicKey2 = this._scope.cryptography.addressValidator.validateAddressPublicKey( publicAddressPublicKeyString );
+
+                this.expect(publicAddressPublicKey.publicKey, publicAddressPublicKey2.publicKey );
+                this.expect(publicAddressPublicKey.calculateAddress( ), publicAddressPublicKey2.calculateAddress( ) );
 
             }
 
