@@ -8,7 +8,10 @@ const PrivateKeyModel  = require("./src/addresses/address/private-key/private-ke
 const PrivateKeySchemaBuild  = require("./src/addresses/address/private-key/private-key-schema-build");
 
 const AddressModel = require("./src/addresses/address/address/address-model");
-const AddressSchemaBuilt = require("./src/addresses/address/address/address-schema-build");
+const AddressSchemaBuild = require("./src/addresses/address/address/address-schema-build");
+
+const AddressPublicKeyModel = require("./src/addresses/address/address-public-key/address-public-key-model");
+const AddressPublicKeySchemaBuild = require("./src/addresses/address/address-public-key/address-public-key-schema-build");
 
 const AddressGenerator = require("./src/addresses/address-generator/address-generator");
 
@@ -67,9 +70,14 @@ const library = Helper.merge( kernel, {
             PrivateKeyModel,
         },
 
-        public:{
-            AddressSchemaBuilt,
+        address:{
+            AddressSchemaBuild,
             AddressModel,
+        },
+
+        addressPublicKey:{
+            AddressPublicKeySchemaBuild,
+            AddressPublicKeyModel
         },
 
         AddressValidator,

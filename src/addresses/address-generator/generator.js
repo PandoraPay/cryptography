@@ -47,7 +47,7 @@ module.exports = class Generator{
         return {
             mnemonic: words,
             sequence,
-            privateKey: this.generatePrivateKeyModelFromPrivateKey( privateKey ),
+            privateKeyModel: this.generatePrivateKeyModelFromPrivateKey( privateKey ),
         };
 
     }

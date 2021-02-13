@@ -74,7 +74,7 @@ module.exports = class TestsTransactionsHelper{
         const vout = [];
         for (let i=0; i < amounts.length; i++) {
 
-            outsPrivateKeys.push( this._scope.cryptography.addressGenerator.generatePrivateKeyFromMnemonic( ).privateKey );
+            outsPrivateKeys.push( this._scope.cryptography.addressGenerator.generatePrivateKeyFromMnemonic( ).privateKeyModel );
 
             const address = outsPrivateKeys[i].getAddress( networkByte );
 

@@ -15,12 +15,12 @@ module.exports = async function run () {
 
                 this.expect( Array.isArray(out.mnemonic), true);
                 this.expect( out.mnemonic.length > 10, true);
-                this.expect( typeof out.privateKey, "object");
-                this.expect( out.privateKey instanceof PrivateKeyModel, true);
+                this.expect( typeof out.privateKeyModel, "object");
+                this.expect( out.privateKeyModel instanceof PrivateKeyModel, true);
 
-                const privateKey = out.privateKey;
+                const privateKeyModel = out.privateKeyModel;
 
-                const address = privateKey.getAddress(networkByte);
+                const address = privateKeyModel.getAddress(networkByte);
                 this.expect(typeof address, "object");
                 this.expect( address instanceof AddressModel, true);
                 this.expect( address.networkByte, networkByte);
@@ -29,7 +29,7 @@ module.exports = async function run () {
                 this.expect(typeof addressBase58,  "string");
                 this.expect(addressBase58.length, 44 );
 
-                const addressPublicKey = privateKey.getAddressPublicKey(networkByte);
+                const addressPublicKey = privateKeyModel.getAddressPublicKey(networkByte);
                 this.expect(typeof addressPublicKey, "object");
                 this.expect( addressPublicKey instanceof AddressPublicKeyModel, true);
                 this.expect( addressPublicKey.networkByte, networkByte);
@@ -45,9 +45,9 @@ module.exports = async function run () {
 
             for (const networkByte of [this._scope.argv.crypto.addresses.publicAddress.networkByte]){
 
-                const {privateKey} = this._scope.cryptography.addressGenerator.generatePrivateKeyFromMnemonic( );
+                const {privateKeyModel} = this._scope.cryptography.addressGenerator.generatePrivateKeyFromMnemonic( );
 
-                const publicAddress = privateKey.getAddress(networkByte);
+                const publicAddress = privateKeyModel.getAddress(networkByte);
                 const publicAddressString = publicAddress.calculateAddress();
 
                 const publicAddress2 = this._scope.cryptography.addressValidator.validateAddress( publicAddressString );
@@ -63,9 +63,9 @@ module.exports = async function run () {
 
             for (const networkByte of [this._scope.argv.crypto.addresses.publicAddress.networkByte]){
 
-                const {privateKey} = this._scope.cryptography.addressGenerator.generatePrivateKeyFromMnemonic( );
+                const {privateKeyModel} = this._scope.cryptography.addressGenerator.generatePrivateKeyFromMnemonic( );
 
-                const publicAddressPublicKey = privateKey.getAddressPublicKey(networkByte);
+                const publicAddressPublicKey = privateKeyModel.getAddressPublicKey(networkByte);
                 const publicAddressPublicKeyString = publicAddressPublicKey.calculateAddress();
 
                 const publicAddressPublicKey2 = this._scope.cryptography.addressValidator.validateAddressPublicKey( publicAddressPublicKeyString );

@@ -7,26 +7,26 @@ module.exports = async function run () {
 
         "check private keys": async function (){
 
-            const privateKey = this._scope.cryptography.addressGenerator.generatePrivateKeyFromMnemonic( ).privateKey;
-            this.expect(privateKey instanceof PrivateKeyModel, true);
+            const privateKeyModel = this._scope.cryptography.addressGenerator.generatePrivateKeyFromMnemonic( ).privateKeyModel;
+            this.expect(privateKeyModel instanceof PrivateKeyModel, true);
 
-            this.expect( privateKey.validatePublicKey(), true);
+            this.expect( privateKeyModel.validatePublicKey(), true);
 
-            this.expect( this._scope.cryptography.addressValidator.validatePrivateKeyAddress( privateKey ) instanceof PrivateKeyModel, true);
+            this.expect( this._scope.cryptography.addressValidator.validatePrivateKeyAddress( privateKeyModel ) instanceof PrivateKeyModel, true);
 
-            const privateKey2 = this._scope.cryptography.addressValidator.validatePrivateKeyAddress( privateKey );
+            const privateKeyModel2 = this._scope.cryptography.addressValidator.validatePrivateKeyAddress( privateKeyModel );
 
-            this.expect( privateKey2.validatePublicKey(), true);
+            this.expect( privateKeyModel2.validatePublicKey(), true);
 
-            this.expect( this._scope.cryptography.addressValidator.validatePrivateKeyAddress( privateKey2 ) instanceof PrivateKeyModel, true);
+            this.expect( this._scope.cryptography.addressValidator.validatePrivateKeyAddress( privateKeyModel2 ) instanceof PrivateKeyModel, true);
 
-            const json = privateKey2.toJSON();
+            const json = privateKeyModel2.toJSON();
 
-            const privateKey3 = this._scope.cryptography.addressValidator.validatePrivateKeyAddress( json );
+            const privateKeyModel3 = this._scope.cryptography.addressValidator.validatePrivateKeyAddress( json );
 
-            this.expect( privateKey3.validatePublicKey(), true);
+            this.expect( privateKeyModel3.validatePublicKey(), true);
 
-            this.expect( this._scope.cryptography.addressValidator.validatePrivateKeyAddress( privateKey3 ) instanceof PrivateKeyModel, true);
+            this.expect( this._scope.cryptography.addressValidator.validatePrivateKeyAddress( privateKeyModel3 ) instanceof PrivateKeyModel, true);
 
         },
 
