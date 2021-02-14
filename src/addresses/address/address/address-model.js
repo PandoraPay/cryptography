@@ -14,7 +14,7 @@ module.exports = class AddressModel extends DBModel {
     _calculateCheckSumPrefix(){
         return Buffer.concat([
             this.addressPrefix(),
-            MarshalData.marshalOneByte(this.networkByte),
+            MarshalData.marshalNumber(this.networkByte),
             this.publicKeyHash
         ]);
     }
@@ -46,12 +46,12 @@ module.exports = class AddressModel extends DBModel {
 
 
     identiconCanvas(){
-        return Identicon.createIdenticon( this.toHex(undefined, {
-            onlyFields:{
-                networkByte: true,
-                publicKeyHash: true,
-            }
-        }) );
+        const buffer = Buffer.concat([
+            MarshalData.marshalNumber(this.networkByte),
+            this.publicKeyHash
+        ]);
+
+        return Identicon.createIdenticon( buffer.toString('hex') );
     }
 
     identiconImg(){

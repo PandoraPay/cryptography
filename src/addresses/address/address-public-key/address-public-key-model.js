@@ -10,22 +10,19 @@ module.exports = class AddressPublicKeyModel extends AddressModel {
         super(scope, schema, data, type, creationOptions);
     }
 
+    generateAddress(){
+        return new AddressModel(this._scope, undefined,  {
+            networkByte: this.networkByte,
+            publicKeyHash: this.publicKeyHash,
+        }, 'object');
+    }
+
     _calculateCheckSumPrefix(){
         return Buffer.concat([
             this.addressPrefix(),
-            MarshalData.marshalOneByte(this.networkByte),
+            MarshalData.marshalNumber(this.networkByte),
             this.publicKey,
         ]);
-    }
-
-    identiconCanvas(){
-        const buffer = this.toBuffer( undefined, {
-            onlyFields:{
-                networkByte: true,
-            }
-        });
-
-        return Identicon.createIdenticon( Buffer.concat([ buffer, this.publicKeyHash ]).toString('hex') );
     }
 
 }

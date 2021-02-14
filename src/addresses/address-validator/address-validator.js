@@ -21,8 +21,7 @@ module.exports = class AddressValidator {
 
         if (input instanceof AddressModel && input.validate() ) return input;
 
-        const address = new AddressModel( this._scope, undefined, input);
-        return address;
+        return new AddressModel( this._scope, undefined, input);
     }
 
     _validateAddressPublicKey(input){

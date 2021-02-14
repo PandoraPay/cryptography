@@ -73,6 +73,11 @@ module.exports = async function run () {
                 this.expect(publicAddressPublicKey.publicKey, publicAddressPublicKey2.publicKey );
                 this.expect(publicAddressPublicKey.calculateAddress( ), publicAddressPublicKey2.calculateAddress( ) );
 
+                const publicAddress = privateKeyModel.getAddress(networkByte);
+                const publicAddress2 = publicAddressPublicKey2.generateAddress();
+                this.expect(publicAddress2.calculateAddress( ), publicAddress.calculateAddress( ) );
+                this.expect(publicAddress2.publicKeyHash, publicAddress.publicKeyHash );
+
             }
 
         },
