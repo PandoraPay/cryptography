@@ -19,7 +19,7 @@ const cnBase58 = (function () {
 
 
     function hextobin(hex) {
-        if (hex.length % 2 !== 0) throw "Hex string has invalid length!";
+        if (hex.length % 2 !== 0) throw Error("Hex string has invalid length!");
         let res = new Uint8Array(hex.length / 2);
         for (let i = 0; i < hex.length / 2; ++i) {
             res[i] = parseInt(hex.slice(i * 2, i * 2 + 2), 16);
@@ -53,7 +53,7 @@ const cnBase58 = (function () {
 
     function uint8_be_to_64(data) {
         if (data.length < 1 || data.length > 8) {
-            throw "Invalid input length";
+            throw Error("Invalid input length");
         }
         let res = JSBigInt.ZERO;
         let twopow8 = new JSBigInt(2).pow(8);
@@ -77,7 +77,7 @@ const cnBase58 = (function () {
                 res = res.multiply(twopow8).add(data[i++]);
                 break;
             default:
-                throw "Impossible condition";
+                throw Error("Impossible condition");
         }
         return res;
     }
@@ -85,7 +85,7 @@ const cnBase58 = (function () {
     function uint64_to_8be(num, size) {
         let res = new Uint8Array(size);
         if (size < 1 || size > 8) {
-            throw "Invalid input length";
+            throw Error("Invalid input length");
         }
         let twopow8 = new JSBigInt(2).pow(8);
         for (let i = size - 1; i >= 0; i--) {
@@ -97,7 +97,7 @@ const cnBase58 = (function () {
 
     b58.encode_block = function (data, buf, index) {
         if (data.length < 1 || data.length > full_encoded_block_size) {
-            throw "Invalid block length: " + data.length;
+            throw Error("Invalid block length: " + data.length);
         }
         let num = uint8_be_to_64(data);
         let i = encoded_block_sizes[data.length] - 1;
@@ -139,30 +139,30 @@ const cnBase58 = (function () {
 
     b58.decode_block = function (data, buf, index) {
         if (data.length < 1 || data.length > full_encoded_block_size) {
-            throw "Invalid block length: " + data.length;
+            throw Error("Invalid block length: " + data.length);
         }
 
         let res_size = encoded_block_sizes.indexOf(data.length);
         if (res_size <= 0) {
-            throw "Invalid block size";
+            throw Error("Invalid block size");
         }
         let res_num = new JSBigInt(0);
         let order = new JSBigInt(1);
         for (let i = data.length - 1; i >= 0; i--) {
             let digit = alphabet.indexOf(data[i]);
             if (digit < 0) {
-                throw "Invalid symbol";
+                throw Error("Invalid symbol");
             }
             let product = order.multiply(digit).add(res_num);
             // if product > UINT64_MAX
             if (product.compare(UINT64_MAX) === 1) {
-                throw "Overflow";
+                throw Error("Overflow");
             }
             res_num = product;
             order = order.multiply(alphabet_size);
         }
         if (res_size < full_block_size && (new JSBigInt(2).pow(8 * res_size).compare(res_num) <= 0)) {
-            throw "Overflow 2";
+            throw Error("Overflow 2");
         }
         buf.set(uint64_to_8be(res_num, res_size), index);
         return buf;
@@ -177,7 +177,7 @@ const cnBase58 = (function () {
         let last_block_size = enc.length % full_encoded_block_size;
         let last_block_decoded_size = encoded_block_sizes.indexOf(last_block_size);
         if (last_block_decoded_size < 0) {
-            throw "Invalid encoded length";
+            throw Error("Invalid encoded length");
         }
         let data_size = full_block_count * full_block_size + last_block_decoded_size;
         let data = new Uint8Array(data_size);

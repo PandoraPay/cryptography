@@ -57,11 +57,11 @@ module.exports = class Generator{
     }
 
     _deriveKey(hdwallet, sequence){
-        throw "not defined";
+        throw Error("not defined");
     }
 
     generatePrivateKeyModelFromPrivateKey(privateKey){
-        throw "not defined";
+        throw Error("not defined");
     }
 
 }

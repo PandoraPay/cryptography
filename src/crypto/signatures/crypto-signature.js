@@ -24,8 +24,8 @@ module.exports = class CryptoSignature {
 
         let x;
         if (secret){
-            if (!Buffer.isBuffer(secret)) throw "secret is not a buffer";
-            if (secret.length !== 32) throw "secret is not length 32";
+            if (!Buffer.isBuffer(secret)) throw Error("secret is not a buffer");
+            if (secret.length !== 32) throw Error("secret is not length 32");
 
             x = secret;
         }else
@@ -36,8 +36,8 @@ module.exports = class CryptoSignature {
 
     createPublicKey(privateKey){
 
-        if (!Buffer.isBuffer(privateKey)) throw "secret is not a buffer";
-        if (privateKey.length !== 32) throw "secret is not a buffer";
+        if (!Buffer.isBuffer(privateKey)) throw Error("secret is not a buffer");
+        if (privateKey.length !== 32) throw Error("secret is not a buffer");
 
         const publicKey = EthCrypto.publicKeyByPrivateKey( privateKey.toString('hex') );
 
@@ -48,10 +48,10 @@ module.exports = class CryptoSignature {
 
     sign( message, privateKey){
 
-        if (!Buffer.isBuffer(message)) throw "message is not a buffer";
-        if (!Buffer.isBuffer(privateKey)) throw "privateKey is not a buffer";
-        if (privateKey.length !== 32) throw "privateKey is invalid";
-        if (message.length !== 32) throw "Invalid Message to sign the transaction";
+        if (!Buffer.isBuffer(message)) throw Error("message is not a buffer");
+        if (!Buffer.isBuffer(privateKey)) throw Error("privateKey is not a buffer");
+        if (privateKey.length !== 32) throw Error("privateKey is invalid");
+        if (message.length !== 32) throw Error("Invalid Message to sign the transaction");
 
         const signature = EthCrypto.sign(
             privateKey.toString("hex"),
@@ -69,7 +69,7 @@ module.exports = class CryptoSignature {
             publicAddress = this._scope.cryptography.addressValidator.validateAddress( publicAddress );
             const publicAddress2 = this._scope.cryptography.addressGenerator.generateAddressFromPublicKey( publicKey, publicKey.networkByte );
 
-            if (publicAddress2.publicKeyHash.equals(publicAddress.publicKeyHash)) throw "Public Key are not matched";
+            if (publicAddress2.publicKeyHash.equals(publicAddress.publicKeyHash)) throw Error("Public Key are not matched");
 
         } catch (err){
             return false;
@@ -83,10 +83,10 @@ module.exports = class CryptoSignature {
 
         try{
 
-            if (!Buffer.isBuffer(message)) throw "message is not a buffer";
-            if (!Buffer.isBuffer(signature)) throw "signature is not a buffer";
-            if (!Buffer.isBuffer(publicKey)) throw "publicKey is not a buffer";
-            if (message.length !== 32) throw "Invalid Message to verify the transaction";
+            if (!Buffer.isBuffer(message)) throw Error("message is not a buffer");
+            if (!Buffer.isBuffer(signature)) throw Error("signature is not a buffer");
+            if (!Buffer.isBuffer(publicKey)) throw Error("publicKey is not a buffer");
+            if (message.length !== 32) throw Error("Invalid Message to verify the transaction");
 
             const sigOnly = Buffer.alloc(signature.length-1);
             signature.copy( sigOnly,   0, 0,        signature.length-1 );
@@ -112,8 +112,8 @@ module.exports = class CryptoSignature {
 
     async encrypt(message, publicKey){
 
-        if (!Buffer.isBuffer(message)) throw "message is not a buffer";
-        if (!Buffer.isBuffer(publicKey)) throw "publicKey is not a buffer";
+        if (!Buffer.isBuffer(message)) throw Error("message is not a buffer");
+        if (!Buffer.isBuffer(publicKey)) throw Error("publicKey is not a buffer");
 
         const encryptedMsg = await eccrypto.encrypt( publicKey, message );
         return Buffer.concat([encryptedMsg.iv, encryptedMsg.ephemPublicKey, encryptedMsg.mac, encryptedMsg.ciphertext ]);

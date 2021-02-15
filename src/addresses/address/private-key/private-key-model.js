@@ -37,22 +37,17 @@ module.exports = class PrivateKeyModel extends DBModel {
     /**
      * Get delegate stake private key
      *
-     * dsha256( STAKE + dkeccak256( dkeccak256( PRIV + privateKey + DELEGATE) + NONCE ) + SECRET )
-     *
      */
-    getDelegateStakePrivateKey(delegateNonce){
+    getDelegateStakePrivateKeyModel(delegateNonce){
 
-        if (typeof delegateNonce !== "number") throw new Exception(this, "DelegateNonce is missing");
+        if (typeof delegateNonce !== "number" || delegateNonce < 0 || delegateNonce >= Number.MAX_SAFE_INTEGER) throw new Exception(this, "DelegateNonce is missing");
 
         const hdwallet = new HDKeyChain();
         const privateKey = CryptoHelper.dsha256( CryptoHelper.dkeccak256(this.privateKey) );
-        hdwallet.fromSeed( privateKey );
+        hdwallet.importSeed( privateKey );
         const delegatePrivateKey = hdwallet.deriveKey(0,0, delegateNonce);
 
-        return new PrivateKeyModel( this._scope, undefined, {
-            privateKey: delegatePrivateKey,
-        } );
-
+        return new PrivateKeyModel( this._scope, undefined, { privateKey: delegatePrivateKey, } );
     }
 
 }

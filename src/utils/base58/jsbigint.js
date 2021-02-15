@@ -177,7 +177,7 @@ var JSBigInt = (function () {
     BigInteger.prototype.toString = function (base) {
         base = +base || 10;
         if (base < 2 || base > 36) {
-            throw new Error("illegal radix " + base + ".");
+            throw Error("illegal radix " + base + ".");
         }
         if (this._s === 0) {
             return "0";
@@ -331,14 +331,14 @@ var JSBigInt = (function () {
                     base = 10;
                 }
             } else if (base < 2 || base > 36) {
-                throw new Error("Illegal radix " + base + ".");
+                throw Error("Illegal radix " + base + ".");
             }
 
             base = +base;
 
             // Check for digits outside the range
             if (!(BigInteger.radixRegex[base].test(digits))) {
-                throw new Error("Bad digit for radix " + base);
+                throw Error("Bad digit for radix " + base);
             }
 
             // Strip leading zeros, and convert to array
@@ -367,9 +367,9 @@ var JSBigInt = (function () {
             for (var i = 0; i < digits.length; i++) {
                 d = d.multiply(base).add(small[parseInt(digits[i], 36)]);
             }
-            return new BigInteger(d._d, sign, CONSTRUCT);
+            return BigInteger(d._d, sign, CONSTRUCT);
         } else {
-            throw new Error("Invalid BigInteger format: " + s);
+            throw Error("Invalid BigInteger format: " + s);
         }
     };
 
@@ -938,7 +938,7 @@ var JSBigInt = (function () {
     BigInteger.prototype.divRem = function (n) {
         n = BigInteger(n);
         if (n._s === 0) {
-            throw new Error("Divide by zero");
+            throw Error("Divide by zero");
         }
         if (this._s === 0) {
             return [ZERO, ZERO];
@@ -1017,7 +1017,7 @@ var JSBigInt = (function () {
         var r;
         n = +n;
         if (n === 0) {
-            throw new Error("Divide by zero");
+            throw Error("Divide by zero");
         }
 
         var n_s = n < 0 ? -1 : 1;
@@ -1025,7 +1025,7 @@ var JSBigInt = (function () {
         n = Math.abs(n);
 
         if (n < 1 || n >= BigInteger_base) {
-            throw new Error("Argument out of range");
+            throw Error("Argument out of range");
         }
 
         if (this._s === 0) {
@@ -1192,7 +1192,7 @@ var JSBigInt = (function () {
             return this;
         }
         if (Math.abs(n) > Number(MAX_EXP)) {
-            throw new Error("exponent too large in BigInteger.exp10");
+            throw Error("exponent too large in BigInteger.exp10");
         }
         if (n > 0) {
             var k = new BigInteger(this._d.slice(), this._s, CONSTRUCT);
@@ -1243,7 +1243,7 @@ var JSBigInt = (function () {
             return ONE;
         } else if (n._s < 0) {
             if (this._s === 0) {
-                throw new Error("Divide by zero");
+                throw Error("Divide by zero");
             } else {
                 return ZERO;
             }
@@ -1256,7 +1256,7 @@ var JSBigInt = (function () {
         }
 
         if (n.compareAbs(MAX_EXP) > 0) {
-            throw new Error("exponent too large in BigInteger.pow");
+            throw Error("exponent too large in BigInteger.pow");
         }
         var x = this;
         var aux = ONE;

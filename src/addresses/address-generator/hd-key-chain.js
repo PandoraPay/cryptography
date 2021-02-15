@@ -7,13 +7,10 @@ const bip39 = require('bip39');
 
 module.exports = class HDKeyChain{
 
-    constructor(){
-    }
-
     importSeed(seed){
 
-        if (!seed)
-            throw "seed is not provided";
+        if (!seed ) throw Error("seed is not provided");
+        if (!Buffer.isBuffer(seed) || seed.length !== 32 ) throw Error("provided seed is invalid");
 
         this.seed = seed;
     }
@@ -28,7 +25,7 @@ module.exports = class HDKeyChain{
 
     fromSeedMnemonic (seedMnemonic) {
         this.importSeed(bip39.mnemonicToEntropy(seedMnemonic));
-    };
+    }
 
     toSeedMnemonic () {
         return bip39.entropyToMnemonic(this.seed);
@@ -37,8 +34,7 @@ module.exports = class HDKeyChain{
 
     deriveKey(account, change, index){
 
-        if (!this.seed)
-            throw "seed was not set";
+        if (!this.seed) throw Error("seed was not set");
 
         const type = 473;
         const version = {
@@ -46,8 +42,8 @@ module.exports = class HDKeyChain{
             private: 0x80
         };
 
-        var root = HDKey.fromMasterSeed(this.seed, version);
-        var key = root.derive(`m/44'/${type}'/${account}'/${change ? 1 : 0}/${index}`);
+        const root = HDKey.fromMasterSeed(this.seed, version);
+        const key = root.derive(`m/44'/${type}'/${account}'/${change ? 1 : 0}/${index}`);
 
         return key.privateKey;
 
