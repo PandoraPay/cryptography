@@ -1,6 +1,6 @@
-const {BufferHelper} = require('kernel').helpers;
+const {BufferHelper} = PandoraLibrary.helpers;
 
-const {describe} = require('kernel').tests;
+const {describe} = PandoraLibrary.tests;
 
 module.exports = async function run () {
 

@@ -1,4 +1,4 @@
-const {MarshalData} = require('kernel').marshal;
+const {MarshalData} = PandoraLibrary.marshal;
 const Identicon = require("../../../utils/identicons/identicon");
 
 const AddressModel = require('../../address/address/address-model')

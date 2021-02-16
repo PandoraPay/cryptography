@@ -1,4 +1,4 @@
-const {Helper, Exception} = require('kernel').helpers;
+const {Helper, Exception} = PandoraLibrary.helpers;
 
 const {BaseTxSchemaBuild} = require('../../base/schema/base-tx-schema-build')
 

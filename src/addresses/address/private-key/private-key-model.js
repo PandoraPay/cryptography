@@ -1,7 +1,7 @@
-const {Helper} = require('kernel').helpers;
-const {DBModel} = require('kernel').db;
-const {CryptoHelper} = require('kernel').helpers.crypto;
-const {Exception, Base58, StringHelper, BufferReader} = require('kernel').helpers;
+const {Helper} = PandoraLibrary.helpers;
+const {DBModel} = PandoraLibrary.db;
+const {CryptoHelper} = PandoraLibrary.helpers.crypto;
+const {Exception, Base58, StringHelper, BufferReader} = PandoraLibrary.helpers;
 const HDKeyChain = require("./../../address-generator/hd-key-chain");
 
 /**

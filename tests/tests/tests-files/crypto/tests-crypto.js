@@ -1,4 +1,4 @@
-const {describe} = require('kernel').tests;
+const {describe} = PandoraLibrary.tests;
 
 const TestsCryptoSignatures = require("./signatures/tests-crypto-signatures");
 

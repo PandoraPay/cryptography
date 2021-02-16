@@ -39,7 +39,7 @@ const Identicon = require("./src/utils/identicons/identicon");
 const ChatMessageModel = require("./src/crypto/encryption/encrypted-message/schema/chat-message-schema-build");
 const EncryptedMessageModel = require("./src/crypto/encryption/encrypted-message/encrypted-message-model");
 
-const {Helper} = require('kernel').helpers;
+const {Helper} = PandoraLibrary.helpers;
 
 const library = Helper.merge( kernel, {
 
@@ -121,13 +121,13 @@ const library = Helper.merge( kernel, {
 }, true );
 
 if (typeof window !== "undefined") {
-    window.library = library;
+    window.PandoraLibrary = library;
     window.PandoraPay = window.app = library.app;
     global.cryptography = library;
 }
 
 if (typeof global !== "undefined"){
-    global.library = library;
+    global.PandoraLibrary = library;
     global.PandoraPay = global.app = library.app;
     global.cryptography = library;
 }

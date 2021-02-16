@@ -1,6 +1,6 @@
-const {MarshalData} = require('kernel').marshal;
-const {CryptoHelper} = require('kernel').helpers.crypto;
-const {DBModel} = require('kernel').db;
+const {MarshalData} = PandoraLibrary.marshal;
+const {CryptoHelper} = PandoraLibrary.helpers.crypto;
+const {DBModel} = PandoraLibrary.db;
 const Identicon = require("../../../utils/identicons/identicon");
 
 const {AddressSchemaBuilt} = require('./address-schema-build')

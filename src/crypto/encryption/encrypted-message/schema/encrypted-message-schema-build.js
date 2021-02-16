@@ -1,6 +1,6 @@
-const {CryptoHelper} = require('kernel').helpers.crypto;
-const {Helper, EnumHelper} = require('kernel').helpers;
-const {DBSchemaBuild} = require('kernel').db;
+const {CryptoHelper} = PandoraLibrary.helpers.crypto;
+const {Helper, EnumHelper} = PandoraLibrary.helpers;
+const {DBSchemaBuild} = PandoraLibrary.db;
 
 class EncryptedMessageSchemaBuild extends DBSchemaBuild {
 

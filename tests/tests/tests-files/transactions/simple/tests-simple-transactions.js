@@ -1,6 +1,6 @@
-const {BufferHelper} = require('kernel').helpers;
+const {BufferHelper} = PandoraLibrary.helpers;
 
-const {describe} = require('kernel').tests;
+const {describe} = PandoraLibrary.tests;
 
 const SimpleTxModel = require( "../../../../../src/transactions/models/tx/simple/simple-tx-model")
 const TxTokenCurrencyTypeEnum = require( "../../../../../src/transactions/models/tx/base/schema/tokens/tx-token-currency-type-enum");

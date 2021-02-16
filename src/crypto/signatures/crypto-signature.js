@@ -1,6 +1,6 @@
-const {Exception,  BufferHelper} = require('kernel').helpers;
+const {Exception,  BufferHelper} = PandoraLibrary.helpers;
 const EthCrypto = require( 'eth-crypto' );
-const {BN} = require('kernel').utils;
+const {BN} = PandoraLibrary.utils;
 const eccrypto = require( 'eccrypto' ); //eth-crypto uses  eccrypto
 const { ecdsaRecover, publicKeyConvert } = require('secp256k1');
 const Buffer04 = Buffer.from("04", 'hex');

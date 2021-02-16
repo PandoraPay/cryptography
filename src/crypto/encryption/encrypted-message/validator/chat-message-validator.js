@@ -1,4 +1,4 @@
-const {Exception, EnumHelper, StringHelper, BufferHelper} = require('kernel').helpers;
+const {Exception, EnumHelper, StringHelper, BufferHelper} = PandoraLibrary.helpers;
 const ChatMessageModel = require( "../schema/chat-message-schema-build")
 
 module.exports = class ChatMessageValidator {

@@ -1,4 +1,4 @@
-const {describe} = require('kernel').tests;
+const {describe} = PandoraLibrary.tests;
 
 const TestsAddressGenerator = require( "./address/tests-address-generator")
 const TestsAddressValidator = require("./address/tests-address-validator")

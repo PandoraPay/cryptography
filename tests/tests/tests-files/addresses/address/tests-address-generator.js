@@ -1,4 +1,4 @@
-const {describe} = require('kernel').tests;
+const {describe} = PandoraLibrary.tests;
 const PrivateKeyModel = require("../../../../../src/addresses/address/private-key/private-key-model");
 const AddressPublicKeyModel = require("../../../../../src/addresses/address/address-public-key/address-public-key-model");
 const AddressModel = require("../../../../../src/addresses/address/address/address-model");

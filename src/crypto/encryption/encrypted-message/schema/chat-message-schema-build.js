@@ -1,5 +1,5 @@
-const {Helper, Exception} = require('kernel').helpers;
-const {DBSchemaBuild} = require('kernel').db;
+const {Helper, Exception} = PandoraLibrary.helpers;
+const {DBSchemaBuild} = PandoraLibrary.db;
 
 const {ChatMessageAttachmentSchemaBuilt} = require( "./data/chat-message-attachment-schema-build")
 const {ChatMessageStringSchemaBuilt} = require("./data/chat-message-string-schema-build")

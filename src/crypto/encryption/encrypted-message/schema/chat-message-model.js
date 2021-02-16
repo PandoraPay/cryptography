@@ -1,5 +1,5 @@
 const {ChatMessageSchemaBuilt} = require('./chat-message-schema-build')
-const {DBModel} = require('kernel').db;
+const {DBModel} = PandoraLibrary.db;
 
 module.exports = class EncryptedMessageModel extends DBModel {
 

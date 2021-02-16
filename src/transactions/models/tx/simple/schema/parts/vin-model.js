@@ -1,4 +1,4 @@
-const {DBModel} = require('kernel').db;
+const {DBModel} = PandoraLibrary.db;
 const {VinSchemaBuilt} = require('./schema/vin-schema-build')
 
 module.exports = class VinModel extends DBModel {

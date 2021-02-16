@@ -1,4 +1,4 @@
-const {DBModel} = require('kernel').db;
+const {DBModel} = PandoraLibrary.db;
 const {VoutSchemaBuilt} = require('./schema/vout-schema-build')
 
 module.exports = class VoutModel extends DBModel {

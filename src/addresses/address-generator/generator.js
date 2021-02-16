@@ -23,7 +23,6 @@ module.exports = class Generator{
     generateMnemonic(  language = 'english' ) {
 
         const words = bip39.generateMnemonic(256, null, bip39.wordlists[language] );
-
         return words.split(' ');
 
     }

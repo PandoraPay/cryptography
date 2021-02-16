@@ -1,6 +1,6 @@
 const crypto = process.env.browser ? require('crypto-browserify') : require('crypto');
 
-const {Exception} = require('kernel').helpers;
+const {Exception} = PandoraLibrary.helpers;
 
 const IV_LENGTH = 16;
 

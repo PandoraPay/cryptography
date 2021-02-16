@@ -3,7 +3,7 @@ const AddressPublicKeyModel = require("../address/address-public-key/address-pub
 
 const PrivateKeyModel = require("../address/private-key/private-key-model");
 
-const {Exception, Base58} = require('kernel').helpers;
+const {Exception, Base58} = PandoraLibrary.helpers;
 
 module.exports = class AddressValidator {
 

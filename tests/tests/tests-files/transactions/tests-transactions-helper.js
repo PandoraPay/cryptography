@@ -1,4 +1,4 @@
-const {Exception, StringHelper, BufferHelper} = require('kernel').helpers;
+const {Exception, StringHelper, BufferHelper} = PandoraLibrary.helpers;
 
 module.exports = class TestsTransactionsHelper{
 

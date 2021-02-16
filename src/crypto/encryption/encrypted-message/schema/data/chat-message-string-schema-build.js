@@ -1,5 +1,5 @@
-const {StringSchemaBuild} = require('kernel').schemas.StringSchemaBuild;
-const {Helper, EnumHelper, Exception} = require('kernel').helpers;
+const {StringSchemaBuild} = PandoraLibrary.schemas.StringSchemaBuild;
+const {Helper, EnumHelper, Exception} = PandoraLibrary.helpers;
 
 class ChatMessageStringSchemaBuild extends StringSchemaBuild {
 

@@ -1,7 +1,7 @@
 // based on https://github.com/Lobstrco/stellar-identicon-js/blob/master/index.js
 
 const DEFAULT_SIZE = 7;
-const {CryptoHelper} = require('kernel').helpers.crypto;
+const {CryptoHelper} = PandoraLibrary.helpers.crypto;
 
 function generateEmptyMatrix(width, height) {
     var matrix = [];

@@ -1,6 +1,6 @@
-const {CryptoHelper} = require('kernel').helpers.crypto;
-const {Helper, Exception} = require('kernel').helpers;
-const {SchemaBuild} = require('kernel').marshal;
+const {CryptoHelper} = PandoraLibrary.helpers.crypto;
+const {Helper, Exception} = PandoraLibrary.helpers;
+const {SchemaBuild} = PandoraLibrary.marshal;
 
 /**
  * It is used in Encrypted Chat Server and Wallet

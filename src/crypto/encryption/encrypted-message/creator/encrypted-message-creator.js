@@ -1,7 +1,7 @@
 const EncryptedMessageModel = require( "../encrypted-message-model");
 const ChatMessageModel = require("../schema/chat-message-model")
 
-const {Exception} = require('kernel').helpers;
+const {Exception} = PandoraLibrary.helpers;
 
 module.exports = class EncryptedMessageCreator {
 

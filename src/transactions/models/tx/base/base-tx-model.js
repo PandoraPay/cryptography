@@ -1,5 +1,5 @@
-const {DBModel} = require('kernel').db;
-const {Exception} = require('kernel').helpers;
+const {DBModel} = PandoraLibrary.db;
+const {Exception} = PandoraLibrary.helpers;
 
 const {BaseTxSchemaBuilt} = require('./schema/base-tx-schema-build')
 

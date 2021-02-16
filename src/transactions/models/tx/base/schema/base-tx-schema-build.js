@@ -1,6 +1,6 @@
-const {DBSchemaBuild} = require('kernel').db;
-const {Helper, Exception} = require('kernel').helpers;
-const {CryptoHelper} = require('kernel').helpers.crypto;
+const {DBSchemaBuild} = PandoraLibrary.db;
+const {Helper, Exception} = PandoraLibrary.helpers;
+const {CryptoHelper} = PandoraLibrary.helpers.crypto;
 
 const TxScriptTypeEnum = require("./tx-script-type-enum")
 const TxTypeEnum = require( "./tx-type-enum")

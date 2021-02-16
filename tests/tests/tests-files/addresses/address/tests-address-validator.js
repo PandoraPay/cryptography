@@ -1,4 +1,4 @@
-const {describe} = require('kernel').tests;
+const {describe} = PandoraLibrary.tests;
 const PrivateKeyModel = require("../../../../../src/addresses/address/private-key/private-key-model");
 
 module.exports = async function run () {

@@ -23,8 +23,9 @@ module.exports = class HDKeyChain{
         return this.seed.toString('hex');
     };
 
-    fromSeedMnemonic (seedMnemonic) {
-        this.importSeed(bip39.mnemonicToEntropy(seedMnemonic));
+    fromSeedMnemonic (seedMnemonic, language = 'english') {
+        const seed = bip39.mnemonicToEntropy(seedMnemonic, bip39.wordlists[language]);
+        this.importSeed( Buffer.from(seed, 'hex') );
     }
 
     toSeedMnemonic () {

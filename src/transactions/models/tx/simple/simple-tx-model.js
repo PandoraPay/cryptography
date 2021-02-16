@@ -1,6 +1,5 @@
-const {Helper} = require('kernel').helpers;
-const {Exception, StringHelper, BufferHelper} = require('kernel').helpers;
-const {CryptoHelper} = require('kernel').helpers.crypto;
+const {Helper, Exception, StringHelper, BufferHelper} = PandoraLibrary.helpers;
+const {CryptoHelper} = PandoraLibrary.helpers.crypto;
 
 const BaseTxModel = require( "../base/base-tx-model");
 

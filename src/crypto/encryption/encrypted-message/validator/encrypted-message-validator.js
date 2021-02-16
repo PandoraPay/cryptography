@@ -1,4 +1,4 @@
-const {Exception, EnumHelper, StringHelper, BufferHelper} = require('kernel').helpers;
+const {Exception, EnumHelper, StringHelper, BufferHelper} = PandoraLibrary.helpers;
 const EncryptedMessageModel = require( "../encrypted-message-model")
 
 module.exports = class EncryptedMessageValidator {

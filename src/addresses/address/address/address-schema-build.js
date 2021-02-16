@@ -1,5 +1,5 @@
-const {SchemaBuild} = require('kernel').marshal;
-const {Exception, Helper} = require('kernel').helpers;
+const {SchemaBuild} = PandoraLibrary.marshal;
+const {Exception, Helper} = PandoraLibrary.helpers;
 
 class AddressSchemaBuild extends SchemaBuild{
 

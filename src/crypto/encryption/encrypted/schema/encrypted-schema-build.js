@@ -1,6 +1,6 @@
-const {DBSchemaBuild} = require('kernel').db;
-const {Helper, EnumHelper} = require('kernel').helpers;
-const {CryptoHelper} = require('kernel').helpers.crypto;
+const {DBSchemaBuild} = PandoraLibrary.db;
+const {Helper, EnumHelper} = PandoraLibrary.helpers;
+const {CryptoHelper} = PandoraLibrary.helpers.crypto;
 
 const EncryptedTypeEnum = require('./encrypted-type-enum')
 

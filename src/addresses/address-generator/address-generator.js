@@ -1,6 +1,5 @@
-const {Exception, StringHelper, ArrayHelper, BufferHelper, BufferReader, Base58} = require('kernel').helpers;
-const {CryptoHelper} = require('kernel').helpers.crypto;
-const {Logger} = require('kernel');
+const {Exception, StringHelper, ArrayHelper, BufferHelper, BufferReader, Base58} = PandoraLibrary.helpers;
+const {CryptoHelper} = PandoraLibrary.helpers.crypto;
 
 const PrivateKeyModel = require("../address/private-key/private-key-model");
 const AddressModel = require("../address/address/address-model");

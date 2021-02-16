@@ -1,7 +1,7 @@
-const {Helper, Exception} = require('kernel').helpers;
-const {MarshalData} = require('kernel').marshal;
-const {DBModel} = require('kernel').db;
-const {CryptoHelper} = require('kernel').helpers.crypto;
+const {Helper, Exception} = PandoraLibrary.helpers;
+const {MarshalData} = PandoraLibrary.marshal;
+const {DBModel} = PandoraLibrary.db;
+const {CryptoHelper} = PandoraLibrary.helpers.crypto;
 
 /**
  * It is used in Encrypted Chat Server and Wallet
@@ -35,14 +35,14 @@ module.exports = class EncryptedMessageModel extends DBModel {
     get senderAddress(){
 
         if (!this._senderAddress)
-            this._senderAddress = PandoraPay.cryptography.addressGenerator.generateAddressFromPublicKey( this.senderPublicKey );
+            this._senderAddress = this._scope.cryptography.addressGenerator.generateAddressFromPublicKey( this.senderPublicKey );
 
         return this._senderAddress;
     }
 
     get receiverAddress(){
         if (!this._receiverAddress)
-            this._receiverAddress = PandoraPay.cryptography.addressGenerator.generateAddressFromPublicKey( this.receiverPublicKey );
+            this._receiverAddress = this._scope.cryptography.addressGenerator.generateAddressFromPublicKey( this.receiverPublicKey );
 
         return this._receiverAddress;
     }
