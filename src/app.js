@@ -1,5 +1,3 @@
-const kernel = require('kernel');
-
 const Argv = require("../bin/argv/argv")
 const Tests = require("../tests/tests/tests-index")
 
@@ -14,7 +12,7 @@ const ChatMessageValidator = require("./crypto/encryption/encrypted-message/vali
 
 const AES = require("./crypto/encryption/aes")
 
-module.exports = class App extends kernel.utils.App {
+module.exports = class App extends PandoraLibrary.utils.App {
 
     setAdditionalEvents(){
 

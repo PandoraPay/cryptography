@@ -41,7 +41,7 @@ const EncryptedMessageModel = require("./src/crypto/encryption/encrypted-message
 
 const {Helper} = PandoraLibrary.helpers;
 
-const library = Helper.merge( kernel, {
+const library = Helper.merge( PandoraLibrary, {
 
     app: new App({}),
 
