@@ -16,6 +16,8 @@ module.exports = class App extends PandoraLibrary.utils.App {
 
     setAdditionalEvents(){
 
+        super.setAdditionalEvents();
+
         this.events.on("start/argv-set", () =>{
 
             this._scope.argv = Argv(this._scope.argv);

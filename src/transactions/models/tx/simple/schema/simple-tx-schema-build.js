@@ -19,26 +19,6 @@ class SimpleTxSchemaBuild extends BaseTxSchemaBuild {
 
             fields: {
 
-                version: {
-
-                    default: TxTypeEnum.PUBLIC_TRANSACTION,
-
-                    validation(version){
-                        return version === TxTypeEnum.PUBLIC_TRANSACTION;
-                    }
-
-                },
-
-                scriptVersion:{
-
-                    default: TxScriptTypeEnum.TX_SCRIPT_SIMPLE_TRANSACTION,
-
-                    validation(script){
-                        return script === TxScriptTypeEnum.TX_SCRIPT_SIMPLE_TRANSACTION;
-                    }
-
-                },
-
                 vin:{
                     type: "array",
                     schemaBuiltClass: VinSchemaBuilt,
@@ -102,7 +82,7 @@ class SimpleTxSchemaBuild extends BaseTxSchemaBuild {
 
             }
 
-        }, schema, false));
+        }, schema, true ));
     }
 
 }

@@ -111,7 +111,7 @@ class EncryptedMessageSchemaBuild extends DBSchemaBuild {
                 },
 
             },
-            schema, false));
+            schema, true ));
     }
 }
 
